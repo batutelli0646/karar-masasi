@@ -200,6 +200,7 @@ function load(){try{const r=localStorage.getItem(KEY);if(r){S=JSON.parse(r);ensu
 function ensure(){
   S.kamp=S.kamp||0;S.bud=S.bud||{};S.tax=S.tax||{};S.laws=S.laws||{};S.lawT=S.lawT||{};S.prom=S.prom||[];S.term=S.term||1;S.own=S.own||{};S.gdp=S.gdp||1350;
   MIN.forEach(m=>{if(S.bud[m[0]]===undefined)S.bud[m[0]]=m[2];if(!m[4]&&!S.M[m[0]])S.M[m[0]]=newM();});
+  S.dif=S.dif===undefined?1:S.dif;S.sc=S.sc||0;S.ach=S.ach||{};S.done=S.done||{};S.sec=S.sec||{tur:50,tar:50,san:50,ene:50};if(S.mun===undefined)S.mun=10;S.h0=S.h0||0;if(!S.pl){S.pl=[];poll();}
   S.ui=S.ui||{};S.cool=S.cool||{};S.loans=S.loans||[];S.pens=S.pens||17.2;S.minw=S.minw||28075;if(S.wage===undefined)S.wage=null;
   if(!S.taxv){const o=S.tax;S.tax={};TAX.forEach(t=>{const v=o[t[0]]||0;S.tax[t[0]]=t[2]===1?(v>0?t[5]:0):t[5]*(1+.1*v);});S.taxv=1;}
   TAX.forEach(t=>{if(S.tax[t[0]]===undefined)S.tax[t[0]]=t[2]===1?0:t[5];});
@@ -325,7 +326,12 @@ const EV=[
 {id:'c_anket',g:'kamp',tag:'Seçim kampanyası',t:'Anket Savaşı',x:()=>`Anket şirketleri birbirine zıt sonuçlar açıklıyor. Kamuoyunda "hangi anket doğru" tartışması var.`,c:[ ch(`Dost anketleri öne çıkar`,1,`Algı yönetimi.`,{kamp:0.8,des:0.3,bat:-0.2},`Anket sonuçları basında geniş yer buldu.`), ch(`Bağımsız anket şirketine yaptır`,2,`Gerçeği gör.`,{kamp:0.4,des:0.2},`Sonuç objektif bir bakış sağladı.`), ch(`Anketlerle uğraşma`,0,`Sahaya odaklan.`,{kamp:0.2},`Seçmene yönelik çalışma sürdü.`) ]},
 {id:'c_medya',g:'kamp',tag:'Seçim kampanyası',t:'Medya Stratejisi',x:()=>`Seçim öncesi televizyonlarda yayın süreleri paylaşılıyor. Yandaş ve muhalif kanallar arasında dengesiz dağılım iddiaları var.`,c:[ ch(`Yoğun reklam ve yayın kampanyası`,3,`Yüksek görünürlük.`,{kamp:2,acik:0.2,bat:-0.2},`Kampanya yoğun şekilde sürdürüldü.`), ch(`Sosyal medya ağırlıklı kampanya`,2,`Genç seçmene odaklan.`,{kamp:1.3,des:0.3},`Sosyal medya kampanyası gençlerden ilgi gördü.`), ch(`Yayın eşitliği taahhüdü`,1,`Adil görün.`,{kamp:0.5,bat:0.5,des:0.2},`Eşit yayın taahhüdü verildi.`) ]},
 {id:'c_muhalefet',g:'kamp',tag:'Seçim kampanyası',t:'Muhalefet Saldırısı',x:()=>`Muhalefet, ekonomik zorlukları bir "hesap günü" söylemine dönüştürdü. Kampanya sert bir mesaj çizgisine kayıyor.`,c:[ ch(`Karşı saldırıya geç`,2,`Sert kampanya.`,{kamp:1,des:0.3,huz:-0.4},`Karşı kampanya başladı, gerilim yükseldi.`), ch(`Pozitif kampanya`,2,`Umut vurgusu.`,{kamp:1.5,huz:0.3,des:0.4},`Pozitif kampanya seçmene iyi geldi.`), ch(`Yok say`,0,`Tepki gösterme.`,{kamp:-0.5,des:-0.3},`Muhalefet gündemi belirledi.`) ]},
-{id:'c_sandik',g:'kamp',tag:'Seçim kampanyası',t:'Sandık Güvenliği',x:()=>`Seçim güvenliği ve sandık başı örgütlenmesi tartışılıyor. Her iki taraf da hile iddialarına hazırlanıyor.`,c:[ ch(`Ulusal ve uluslararası gözlemci davet et`,2,`Şeffaflık.`,{kamp:0.8,bat:0.8,des:0.3},`Gözlemciler davet edildi. Süreç güven verdi.`), ch(`Sandık başı örgütlenmesini güçlendir`,2,`Teşkilat gücü.`,{kamp:1.5,par:0.3},`Teşkilat sahaya iniyor.`), ch(`Özel önlem alma`,0,`Mevcut düzen yeterli.`,{kamp:-0.3},`Herhangi bir ek tedbir alınmadı.`) ]}
+{id:'c_sandik',g:'kamp',tag:'Seçim kampanyası',t:'Sandık Güvenliği',x:()=>`Seçim güvenliği ve sandık başı örgütlenmesi tartışılıyor. Her iki taraf da hile iddialarına hazırlanıyor.`,c:[ ch(`Ulusal ve uluslararası gözlemci davet et`,2,`Şeffaflık.`,{kamp:0.8,bat:0.8,des:0.3},`Gözlemciler davet edildi. Süreç güven verdi.`), ch(`Sandık başı örgütlenmesini güçlendir`,2,`Teşkilat gücü.`,{kamp:1.5,par:0.3},`Teşkilat sahaya iniyor.`), ch(`Özel önlem alma`,0,`Mevcut düzen yeterli.`,{kamp:-0.3},`Herhangi bir ek tedbir alınmadı.`) ]},
+{id:'i_bakanskandal',g:'ic',tag:'İç siyaset · Kabine',t:'Bakan Skandalı',x:()=>`${M.ic.name} hakkındaki yolsuzluk iddiaları basına sızdı. Muhalefet istifa çağrısı yapıyor, koalisyon ortağı sessiz.`,c:[ ch('Bakanı görevden al',2,'Temiz görünürsün, yerine yeni biri atanır.',{},'',{fn:()=>{S.M.ic=newM();return {fx:{des:.5,par:-.3,bat:.3},msg:`Bakan görevden alındı. Yerine ${S.M.ic.name} atandı.`};}}), ch('Bakana sahip çık',1,'Sadakat gösterirsin, tepki çekersin.',{des:-1.5,huz:-.5,par:.3},'Bakana sahip çıktın. Muhalefet sesini yükseltti.'), ch('Soruşturma başlat',1,'Sonuç şansa bağlı.',{},'',{fn:()=>Math.random()<.5?{fx:{des:.5,par:.2},msg:'Soruşturma bakanı akladı. Tartışma dindi.'}:{fx:{des:-1.5,par:-.5},msg:'Soruşturma yeni iddiaları ortaya çıkardı.'}}) ]},
+{id:'i_istifa',g:'ic',tag:'İç siyaset · Kabine',t:'Maliye Bakanı İstifa Etti',x:()=>`${M.maliye.name} "farklı düşünüyoruz" diyerek istifa etti. Piyasalar yeni ismi bekliyor.`,c:[ ch('Teknokrat ata',2,'Piyasa güveni artar, parti içinde zayıflarsın.',{},'',{fn:()=>{S.M.maliye={...newM(),sk:8,note:'Teknokrat, disiplinli'};return {fx:{kur:-1,des:-.2,par:-.3},msg:`${S.M.maliye.name} atandı. Piyasa olumlu karşıladı.`};}}), ch('Sadık bir isim ata',1,'Parti memnun olur, piyasa temkinli kalır.',{},'',{fn:()=>{S.M.maliye={...newM(),sk:4,note:'Sadık ama deneyimsiz'};return {fx:{kur:1.5,par:.4},msg:`${S.M.maliye.name} atandı. Piyasa temkinli.`};}}) ]},
+{id:'k_deprem',g:'kriz',tag:'ACİL · Afet',t:'Büyük Deprem',x:()=>`Şiddetli bir deprem birkaç ili vurdu, enkaz altında kalanlar var. AFAD hazırlığı İçişleri ve Çevre bütçelerine bağlı. Hazırlık düzeyi %${nf(prep()*100,0)}.`,c:[ ch('Seferberlik ve OHAL',3,'Tüm kaynaklar bölgeye. Hazırlık ne kadar iyiyse o kadar etkili.',{},'',{fn:()=>Math.random()<prep()?{fx:{des:2,huz:.3,acik:1,par:.3},msg:'Arama kurtarma hızlı ilerledi. Kamuoyu devleti takdir etti.'}:{fx:{des:-4,huz:-1.5,acik:1.5,par:-.5},msg:'Müdahale gecikti. Öfke ve eleştiri arttı.'}}), ch('Yardım kampanyası ve yeniden inşa fonu',2,'Yeniden inşa maliyeti bütçeye biner.',{},'',{fn:()=>Math.random()<prep()?{fx:{des:1,acik:1.2,huz:.2},msg:'Fon hızla toplandı, inşaat başladı.'}:{fx:{des:-2,acik:1.5,huz:-.8},msg:'Yardımlar dağıtımda aksadı.'}}), ch('Mevcut kaynaklarla yönet',0,'Ucuz ama riskli.',{des:-3,huz:-1,par:-.3},'Yetersiz müdahale büyük tepki çekti.') ]},
+{id:'d_operasyon',g:'dis',tag:'Dış işleri · Güvenlik',t:'Sınır Ötesi Operasyon Önerisi',x:()=>`Genelkurmay sınır ötesinde terör hedeflerine operasyon öneriyor. ${M.sav.name} "koşullar uygun" diyor. Uluslararası tepki bekleniyor.`,c:[ ch('Operasyona onay ver',3,'Ordu ve milliyetçi kesim memnun olur, Batı tepki gösterir.',{},'',{fn:()=>Math.random()<.65?{fx:{ord:.8,des:1.5,huz:.3,bat:-.8,bol:-.4,acik:.3},msg:'Operasyon başarıyla tamamlandı. Kamuoyu destek verdi.'}:{fx:{ord:-.3,des:-1,bat:-1,bol:-.6,acik:.4},msg:'Operasyon beklenenden zor geçti. Kayıplar tartışılıyor.'}}), ch('Diplomasiyi dene',1,'Riski azaltır, sertlik yanlıları tepki gösterir.',{des:-.3,bat:.4,bol:.3,ord:-.2},'Diplomatik temaslar sürdü, operasyon ertelendi.'), ch('Ertele',0,'Şimdilik beklet.',{ord:-.2},'Öneri rafa kalktı.') ]},
+{id:'d_yaptirim',g:'dis',tag:'Dış işleri · Yaptırım',t:'Yaptırım Tehdidi',x:()=>`Bazı ülkeler savunma alımlarınız ve bir bankanız üzerinden yaptırım hazırlığında. ${M.dis.name} "önce diplomasi" diyor.`,c:[ ch('Müzakereye otur',2,'Taviz verirsin ama tehdit uzar.',{bat:.6,des:-.3,par:-.2},'Müzakere sürüyor, yaptırım ertelendi.'), ch('Sert karşılık ver',1,'Doğu ile yakınlaşırsın, Batı soğur.',{dog:.8,bat:-1,des:.6,cari:.5},'Sert bir açıklama yapıldı. Doğu ile ticaret arttı.'), ch('Bekle ve gör',0,'Karar verme.',{rez:-1.5,kur:1.5,bat:-.3},'Belirsizlik piyasayı olumsuz etkiledi.') ]},
 ];
 const EVB=Object.fromEntries(EV.map(e=>[e.id,e]));
 
@@ -339,7 +345,7 @@ function pickFrom(g){
 function genEvents(fixed){
   let ids=fixed||['eko','ic','dis'].map(pickFrom).filter(Boolean);
   if(!fixed){
-    const p=0.10+(S.huz<4?0.06:0)+(S.ord<4?0.05:0);
+    const p=0.10+(S.huz<4?0.06:0)+(S.ord<4?0.05:0)+((S.dif===undefined?1:S.dif)-1)*.04;
     if(Math.random()<p){const k=pickFrom('kriz');if(k)ids.unshift(k);}
     if(S.month%TERM>=TERM-3){const k=pickFrom('kamp');if(k)ids.push(k);}
   }
@@ -437,23 +443,23 @@ function checkEnd(){
 function endTurn(){
   if(S.cur.events.some(e=>e.ch===null))return;
   const a=snap();
-  const depr=simulate();
+  const depr=simulate();secUp();poll();
   S.month++;
   if(S.month%TERM===30){
     if(S.des>=40){S.par+=1;S.des+=1;}else{S.par-=1.5;S.kol-=1;}
-    S.flags.yerel=S.des>=40?'Yerel seçimlerde iktidar kendi belediyelerini korudu.':'Yerel seçimlerde iktidar önemli kayıplar verdi.';
+    S.mun=clamp(Math.round(30*(vote()-8)/50),0,30);S.flags.yerel=(S.des>=40?'Yerel seçimlerde iktidar kendi belediyelerini korudu.':'Yerel seçimlerde iktidar önemli kayıplar verdi.')+' Büyükşehir belediyesi: '+S.mun+'/30.';
   }
   for(const k in RANGE)S[k]=clamp(S[k],RANGE[k][0],RANGE[k][1]);
   const b=snap();
   STATS.forEach(x=>S.hist[x.k].push(S[x.k]));
-  const hl=headlines(a,b,depr);
+  const hl=headlines(a,b,depr);hl.push(...checkAch());
   if(S.month%TERM===30)hl.unshift(S.flags.yerel);
   if(S.coal.length&&S.kol<=0){clearCoal();S.kol=4;S.par=clamp(S.par-.5,0,10);hl.unshift('Koalisyon ortağı hükümetten çekildi. Meclis çoğunluğu tehlikede.');S.log.push({m:S.month,t:'Koalisyon çöktü',c:'Ortak çekildi',msg:'Uyum sıfıra indi. Meclis\'te ortaksız devam ediyorsun.'});}
   const over=checkEnd();
   if(over){S.over={...over,win:false};save();render();return;}
   if(S.month%TERM===0){runElection();save();render();window.scrollTo({top:0});return;}
   const carry=Math.min(3,Math.max(0,avail()));
-  S.pool=12+carry+(S.des>=50?1:0)+(S.prom.length&&promRes().every(r=>r[1])?1:0)-(S.par<4?1:0);
+  S.pool=base()+carry+(S.des>=50?1:0)+(S.prom.length&&promRes().every(r=>r[1])?1:0)-(S.par<4?1:0);
   S.prev=a;S.lv0={...S.lv};S.confirm=null;S.evo=null;
   genEvents();
   S.report={m:S.month,h:hl,carry};
@@ -526,7 +532,7 @@ function finishEl(){
   const e=S.el;
   logA(`${S.term}. dönem seçimi`,`%${nf(e.p,1)} oy`,`${e.se[S.me]} sandalye. Hükümet: ${govSeats()} sandalye (${govSeats()>=301?'çoğunluk':'azınlık'}).`);
   S.ally=false;S.prom=[];S.kamp=0;S.term++;S.des=clamp(S.des+2,0,100);
-  S.pool=12;S.prev=snap();S.lv0={...S.lv};S.el=null;genEvents();
+  S.pool=base();S.prev=snap();S.lv0={...S.lv};S.el=null;genEvents();
   S.report={m:S.month,h:[`${S.term}. dönem başladı. Hükümetin Meclis'te ${govSeats()>=301?'çoğunluğu var':'çoğunluğu yok, yasalar için muhalefetle pazarlık gerekecek'}.`],carry:0};
   save();render();window.scrollTo({top:0});
 }
@@ -595,11 +601,11 @@ function meclis(){
   const g=govSeats(),a=avail(),camp=S.month%TERM>=TERM-6,inG=k=>k===S.me||S.coal.includes(k);
   const bar=k=>`<div class="f"><span>${PART[k].n}${inG(k)?' ✓':''}</span><div class="bar"><i style="width:${S.seats[k]/6}%;${inG(k)?'':'background:var(--muted)'}"></i></div><span class="dl">${S.seats[k]}</span></div>`;
   return `<h2>Meclis</h2><div class="panel"><div class="fac">${PK.map(bar).join('')}</div><div class="dl">Hükümet ${g} / 600 · ${g>=301?'Çoğunluk var':'Azınlık hükümeti (301 gerekir)'}</div><div class="note">Sonraki genel seçim: ${dateLabel((Math.floor(S.month/TERM)+1)*TERM)} · Tahmini oy: %${nf(vote(),1)}${S.ally?' · Seçim ittifakı kuruldu':''}</div>${camp&&!S.ally?sbtn('data-ally="1"','Seçim ittifakı kur · 3 SS',a<3):''}</div>
-  <h2>Koalisyon</h2><div class="panel">${PK.filter(k=>k!==S.me).map(k=>pRow(k,a)).join('')}<div class="note">Ortak olmak isteyen partiyle bakanlık pazarlığı yaparsın. Uyum ${nf(S.kol,1)}/10. Uyum sıfıra inerse ortak hükümetten çekilir.</div></div>
+  ${anket()}${belediye()}<h2>Koalisyon</h2><div class="panel">${PK.filter(k=>k!==S.me).map(k=>pRow(k,a)).join('')}<div class="note">Ortak olmak isteyen partiyle bakanlık pazarlığı yaparsın. Uyum ${nf(S.kol,1)}/10. Uyum sıfıra inerse ortak hükümetten çekilir.</div></div>
   <h2>Vaatler (${S.prom.length}/4)</h2><div class="panel"><div class="note" style="margin:0 0 6px">Söz verdiğin vaadi seçimde tutamazsan oy kaybedersin (−3 puan). Tutarsan +1,5 puan alırsın. Her vaat 1 SS.</div>${VAAT.map(([id,t,fn])=>{const on=S.prom.includes(id),ok=fn();return `<div class="lever"><span class="n">${t}</span><span class="h">${on?(ok?'Söz verildi · şu an sağlanıyor':'Söz verildi · henüz sağlanmadı'):(ok?'Zaten sağlanıyor':'Henüz sağlanmıyor')}</span><div class="step">${on?'<span class="st good">Verildi</span>':sbtn(`data-prom="${id}"`,'Söz ver',ok||S.prom.length>=4||a<1)}</div></div>`;}).join('')}</div>
   <h2>Yasalar</h2><div class="panel">${LAWS.map(([id,n,c,need,,d,fx])=>{const done=S.laws[id],wait=S.month<(S.lawT[id]||0)&&!done;return `<div class="lever"><span class="n">${n}</span><span class="h">${d} <b>(Geçerse: ${fxText(fx)}.)</b> ${need} oy gerekir.${wait?' Yeniden teklif için biraz bekle.':''}</span><div class="step">${done?'<span class="st good">Yasalaştı</span>':sbtn(`data-law="${id}"`,`Teklif · ${c} SS`,wait||a<c)+sbtn(`data-law="${id}" data-lobi="1"`,`Lobi · ${c+2}`,wait||a<c+2)}</div></div>`;}).join('')}<div class="note">Lobi, muhalefet vekillerini ikna eder ve oy şansını artırır. Teklif verdiğinde Genel Kurul oylaması açılır.</div></div>`;
 }
-const pickScreen=()=>`<div class="wrap"><div class="end"><h1>Hangi Partiyi Yöneteceksin?</h1><p>Türkiye'deki gerçek siyasi partilerden birini seç. Parti liderleri ve bakanlar kurgusaldır. Oy oranları ve sandalyeler oyunun başlangıç değerleridir.</p><div class="panel">${PK.map(k=>`<div class="lever"><span class="n">${PART[k].n}</span><span class="h">${PART[k].x>.3?'Sağ':'Sol'} çizgi · rakip lider: ${PART[k].lead}</span><div class="step">${sbtn(`data-pick="${k}"`,'Seç')}</div></div>`).join('')}</div></div></div>`;
+const pickScreen=()=>`<div class="wrap"><div class="end"><h1>Hangi Partiyi Yöneteceksin?</h1><p>Türkiye'deki gerçek siyasi partilerden birini seç. Parti liderleri ve bakanlar kurgusaldır. Oy oranları ve sandalyeler oyunun başlangıç değerleridir.</p><div class="dl" style="margin:10px 0 4px">Zorluk</div><div class="chips">${['Kolay','Normal','Zor'].map((n,i)=>`<button class="btn sm ${S.dif===i?'':'sec'}" data-dif="${i}">${n}</button>`).join('')}</div><div class="dl" style="margin:10px 0 4px">Senaryo</div><div class="chips" style="margin-bottom:12px">${['Standart','Kriz ortasında','Seçim öncesi'].map((n,i)=>`<button class="btn sm ${S.sc===i?'':'sec'}" data-sc="${i}">${n}</button>`).join('')}</div><div class="panel">${PK.map(k=>`<div class="lever"><span class="n">${PART[k].n}</span><span class="h">${PART[k].x>.3?'Sağ':'Sol'} çizgi · rakip lider: ${PART[k].lead}</span><div class="step">${sbtn(`data-pick="${k}"`,'Seç')}</div></div>`).join('')}</div></div></div>`;
 function voteScreen(){
   const v=S.vote;
   return `<div class="wrap"><div class="end"><div class="muted" style="font-family:var(--mono);font-size:12px">TBMM Genel Kurulu · oylama</div><h1>${v.n}</h1><p>${v.d}</p><div class="fac" style="margin:14px 0">${v.rows.map(([k,y,n])=>`<div class="f"><span>${PART[k].n}</span><div class="bar"><i style="width:${y/((y+n)||1)*100}%"></i></div><span class="dl">${y} / ${n}</span></div>`).join('')}</div><div class="big">${v.yes} kabul · ${600-v.yes} ret</div><div class="note">Gerekli oy: ${v.need}</div><h2 style="margin-top:14px;color:var(--${v.ok?'good':'bad'})">${v.ok?'Yasalaştı':'Teklif reddedildi'}</h2><button class="btn" data-votok="1">Tamam</button></div></div>`;
@@ -643,6 +649,41 @@ function lever(k,dir){
   S.lv[k]=nv;save();render();
 }
 
+/* ---------- Ek özellikler: rehber, başarım, anket, sektör, dış ilişki, yuvalar ---------- */
+const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){}return null;};
+const base=()=>14-2*(S.dif===undefined?1:S.dif);
+const TUT=[['Karar Masası\'na hoş geldin','Her ay bir turdur. Ayda 3 olay çıkar, kararlarını Siyasi Sermaye (SS) harcayarak verirsin. Üstteki çubuklar bu ayki SS\'ini gösterir.'],['Göstergeler','Masa sekmesinde 16 gösterge var. Birine dokunursan geçmiş grafiği açılır. Halk desteği çok düşerse hükümet düşer, rezerv biterse ekonomi çöker.'],['Kararlar ve faiz','Kararlar sayfasında olaylara dokunup seçim yap, politika faizini ayarla. Hazır olunca Ayı Bitir\'e bas.'],['Bütçe, vergi ve devlet','Ekonomi sekmesinde bakanlık bütçeleri, vergi oranları ve sektörler var. Devlet sekmesinde Merkez Bankası, Hazine, savunma ve dış ilişkiler.'],['Siyaset ve seçim','Beş yılda bir seçim olur. Meclis\'te yasa çıkarır, koalisyon kurar ve vaat verirsin. Tutmadığın vaat oy kaybettirir. İyi şanslar.']];
+const tutScreen=()=>{const n=S.tut,t=TUT[n-1];return `<div class="wrap"><div class="end"><div class="muted dl">Rehber ${n}/${TUT.length}</div><h1>${t[0]}</h1><p>${t[1]}</p><div class="chips"><button class="btn" data-tutn="1">${n<TUT.length?'İleri':'Başla'}</button><button class="btn sec" data-tutn="0">Atla</button></div></div></div>`;};
+const ACH=[['ilk','İlk yasa',()=>Object.keys(S.laws).length>0],['yas5','5 yasa çıkardın',()=>Object.keys(S.laws).length>=5],['enf','Enflasyon %20 altına indi',()=>S.enf<20],['buy','Büyüme %5 üstüne çıktı',()=>S.buy>=5],['isz','İşsizlik %6 altına indi',()=>S.isz<6],['rez','Rezerv 60 mlr $',()=>S.rez>=60],['des','Halk desteği %60',()=>S.des>=60],['gd','GSYH 2 trilyon $',()=>S.gdp>=2000],['koal','Koalisyon kurdun',()=>S.coal.length>0],['anl','3 anlaşma veya proje',()=>Object.keys(S.done).length>=3],['yil','5 yıl dayandın',()=>S.month>=60],['sec','Seçimi kazandın',()=>S.term>1],['bel','15+ büyükşehir belediyesi',()=>S.mun>=15]];
+function checkAch(){const n=[];ACH.forEach(([id,t,f])=>{if(!S.ach[id]&&f()){S.ach[id]=S.month+1;n.push('Başarım: '+t);}});return n;}
+const basarim=()=>`<h2>Başarımlar (${Object.keys(S.ach).length}/${ACH.length})</h2><div class="panel">${ACH.map(([id,t])=>`<div class="lever"><span class="n">${t}</span><span class="h">${S.ach[id]?'Kazanıldı · '+dateLabel(S.ach[id]-1):'Henüz değil'}</span></div>`).join('')}<div style="margin-top:8px"><button class="btn sec sm" data-tut="1">Rehberi göster</button></div></div>`;
+const slots=()=>`<h2>Kayıt Yuvaları</h2><div class="panel">${[1,2,3].map(i=>`<div class="lever"><span class="n">Yuva ${i}</span><span class="h">${ls('km-sm'+i)||'Boş'}</span><div class="step">${sbtn(`data-slot="s${i}"`,'Kaydet')}${ls('km-s'+i)?sbtn(`data-slot="l${i}"`,'Yükle'):''}</div></div>`).join('')}</div>`;
+function loadCode(v){try{const o=JSON.parse(decodeURIComponent(escape(atob(v))));if(!o||typeof o.month!=='number'||!o.M||typeof o.enf!=='number')throw 0;S=o;ensure();S.tab='masa';S.kmsg='';save();render();return true;}catch(e){return false;}}
+const karne=()=>{const H=S.hist,mx=k=>Math.max(...H[k]),mn=k=>Math.min(...H[k]);return `<div class="panel" style="margin-top:14px"><b>Karne</b><div class="dl">Süre: ${S.month} ay (${nf(S.month/12,1)} yıl) · ${S.term}. dönem</div><div class="dl">Çıkardığın yasa: ${Object.keys(S.laws).length} · Başarım: ${Object.keys(S.ach).length}/${ACH.length}</div><div class="dl">En yüksek büyüme %${nf(mx('buy'),1)} · en düşük enflasyon %${nf(mn('enf'),1)}</div><div class="dl">Halk desteği: en yüksek %${nf(mx('des'),1)}, en düşük %${nf(mn('des'),1)}</div><div class="dl">Büyükşehir ${S.mun}/30 · Anlaşma ve proje: ${Object.keys(S.done).length}</div></div>`;};
+function startGame(k){S.me=k;S.pick=false;initGov();S.pool=base();S.h0=0;
+  if(S.sc===1)Object.assign(S,{enf:78,kur:64,rez:6,des:32,buy:.5,acik:8,borc:60,isz:12});
+  if(S.sc===2){S.month=54;S.des=44;S.h0=54;}
+  STATS.forEach(s=>S.hist[s.k]=[S[s.k]]);S.prev=snap();S.mun={AKP:12,CHP:14}[k]??2;S.pl=[];poll();
+  if(!ls('km-tut'))S.tut=1;save();render();}
+/* anketler, belediyeler, sektörler */
+function poll(){const p=S.pl[S.pl.length-1],me=vote(),o={},ks=PK.filter(k=>k!==S.me);let z=0;ks.forEach(k=>{o[k]=(p?p[k]:PART[k].w)*(1+rnd(-.04,.04));z+=o[k];});ks.forEach(k=>o[k]=o[k]/z*(100-me));o[S.me]=me;S.pl.push(o);}
+const PCOL=['#28597F','#B02A30','#A96B0C','#1E7A4B','#7A4FA0','#56666E'];
+const anket=()=>{const H=S.pl.slice(-13),n=H.length;if(n<2)return '';const all=H.flatMap(o=>PK.map(k=>o[k])),mx=Math.max(...all)+2,mn=Math.max(0,Math.min(...all)-2),X=i=>30+i/(n-1)*280,Y=v=>10+(1-(v-mn)/(mx-mn))*110;
+  return `<div class="panel"><b>Seçim anketleri</b><svg class="ch" viewBox="0 0 320 130"><text x="26" y="14" text-anchor="end">${nf(mx,0)}</text><text x="26" y="124" text-anchor="end">${nf(mn,0)}</text><line x1="30" x2="310" y1="10" y2="10"/><line x1="30" x2="310" y1="120" y2="120"/>${PK.map((k,j)=>`<polyline style="stroke:${PCOL[j]}" points="${H.map((o,i)=>X(i).toFixed(1)+','+Y(o[k]).toFixed(1)).join(' ')}"/>`).join('')}</svg><div class="chips">${PK.map((k,j)=>`<span class="chip" style="border-left:4px solid ${PCOL[j]}">${PART[k].n} %${nf(H[n-1][k],1)}</span>`).join('')}</div></div>`;};
+const belediye=()=>`<div class="panel"><b>Belediyeler</b><div class="dl">Büyükşehir belediyesi: ${S.mun} / 30</div><div class="note">Sonraki yerel seçim: ${dateLabel(Math.floor(S.month/TERM)*TERM+30+(S.month%TERM<30?0:TERM))}. ${S.mun>=15?'Belediyelerin çoğu sende, parti örgütü güçlü.':'Belediyelerin çoğu elinde değil, örgüt zayıf.'}</div></div>`;
+const rb=k=>S.bud[k]/MB[k]-1;
+function secUp(){const t={tur:50+(S.bat-5)*5+(S.huz-5)*5+rb('kultur')*30,tar:50+rb('tarim')*40,san:50+rb('sanayi')*40+(S.buy-2.8)*6-(S.enf-48)*.1,ene:50+rb('enerji')*40+(S.rez-22)*.2+(S.dog-5)*2},s=S.sec;for(const k in t)s[k]=clamp(s[k]+(t[k]-s[k])*.1+rnd(-1.5,1.5),0,100);
+  S.buy=clamp(S.buy+((s.tur+s.tar+s.san+s.ene)/4-50)*.003,-12,12);S.cari=clamp(S.cari-(s.tur-50)*.004,2,90);S.enf=clamp(S.enf-(s.tar-50)*.003,2,300);S.par=clamp(S.par+(S.mun-10)*.003,0,10);}
+/* anlaşma, proje, özelleştirme: [id, ad, SS, etki, açıklama, (tekrar ayı)] */
+const DEALS=[['ab','AB gümrük birliği güncellemesi',3,{bat:1.5,cari:-1,dog:-.3,des:.5},'Batı ile ticaret genişler.'],['brics','BRICS ortaklığı',3,{dog:1.5,bat:-1,rez:2,des:.3},'Doğu ile bağlar güçlenir.'],['golf','Körfez yatırım paketi',2,{rez:6,dog:.6,bol:.4,des:.3},'Yatırım ve döviz girişi.'],['ots','Türk devletleriyle enerji ve ulaşım anlaşması',2,{dog:1,bol:.6,cari:-.8,des:.4},'Ortak enerji hatları ve ticaret koridoru.'],['dam','Doğu Akdeniz uzlaşması',3,{bol:1,bat:.5,cari:-1,huz:.2},'Enerji arama hakları paylaşılır.'],['nato','NATO ortak savunma projesi',2,{bat:1,ord:.3,dog:-.4},'İttifakta ağırlığın artar.']];
+const PROJ=[['siha','SİHA filosunu genişlet',3,{ord:1,cari:.5,dog:.3,acik:.3},'Yerli üretim insansız araçlar.'],['gemi','Milli savaş gemisi programı',3,{ord:.8,bat:.2,acik:.4},'Tersaneler iş alır.'],['ucak','Milli muharip uçak',4,{ord:1.5,cari:.8,bat:-.3,acik:.6},'Uzun vadeli, pahalı proje.'],['hava','Hava savunma sistemi',3,{ord:1,bat:-.4,dog:.4,acik:.4},'Yabancı ve yerli sistemler.'],['siber','Siber savunma merkezi',2,{ord:.4,huz:.3,acik:.15},'Kritik altyapıyı korur.'],['tat','Ortak tatbikat',1,{ord:.6,bol:-.2,acik:.1},'Ordu moralini artırır.',6]];
+const PRIV=[['bank','Kamu bankası hissesi sat',2,{acik:-1.2,des:-.8,huz:-.2,par:-.3},'Büyük gelir, sendikalar tepkili.'],['tel','Telekom ve şeker fabrikalarını sat',2,{acik:-.7,des:-.5,isz:.2},'Orta gelir, işten çıkarma riski.'],['ene','Enerji santrallerini sat',3,{acik:-1.5,des:-1.2,enf:.3,par:-.4},'En büyük gelir, elektrik fiyatı riski.'],['ulas','Otoyol ve köprüleri sat',2,{acik:-.8,des:-.6},'Geçiş ücretleri artabilir.'],['hav','Havalimanı işletmelerini sat',2,{acik:-.6,des:-.3,bat:.2},'Yatırımcıya açılır.']];
+const AL=[...DEALS,...PROJ,...PRIV],isDone=e=>S.done[e[0]]&&S.month<S.done[e[0]];
+const listPanel=(t,L,n)=>`<h2>${t}</h2><div class="panel">${L.map(e=>`<div class="lever"><span class="n">${e[1]}</span><span class="h">${e[4]} (Etkisi: ${fxText(e[3])}.)</span><div class="step">${isDone(e)?'<span class="st good">Yapıldı</span>':sbtn(`data-deal="${e[0]}"`,`Uygula · ${e[2]} SS`,avail()<e[2])}</div></div>`).join('')}${n?`<div class="note">${n}</div>`:''}</div>`;
+function dealAct(id){const e=AL.find(x=>x[0]===id);if(!e||isDone(e)||e[2]>avail())return;applyFx(e[3]);S.done[id]=S.month+(e[5]||9999);S.cur.spent+=e[2];logA('Devlet',e[1],'Uygulandı.');save();render();}
+const dis=()=>listPanel('Anlaşmalar ve ittifaklar',DEALS,'Her anlaşma bir kez yapılır.')+listPanel('Savunma projeleri',PROJ,'Projeler bir kez, tatbikat 6 ayda bir yapılır. Bütçe açığı etkisi ay ay yansır.');
+function sektor(){return `<h2>Sektörler</h2><div class="panel">${[['tur','Turizm','Kültür ve Turizm bütçesi, Batı itibarı, huzur'],['tar','Tarım','Tarım bütçesi'],['san','Sanayi','Sanayi bütçesi, büyüme, enflasyon'],['ene','Enerji','Enerji bütçesi, rezerv, Doğu itibarı']].map(([k,n,h])=>`<div style="display:grid;grid-template-columns:70px minmax(0,1fr) 34px;gap:10px;align-items:center;margin-top:10px"><span>${n}</span><div class="bar"><i style="width:${S.sec[k]}%"></i></div><span class="dl">${nf(S.sec[k],0)}</span></div><div class="note" style="margin:2px 0 0">${h}</div>`).join('')}<div class="note">Ortalama 50'nin üstündeyse büyüme artar. Turizm cari açığı azaltır, tarım enflasyonu düşürür.</div></div>${listPanel('Özelleştirme',PRIV,'Kamu varlığı sat, bütçe açığını kapat. Halk tepki gösterebilir.')}`;}
+const prep=()=>clamp(.4+((S.bud.ic/MB.ic+S.bud.cevre/MB.cevre)/2-1)*.9,.1,.9);
 /* ---------- Görünüm ---------- */
 function spark(a){
   const v=a.slice(-25);if(v.length<2)return '<svg class="sp" viewBox="0 0 100 20"></svg>';
@@ -689,7 +730,7 @@ const chartSheet=k=>{
   let g='<div class="note">Grafik için en az bir ay geçmesi gerekir.</div>',sm='';
   if(a.length>1){
     const mn=Math.min(...a),mx=Math.max(...a),pd=(mx-mn||1)*.12,lo=mn-pd,hi=mx+pd,X=i=>36+i/(a.length-1)*270,Y=y=>10+(1-(y-lo)/(hi-lo))*120,L=a.length-1;
-    g='<svg class="ch" viewBox="0 0 320 160">'+[mx,(mx+mn)/2,mn].map(y=>'<line x1="36" x2="310" y1="'+Y(y).toFixed(1)+'" y2="'+Y(y).toFixed(1)+'"/><text x="32" y="'+(Y(y)+3).toFixed(1)+'" text-anchor="end">'+nf(y,s.d)+'</text>').join('')+'<polyline points="'+a.map((y,i)=>X(i).toFixed(1)+','+Y(y).toFixed(1)).join(' ')+'"/>'+a.map((y,i)=>'<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(y).toFixed(1)+'" r="'+(i===L?4:2.2)+'"/>').join('')+[0,Math.round(L/2),L].map((i,j)=>'<text x="'+X(i).toFixed(1)+'" y="152" text-anchor="'+(j===0?'start':j===2?'end':'middle')+'">'+dm(off+i)+'</text>').join('')+'</svg>';
+    g='<svg class="ch" viewBox="0 0 320 160">'+[mx,(mx+mn)/2,mn].map(y=>'<line x1="36" x2="310" y1="'+Y(y).toFixed(1)+'" y2="'+Y(y).toFixed(1)+'"/><text x="32" y="'+(Y(y)+3).toFixed(1)+'" text-anchor="end">'+nf(y,s.d)+'</text>').join('')+'<polyline points="'+a.map((y,i)=>X(i).toFixed(1)+','+Y(y).toFixed(1)).join(' ')+'"/>'+a.map((y,i)=>'<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(y).toFixed(1)+'" r="'+(i===L?4:2.2)+'"/>').join('')+[0,Math.round(L/2),L].map((i,j)=>'<text x="'+X(i).toFixed(1)+'" y="152" text-anchor="'+(j===0?'start':j===2?'end':'middle')+'">'+dm((S.h0||0)+off+i)+'</text>').join('')+'</svg>';
     sm='<div class="chips"><span class="chip">Şimdi '+nf(v,s.d)+'</span><span class="chip">En düşük '+nf(mn,s.d)+'</span><span class="chip">En yüksek '+nf(mx,s.d)+'</span><span class="chip">Ortalama '+nf(a.reduce((p,c)=>p+c,0)/a.length,s.d)+'</span><span class="chip">Son ay '+(v-a[L-1]>=0?'+':'−')+nf(Math.abs(v-a[L-1]),s.d)+'</span></div>';}
   return '<div class="card"><div class="tag">'+(a.length>1?a.length-1+' aylık geçmiş':'Geçmiş')+'</div><h3>'+s.l+'</h3><p style="margin:0 0 8px"><b style="font-size:22px">'+nf(v,s.d)+'</b> '+s.u+(s.lb[ix]?' · <span class="st '+st+'">'+s.lb[ix]+'</span>':'')+'</p>'+g+sm+'<div class="chips" style="margin-top:10px">'+[[10,'10 ay'],[24,'24 ay'],[0,'Tümü']].map(([q,t])=>'<button class="btn sm '+(n===q?'':'sec')+'" data-hr="'+q+'">'+t+'</button>').join('')+'</div></div>';
 };
@@ -719,17 +760,18 @@ function kayit(){
 }
 function endScreen(){
   const o=S.over;
-  return `<div class="end"><div class="muted" style="font-family:var(--mono);font-size:12px">${dateLabel(S.month)} · ${S.term}. dönem</div><h1>${o.t}</h1><p>${o.x}</p>${o.p?`<div class="big">%${nf(o.p,1)}</div><div class="note">Kampanya etkisi: ${S.kamp>=0?'+':''}${nf(S.kamp||0,1)} puan</div>`:''}<div class="stats" style="margin-top:18px">${['enf','buy','isz','rez','des','huz'].map(k=>tile(STATS.find(s=>s.k===k))).join('')}</div><button class="btn" data-new="1">Yeni oyun başlat</button></div>`;
+  return `<div class="end"><div class="muted" style="font-family:var(--mono);font-size:12px">${dateLabel(S.month)} · ${S.term}. dönem</div><h1>${o.t}</h1><p>${o.x}</p>${o.p?`<div class="big">%${nf(o.p,1)}</div><div class="note">Kampanya etkisi: ${S.kamp>=0?'+':''}${nf(S.kamp||0,1)} puan</div>`:''}<div class="stats" style="margin-top:18px">${['enf','buy','isz','rez','des','huz'].map(k=>tile(STATS.find(s=>s.k===k))).join('')}</div>${karne()}<button class="btn" data-new="1" style="margin-top:14px">Yeni oyun başlat</button></div>`;
 }
-function diger(){return gunluk()+'<div class="panel" style="margin-top:14px"><button class="btn sec sm" data-new="1">'+(S.confirmNew?'Emin misin? Tekrar bas':'Yeni oyun')+'</button></div>'+kayit();}
-const V={masa,karar,butce,vergi,kurum,meclis,kabine,diger};
-const GR=[['masa','Masa',['masa','karar']],['eko','Ekonomi',['butce','vergi']],['sia','Siyaset',['meclis','kabine']],['dev','Devlet',['kurum']],['diger','Diğer',['diger']]],SUBN={masa:'Göstergeler',karar:'Kararlar',butce:'Bütçe',vergi:'Vergi',kurum:'Kurum',meclis:'Meclis',kabine:'Kabine',diger:'Diğer'};
+function diger(){return basarim()+slots()+gunluk()+'<div class="panel" style="margin-top:14px"><button class="btn sec sm" data-new="1">'+(S.confirmNew?'Emin misin? Tekrar bas':'Yeni oyun')+'</button></div>'+kayit();}
+const V={masa,karar,butce,vergi,sektor,kurum,dis,meclis,kabine,diger};
+const GR=[['masa','Masa',['masa','karar']],['eko','Ekonomi',['butce','vergi','sektor']],['sia','Siyaset',['meclis','kabine']],['dev','Devlet',['kurum','dis']],['diger','Diğer',['diger']]],SUBN={masa:'Göstergeler',karar:'Kararlar',butce:'Bütçe',vergi:'Vergi',kurum:'Kurum',sektor:'Sektörler',dis:'Dış ilişkiler',meclis:'Meclis',kabine:'Kabine',diger:'Diğer'};
 const grp=()=>GR.find(g=>g[2].includes(V[S.tab]?S.tab:'masa'));
 const subbar=()=>{const g=grp();return g[2].length<2?'':'<div class="subtabs">'+g[2].map(k=>'<button class="bn2" aria-selected="'+(k===S.tab)+'" data-tab="'+k+'">'+SUBN[k]+'</button>').join('')+'</div>';};
 function render(){
   const app=document.getElementById('app');
   if(S.over){app.innerHTML=`<div class="wrap">${endScreen()}</div>`;return;}
   if(S.pick){app.innerHTML=pickScreen();return;}
+  if(S.tut){app.innerHTML=tutScreen();return;}
   if(S.vote){app.innerHTML=voteScreen();return;}
   if(S.neg){app.innerHTML=negScreen();return;}
   if(S.el){app.innerHTML=elScreen();return;}
@@ -759,7 +801,13 @@ document.addEventListener('click',ev=>{
   if(t.dataset.uisrc){S.ui.src=t.dataset.uisrc;S.ui.amt=Math.min(ui('amt',8),LOAN[S.ui.src][5]);save();return render();}
   if(t.dataset.wgo)return wageGo();
   if(t.dataset.law)return propose(t.dataset.law,!!t.dataset.lobi);
-  if(t.dataset.pick){S.me=t.dataset.pick;S.pick=false;initGov();save();return render();}
+  if(t.dataset.pick)return startGame(t.dataset.pick);
+  if(t.dataset.dif!==undefined){S.dif=+t.dataset.dif;save();return render();}
+  if(t.dataset.sc!==undefined){S.sc=+t.dataset.sc;save();return render();}
+  if(t.dataset.deal)return dealAct(t.dataset.deal);
+  if(t.dataset.tut){S.tut=1;return render();}
+  if(t.dataset.tutn!==undefined){S.tut=+t.dataset.tutn&&S.tut<TUT.length?S.tut+1:0;if(!S.tut)ls('km-tut','1');save();return render();}
+  if(t.dataset.slot){const c=t.dataset.slot[0],i=t.dataset.slot.slice(1);if(c==='s'){ls('km-s'+i,makeCode());ls('km-sm'+i,dateLabel(S.month)+' · '+PART[S.me].n);render();}else loadCode(ls('km-s'+i));return;}
   if(t.dataset.neg){S.neg={p:t.dataset.neg,off:[],msg:''};return render();}
   if(t.dataset.nego){const o=S.neg.off,k=t.dataset.nego,i=o.indexOf(k);if(i<0)o.push(k);else o.splice(i,1);S.neg.msg='';return render();}
   if(t.dataset.offer)return offer();
@@ -781,11 +829,7 @@ document.addEventListener('click',ev=>{
   }
   if(t.dataset.import){
     const v=(document.getElementById('imp').value||'').trim();
-    try{
-      const o=JSON.parse(decodeURIComponent(escape(atob(v))));
-      if(!o||typeof o.month!=='number'||!o.M||typeof o.enf!=='number')throw 0;
-      S=o;ensure();S.tab='masa';S.kmsg='';save();render();
-    }catch(e){S.kmsg='Kod okunamadı. Tamamını kopyaladığından emin ol.';document.getElementById('kmsg').textContent=S.kmsg;}
+    if(!loadCode(v)){S.kmsg='Kod okunamadı. Tamamını kopyaladığından emin ol.';document.getElementById('kmsg').textContent=S.kmsg;}
     return;
   }
   if(t.dataset.new){
