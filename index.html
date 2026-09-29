@@ -49,6 +49,8 @@ main{padding-block:18px}
 .sqt.st4{aspect-ratio:1/.88}.sqt.good{border-top-color:var(--good)}.sqt.warn{border-top-color:var(--warn)}.sqt.bad{border-top-color:var(--bad)}.sqt.ev{border-top-color:var(--accent);cursor:pointer}.sqt.ev.done{opacity:.6}
 .sqt .l{font-size:10px;color:var(--muted);line-height:1.15}.sqt .v{font-size:17px;font-weight:600;line-height:1}.sqt .v small{font-size:9px;color:var(--muted);margin-left:1px}.sqt .t{font-size:10.5px;font-weight:600;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;word-break:break-word}.sqt .d{font-size:9px;line-height:1.1}
 .sheet{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center}.sheet-in{background:var(--bg);width:100%;max-width:560px;max-height:88vh;overflow:auto;padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));border-radius:8px 8px 0 0}
+.sq.big{grid-template-rows:repeat(4,1fr);height:calc(100dvh - 312px);min-height:380px}.sq.big .sqt,.sq.big .sqt.st4{aspect-ratio:auto;padding:9px}.big .l{font-size:12px}.big .v{font-size:20px;white-space:nowrap}.big .v small{font-size:11px}.big .d{font-size:11px}
+.sq.two{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.sq.two .sqt{aspect-ratio:1.45;padding:10px}.two .l{font-size:11px}.two .t{font-size:15px;-webkit-line-clamp:3}.two .d{font-size:11px}
 .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:8px;margin-bottom:18px}
 .tile{background:var(--surface);border:1px solid var(--line);padding:10px 12px;min-width:0}
 .tile .lb{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);display:flex;justify-content:space-between;gap:6px}
@@ -685,11 +687,14 @@ const sheet=()=>{const o=S.evo;if(o===null||o===undefined)return '';let b;
   if(o==='r'){const r=S.report;if(!r)return '';b=`<div class="report"><h3>Ay Sonu Raporu · ${dateLabel(r.m)}</h3><ul>${r.h.map(x=>`<li>${x}</li>`).join('')}</ul>${r.carry?`<div class="note">Kullanmadığın ${r.carry} Siyasi Sermaye devredildi.</div>`:''}</div>`;}
   else if(S.cur.events[o])b=eventCard(S.cur.events[o],o);else return '';
   return `<div class="sheet"><div class="sheet-in">${b}<button class="btn sec" data-evx="1" style="width:100%">Kapat</button></div></div>`;};
-function masa(){
+function karar(){
   const r=S.report,E=S.cur.events;
   const evT=E.map((e,i)=>{const d=EVB[e.id],dn=e.ch!==null;return `<button class="sqt ev ${dn?'done':''}" data-evo="${i}"><span class="l">${d.tag.split(' · ')[0]}${dn?' ✓':''}</span><span class="t">${d.t}</span><span class="d dl">${dn?'Verildi':'Bekliyor'}</span></button>`;}).join('');
   const rp=r?`<button class="sqt ev" data-evo="r"><span class="l">Rapor</span><span class="t">Ay sonu raporu</span><span class="d dl">${dateLabel(r.m)}</span></button>`:'';
-  return `<div class="msq"><div class="sq">${STATS.map(tile2).join('')}</div><div class="sq">${evT}${rp}</div>${levers(1)}</div>${sheet()}`;
+  return `<div class="msq"><div class="sq two">${evT}${rp}</div>${levers(1)}</div>${sheet()}`;
+}
+function masa(){
+  return `<div class="msq"><div class="sq big">${STATS.map(tile2).join('')}</div></div>`;
 }
 function gunluk(){
   if(!S.log.length)return '<h2>Günlük</h2><p class="muted">Henüz karar yok.</p>';
@@ -706,8 +711,8 @@ function endScreen(){
   return `<div class="end"><div class="muted" style="font-family:var(--mono);font-size:12px">${dateLabel(S.month)} · ${S.term}. dönem</div><h1>${o.t}</h1><p>${o.x}</p>${o.p?`<div class="big">%${nf(o.p,1)}</div><div class="note">Kampanya etkisi: ${S.kamp>=0?'+':''}${nf(S.kamp||0,1)} puan</div>`:''}<div class="stats" style="margin-top:18px">${['enf','buy','isz','rez','des','huz'].map(k=>tile(STATS.find(s=>s.k===k))).join('')}</div><button class="btn" data-new="1">Yeni oyun başlat</button></div>`;
 }
 function diger(){return gunluk()+'<div class="panel" style="margin-top:14px"><button class="btn sec sm" data-new="1">'+(S.confirmNew?'Emin misin? Tekrar bas':'Yeni oyun')+'</button></div>'+kayit();}
-const V={masa,butce,vergi,kurum,meclis,kabine,diger};
-const GR=[['masa','Masa',['masa']],['eko','Ekonomi',['butce','vergi']],['sia','Siyaset',['meclis','kabine']],['dev','Devlet',['kurum']],['diger','Diğer',['diger']]],SUBN={masa:'Masa',butce:'Bütçe',vergi:'Vergi',kurum:'Kurum',meclis:'Meclis',kabine:'Kabine',diger:'Diğer'};
+const V={masa,karar,butce,vergi,kurum,meclis,kabine,diger};
+const GR=[['masa','Masa',['masa','karar']],['eko','Ekonomi',['butce','vergi']],['sia','Siyaset',['meclis','kabine']],['dev','Devlet',['kurum']],['diger','Diğer',['diger']]],SUBN={masa:'Göstergeler',karar:'Kararlar',butce:'Bütçe',vergi:'Vergi',kurum:'Kurum',meclis:'Meclis',kabine:'Kabine',diger:'Diğer'};
 const grp=()=>GR.find(g=>g[2].includes(V[S.tab]?S.tab:'masa'));
 const subbar=()=>{const g=grp();return g[2].length<2?'':'<div class="subtabs">'+g[2].map(k=>'<button class="bn2" aria-selected="'+(k===S.tab)+'" data-tab="'+k+'">'+SUBN[k]+'</button>').join('')+'</div>';};
 function render(){
@@ -725,7 +730,7 @@ function render(){
   app.innerHTML=`<header class="top"><div class="top-in"><div class="brand">Karar Masası<small>${dateLabel(S.month)} · ${S.term}. DÖNEM · SEÇİME ${TERM-S.month%TERM} AY</small></div>
   <div class="ss"><b>${a}</b><span>Siyasi Sermaye</span><div class="pips">${pips}</div></div></div></header>
   <div class="wrap"><main>${subbar()}${(V[S.tab]||masa)()}</main></div>
-  ${S.tab==='masa'||!V[S.tab]?`<div class="endbar"><div class="endbar-in"><span class="msg">${all?'Tüm kararlar verildi.':`${left} karar bekliyor.`}</span><button class="btn" data-end="1" ${all?'':'disabled'}>Ayı Bitir · ${dateLabel(S.month+1)}</button></div></div>`:''}
+  ${S.tab==='masa'||S.tab==='karar'||!V[S.tab]?`<div class="endbar"><div class="endbar-in"><span class="msg">${all?'Tüm kararlar verildi.':`${left} karar bekliyor.`}</span><button class="btn" data-end="1" ${all?'':'disabled'}>Ayı Bitir · ${dateLabel(S.month+1)}</button></div></div>`:''}
   <nav class="bnav" role="tablist">${GR.map(([id,n,ks])=>`<button class="bn" role="tab" aria-selected="${grp()[0]===id}" data-tab="${ks.includes(S.tab)?S.tab:ks[0]}">${n}</button>`).join('')}</nav>`;
 }
 document.addEventListener('click',ev=>{
