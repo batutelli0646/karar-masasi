@@ -100,7 +100,7 @@ h2{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.07e
 .step button:not(.btn):disabled{opacity:.35;cursor:not-allowed}
 .step .btn{height:42px}
 .step output{font-family:var(--mono);min-width:64px;text-align:center;font-size:13px}
-.rng{width:100%;accent-color:var(--accent);margin:6px 0 2px}.lever .rng{grid-column:1/-1}
+.rng{height:32px;width:100%;accent-color:var(--accent);margin:6px 0 2px}.lever .rng{grid-column:1/-1}
 .step output.chg{color:var(--accent);font-weight:500}
 .endbar{position:fixed;left:0;right:0;bottom:calc(52px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line);padding:8px 16px;z-index:6}
 .endbar-in{max-width:1180px;margin-inline:auto;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
@@ -108,7 +108,7 @@ h2{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.07e
 .btn{background:var(--accent);color:var(--accent-ink);border:0;padding:11px 22px;font-weight:600;letter-spacing:.04em;border-radius:2px;font-size:14px}
 .btn:disabled{background:var(--surface2);color:var(--muted);cursor:not-allowed}
 .btn.sec{background:transparent;color:var(--ink);border:1px solid var(--line)}
-.btn.sm{padding:6px 12px;font-size:12px}
+.btn.sm{padding:9px 12px;font-size:12px;min-height:38px}
 .grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
 .min{background:var(--surface);border:1px solid var(--line);padding:14px;min-width:0}
 .min .r{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
@@ -122,8 +122,8 @@ h2{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.07e
 .log{display:grid;gap:8px}
 .log .e{background:var(--surface);border:1px solid var(--line);padding:10px 14px}
 .log .e small{font-family:var(--mono);color:var(--muted);font-size:11px}
-.end{max-width:720px;margin:40px auto;background:var(--surface);border:1px solid var(--line);padding:28px}
-.end h1{font-family:var(--display);font-size:44px;line-height:1;margin:0 0 10px;text-transform:uppercase;letter-spacing:.04em}
+.end{max-width:720px;margin:24px auto;background:var(--surface);border:1px solid var(--line);padding:clamp(14px,5vw,28px)}
+.end h1{overflow-wrap:anywhere;font-family:var(--display);font-size:clamp(22px,7vw,44px);line-height:1;margin:0 0 10px;text-transform:uppercase;letter-spacing:.04em}
 .big{font-family:var(--mono);font-size:44px}
 .muted{color:var(--muted)}
 .note{font-size:12px;color:var(--muted);margin-top:8px}
