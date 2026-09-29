@@ -48,6 +48,7 @@ main{padding-block:18px}
 .sqt{aspect-ratio:1;background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--muted);padding:6px;min-width:0;display:flex;flex-direction:column;justify-content:space-between;text-align:left;overflow:hidden}
 .sqt.st4{aspect-ratio:1/.88}.sqt.good{border-top-color:var(--good)}.sqt.warn{border-top-color:var(--warn)}.sqt.bad{border-top-color:var(--bad)}.sqt.ev{border-top-color:var(--accent);cursor:pointer}.sqt.ev.done{opacity:.6}
 .sqt .l{font-size:10px;color:var(--muted);line-height:1.15}.sqt .v{font-size:17px;font-weight:600;line-height:1}.sqt .v small{font-size:9px;color:var(--muted);margin-left:1px}.sqt .t{font-size:10.5px;font-weight:600;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;word-break:break-word}.sqt .d{font-size:9px;line-height:1.1}
+.ch text{fill:var(--muted);font-size:9px}.ch line{stroke:var(--line)}.ch polyline{fill:none;stroke:var(--accent);stroke-width:2}.ch circle{fill:var(--accent)}
 .sheet{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center}.sheet-in{background:var(--bg);width:100%;max-width:560px;max-height:88vh;overflow:auto;padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));border-radius:8px 8px 0 0}
 .sq.big{grid-template-rows:repeat(4,1fr);height:calc(100dvh - 312px);min-height:380px}.sq.big .sqt,.sq.big .sqt.st4{aspect-ratio:auto;padding:9px}.big .l{font-size:12px}.big .v{font-size:20px;white-space:nowrap}.big .v small{font-size:11px}.big .d{font-size:11px}
 .sq.two{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.sq.two .sqt{aspect-ratio:1.45;padding:10px}.two .l{font-size:11px}.two .t{font-size:15px;-webkit-line-clamp:3}.two .d{font-size:11px}
@@ -682,9 +683,19 @@ function eventCard(e,i){
   return `<article class="card ${done?'done':''}"><div class="tag">${d.tag}${d.g==='later'?' · önceki kararının sonucu':''}</div><h3>${d.t}</h3><p>${T(d.x)}</p>${body}</article>`;
 }
 const SH={enf:'Enflasyon',buy:'Büyüme',isz:'İşsizlik',acik:'Açık/GSYH',borc:'Dış borç',cari:'Cari açık',rez:'Rezerv',kur:'Dolar',des:'Destek',par:'Parti',kol:'Koalisyon',ord:'Ordu',huz:'Huzur',bat:'Batı',dog:'Doğu',bol:'Bölge'};
-const tile2=s=>{const v=S[s.k],p=S.prev?S.prev[s.k]:v,dd=v-p;return `<div class="sqt st4 ${s.st(v)}"><span class="l">${SH[s.k]}</span><span class="v">${nf(v,s.d)}<small>${s.u==='mlr $'?'$':s.u}</small></span><span class="d dl ${dd>0?'up':'dn'}">${Math.abs(dd)<0.05?'&nbsp;':(dd>0?'▲ ':'▼ ')+nf(Math.abs(dd),s.d)}</span></div>`;};
+const tile2=s=>{const v=S[s.k],p=S.prev?S.prev[s.k]:v,dd=v-p;return `<button class="sqt st4 ${s.st(v)}" data-st="${s.k}"><span class="l">${SH[s.k]}</span><span class="v">${nf(v,s.d)}<small>${s.u==='mlr $'?'$':s.u}</small></span><span class="d dl ${dd>0?'up':'dn'}">${Math.abs(dd)<0.05?'&nbsp;':(dd>0?'▲ ':'▼ ')+nf(Math.abs(dd),s.d)}</span></button>`;};
+const chartSheet=k=>{
+  const s=STATS.find(x=>x.k===k),H=S.hist[k]||[],n=S.hr===undefined?10:S.hr,a=n?H.slice(-(n+1)):H,off=H.length-a.length,v=S[k],st=s.st(v),ix=st==='good'?0:st==='warn'?1:2,dm=m=>dateLabel(m).replace(/^(.{3})\S*/,'$1');
+  let g='<div class="note">Grafik için en az bir ay geçmesi gerekir.</div>',sm='';
+  if(a.length>1){
+    const mn=Math.min(...a),mx=Math.max(...a),pd=(mx-mn||1)*.12,lo=mn-pd,hi=mx+pd,X=i=>36+i/(a.length-1)*270,Y=y=>10+(1-(y-lo)/(hi-lo))*120,L=a.length-1;
+    g='<svg class="ch" viewBox="0 0 320 160">'+[mx,(mx+mn)/2,mn].map(y=>'<line x1="36" x2="310" y1="'+Y(y).toFixed(1)+'" y2="'+Y(y).toFixed(1)+'"/><text x="32" y="'+(Y(y)+3).toFixed(1)+'" text-anchor="end">'+nf(y,s.d)+'</text>').join('')+'<polyline points="'+a.map((y,i)=>X(i).toFixed(1)+','+Y(y).toFixed(1)).join(' ')+'"/>'+a.map((y,i)=>'<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(y).toFixed(1)+'" r="'+(i===L?4:2.2)+'"/>').join('')+[0,Math.round(L/2),L].map((i,j)=>'<text x="'+X(i).toFixed(1)+'" y="152" text-anchor="'+(j===0?'start':j===2?'end':'middle')+'">'+dm(off+i)+'</text>').join('')+'</svg>';
+    sm='<div class="chips"><span class="chip">Şimdi '+nf(v,s.d)+'</span><span class="chip">En düşük '+nf(mn,s.d)+'</span><span class="chip">En yüksek '+nf(mx,s.d)+'</span><span class="chip">Ortalama '+nf(a.reduce((p,c)=>p+c,0)/a.length,s.d)+'</span><span class="chip">Son ay '+(v-a[L-1]>=0?'+':'−')+nf(Math.abs(v-a[L-1]),s.d)+'</span></div>';}
+  return '<div class="card"><div class="tag">'+(a.length>1?a.length-1+' aylık geçmiş':'Geçmiş')+'</div><h3>'+s.l+'</h3><p style="margin:0 0 8px"><b style="font-size:22px">'+nf(v,s.d)+'</b> '+s.u+(s.lb[ix]?' · <span class="st '+st+'">'+s.lb[ix]+'</span>':'')+'</p>'+g+sm+'<div class="chips" style="margin-top:10px">'+[[10,'10 ay'],[24,'24 ay'],[0,'Tümü']].map(([q,t])=>'<button class="btn sm '+(n===q?'':'sec')+'" data-hr="'+q+'">'+t+'</button>').join('')+'</div></div>';
+};
 const sheet=()=>{const o=S.evo;if(o===null||o===undefined)return '';let b;
-  if(o==='r'){const r=S.report;if(!r)return '';b=`<div class="report"><h3>Ay Sonu Raporu · ${dateLabel(r.m)}</h3><ul>${r.h.map(x=>`<li>${x}</li>`).join('')}</ul>${r.carry?`<div class="note">Kullanmadığın ${r.carry} Siyasi Sermaye devredildi.</div>`:''}</div>`;}
+  if(typeof o==='string'&&o[0]==='s')b=chartSheet(o.slice(2));
+  else if(o==='r'){const r=S.report;if(!r)return '';b=`<div class="report"><h3>Ay Sonu Raporu · ${dateLabel(r.m)}</h3><ul>${r.h.map(x=>`<li>${x}</li>`).join('')}</ul>${r.carry?`<div class="note">Kullanmadığın ${r.carry} Siyasi Sermaye devredildi.</div>`:''}</div>`;}
   else if(S.cur.events[o])b=eventCard(S.cur.events[o],o);else return '';
   return `<div class="sheet"><div class="sheet-in">${b}<button class="btn sec" data-evx="1" style="width:100%">Kapat</button></div></div>`;};
 function karar(){
@@ -694,7 +705,7 @@ function karar(){
   return `<div class="msq"><div class="sq two">${evT}${rp}</div>${levers(1)}</div>${sheet()}`;
 }
 function masa(){
-  return `<div class="msq"><div class="sq big">${STATS.map(tile2).join('')}</div></div>`;
+  return `<div class="msq"><div class="sq big">${STATS.map(tile2).join('')}</div></div>${sheet()}`;
 }
 function gunluk(){
   if(!S.log.length)return '<h2>Günlük</h2><p class="muted">Henüz karar yok.</p>';
@@ -736,6 +747,8 @@ function render(){
 document.addEventListener('click',ev=>{
   if(ev.target.classList&&ev.target.classList.contains('sheet')){S.evo=null;return render();}
   const t=ev.target.closest('button');if(!t)return;
+  if(t.dataset.st){S.evo='s:'+t.dataset.st;return render();}
+  if(t.dataset.hr!==undefined){S.hr=+t.dataset.hr;save();return render();}
   if(t.dataset.evo!==undefined){S.evo=t.dataset.evo==='r'?'r':+t.dataset.evo;return render();}
   if(t.dataset.evx!==undefined){S.evo=null;return render();}
   if(t.dataset.ev!==undefined)return decide(+t.dataset.ev,+t.dataset.c);
