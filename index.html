@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#28597F">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Karar Masası</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tomorrow:wght@400;500;600;700;800&display=swap">
+<style>
+/* Düzen: üstte gösterge şeridi, altında karar kartları ve yan panelde politika kolları. Resmi dosya/dosya kapağı dili. */
+:root{
+  --bg:#E8ECEB; --surface:#F6F8F7; --surface2:#DDE3E2; --ink:#111B22; --muted:#56666E; --line:#C4CDCD;
+  --accent:#28597F; --accent-ink:#FFFFFF; --good:#1E7A4B; --warn:#A96B0C; --bad:#B02A30;
+  --display:'Tomorrow',system-ui,sans-serif;
+  --body:'Tomorrow',system-ui,sans-serif;
+  --mono:'Tomorrow',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0D1419; --surface:#141E25; --surface2:#1C2932; --ink:#E5ECEE; --muted:#8C9EA6; --line:#26353E;
+  --accent:#6DA9DA; --accent-ink:#0D1419; --good:#4CC38A; --warn:#E2B04B; --bad:#EA6660; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D1419; --surface:#141E25; --surface2:#1C2932; --ink:#E5ECEE; --muted:#8C9EA6; --line:#26353E;
+  --accent:#6DA9DA; --accent-ink:#0D1419; --good:#4CC38A; --warn:#E2B04B; --bad:#EA6660; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.5;padding-inline:16px;padding-block:0 140px}
+.wrap{max-width:1180px;margin-inline:auto}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding-block:12px;margin-inline:-16px;padding-inline:16px}
+.top-in{max-width:1180px;margin-inline:auto;display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;justify-content:space-between}
+.brand{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:.06em;text-transform:uppercase;line-height:1}
+.brand small{display:block;font-family:var(--mono);font-weight:400;font-size:11px;letter-spacing:.08em;color:var(--muted);margin-top:4px}
+.ss{display:flex;align-items:center;gap:10px}
+.ss b{font-family:var(--display);font-size:30px;line-height:1;font-weight:800}
+.ss span{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);max-width:90px;line-height:1.2}
+.pips{display:flex;gap:3px}
+.pip{width:7px;height:18px;background:var(--accent);border-radius:1px}
+.pip.off{background:var(--surface2)}
+.bnav{position:fixed;left:0;right:0;bottom:0;z-index:7;display:flex;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.bn{flex:1;min-width:0;height:52px;background:none;border:0;border-top:2px solid transparent;font-size:11px;font-weight:500;color:var(--muted)}
+.subtabs{display:flex;gap:6px;margin:14px 0 4px}.bn2{flex:1;height:40px;background:var(--surface);border:1px solid var(--line);border-radius:2px;font-weight:600;font-size:13px;color:var(--muted)}.bn2[aria-selected="true"]{color:var(--accent-ink);background:var(--accent);border-color:var(--accent)}
+.bn[aria-selected="true"]{color:var(--accent);border-top-color:var(--accent)}
+main{padding-block:18px}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:8px;margin-bottom:18px}
+.tile{background:var(--surface);border:1px solid var(--line);padding:10px 12px;min-width:0}
+.tile .lb{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);display:flex;justify-content:space-between;gap:6px}
+.tile .val{font-family:var(--mono);font-size:22px;font-weight:500;margin-top:2px;font-variant-numeric:tabular-nums}
+.tile .val small{font-size:12px;color:var(--muted);margin-left:2px}
+.tile .row{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:4px;min-height:20px}
+.dl{font-family:var(--mono);font-size:11px;font-variant-numeric:tabular-nums}
+.dl.up{color:var(--warn)} .dl.dn{color:var(--muted)}
+.st{font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:1px 6px;border-radius:2px;border:1px solid currentColor}
+.st.good{color:var(--good)} .st.warn{color:var(--warn)} .st.bad{color:var(--bad)}
+svg.sp{width:100%;height:20px;display:block;margin-top:6px}
+svg.sp polyline{fill:none;stroke:var(--accent);stroke-width:1.5;vector-effect:non-scaling-stroke}
+svg.sp circle{fill:var(--accent)}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;align-items:start}
+@media (max-width:900px){.cols{grid-template-columns:minmax(0,1fr)}}
+h2{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.07em;text-transform:uppercase;margin:0 0 10px}
+.report{background:var(--surface);border:1px solid var(--line);border-left:0;padding:14px 16px;margin-bottom:18px}
+.report h3{margin:0 0 8px;font-family:var(--display);font-size:17px;letter-spacing:.07em;text-transform:uppercase}
+.report ul{margin:0;padding-left:18px}
+.report li{margin-bottom:3px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font-family:var(--mono);font-size:11px;background:var(--surface2);padding:2px 7px;border-radius:2px}
+.card{background:var(--surface);border:1px solid var(--line);padding:16px;margin-bottom:14px}
+.card .tag{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--accent);text-transform:uppercase}
+.card h3{font-family:var(--display);font-size:24px;letter-spacing:.04em;text-transform:uppercase;margin:2px 0 6px;font-weight:700;text-wrap:balance}
+.card p{margin:0 0 12px;max-width:68ch}
+.card.done{opacity:.92}
+.choices{display:grid;gap:8px}
+.choice{text-align:left;background:var(--bg);border:1px solid var(--line);padding:10px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;border-radius:2px;width:100%}
+.choice:hover:not(:disabled){border-color:var(--accent)}
+.choice:disabled{opacity:.45;cursor:not-allowed}
+.choice b{font-weight:600}
+.choice span.d{grid-column:1;color:var(--muted);font-size:13px}
+.choice .cost{grid-row:1/3;grid-column:2;align-self:center;font-family:var(--mono);font-size:12px;border:1px solid var(--accent);color:var(--accent);padding:2px 8px;border-radius:2px;white-space:nowrap}
+.choice .cost.free{border-color:var(--line);color:var(--muted)}
+.outcome{border-top:1px dashed var(--line);padding-top:10px;margin-top:2px}
+.outcome .you{font-weight:600}
+.panel{background:var(--surface);border:1px solid var(--line);padding:14px;margin-bottom:14px}
+.lever{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding-block:9px;border-bottom:1px solid var(--line);align-items:center}
+.lever:last-child{border-bottom:0}
+.lever .n{font-weight:600}
+.lever .h{grid-column:1;font-size:12px;color:var(--muted)}
+.step{display:flex;align-items:center;gap:6px;grid-row:1/3;grid-column:2}
+.step button:not(.btn){width:42px;height:42px;border:1px solid var(--line);background:var(--bg);border-radius:2px;font-size:18px;line-height:1}
+.step button:not(.btn):hover:not(:disabled){border-color:var(--accent)}
+.step button:not(.btn):disabled{opacity:.35;cursor:not-allowed}
+.step .btn{height:42px}
+.step output{font-family:var(--mono);min-width:64px;text-align:center;font-size:13px}
+.rng{width:100%;accent-color:var(--accent);margin:6px 0 2px}.lever .rng{grid-column:1/-1}
+.step output.chg{color:var(--accent);font-weight:500}
+.endbar{position:fixed;left:0;right:0;bottom:calc(52px + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line);padding:8px 16px;z-index:6}
+.endbar-in{max-width:1180px;margin-inline:auto;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
+.endbar .msg{color:var(--muted);font-size:13px}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;padding:11px 22px;font-weight:600;letter-spacing:.04em;border-radius:2px;font-size:14px}
+.btn:disabled{background:var(--surface2);color:var(--muted);cursor:not-allowed}
+.btn.sec{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.sm{padding:6px 12px;font-size:12px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.min{background:var(--surface);border:1px solid var(--line);padding:14px;min-width:0}
+.min .r{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.min .nm{font-family:var(--display);font-size:22px;font-weight:700;letter-spacing:.03em;margin:2px 0}
+.bar{height:6px;background:var(--surface2);border-radius:1px;margin:6px 0 8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent)}
+.min .fx{font-size:12px;color:var(--muted);margin-bottom:10px}
+.fac{display:grid;gap:8px;margin-bottom:18px}
+.fac .f{display:grid;grid-template-columns:104px minmax(0,1fr) 84px;gap:10px;align-items:center;font-size:13px}
+.fac .bar{margin:0}
+.log{display:grid;gap:8px}
+.log .e{background:var(--surface);border:1px solid var(--line);padding:10px 14px}
+.log .e small{font-family:var(--mono);color:var(--muted);font-size:11px}
+.end{max-width:720px;margin:40px auto;background:var(--surface);border:1px solid var(--line);padding:28px}
+.end h1{font-family:var(--display);font-size:44px;line-height:1;margin:0 0 10px;text-transform:uppercase;letter-spacing:.04em}
+.big{font-family:var(--mono);font-size:44px}
+.muted{color:var(--muted)}
+.note{font-size:12px;color:var(--muted);margin-top:8px}
+@media (prefers-reduced-motion:no-preference){.card,.report{animation:in .25s ease-out}@keyframes in{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}}
+</style>
+
+<div id="app"></div>
+
+<script>
+/* ---------- Yardımcılar ---------- */
+const KEY='karar-masasi-v1';
+const MONTHS=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const nf=(v,d=1)=>Number(v).toLocaleString('tr-TR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const dateLabel=m=>{const t=9+m;return MONTHS[t%12]+' '+(2026+Math.floor(t/12));};
+const T=x=>typeof x==='function'?x():x;
+
+const STATS=[
+ {k:'enf',l:'Enflasyon',u:'%',d:1,st:v=>v<20?'good':v<45?'warn':'bad',low:1,lb:['Düşük','Yüksek','Kritik']},
+ {k:'buy',l:'Büyüme',u:'%',d:1,st:v=>v>=4?'good':v>=2?'warn':'bad',lb:['Güçlü','Zayıf','Daralma']},
+ {k:'isz',l:'İşsizlik',u:'%',d:1,st:v=>v<7?'good':v<11?'warn':'bad',low:1,lb:['Düşük','Yüksek','Kritik']},
+ {k:'acik',l:'Bütçe açığı / GSYH',u:'%',d:1,st:v=>v<3?'good':v<5.5?'warn':'bad',low:1,lb:['Dengeli','Sıkışık','Tehlike']},
+ {k:'borc',l:'Dış borç / GSYH',u:'%',d:1,st:v=>v<40?'good':v<60?'warn':'bad',low:1,lb:['Rahat','Yüksek','Tehlike']},
+ {k:'cari',l:'Cari açık',u:'mlr $',d:1,st:v=>v<20?'good':v<40?'warn':'bad',low:1,lb:['Rahat','Yüksek','Tehlike']},
+ {k:'rez',l:'Net rezerv',u:'mlr $',d:1,st:v=>v>=40?'good':v>=15?'warn':'bad',lb:['Güçlü','İnce','Alarm']},
+ {k:'kur',l:'Dolar / TL',u:'₺',d:2,st:()=>'warn',low:1,lb:['','Değer kaybı','']},
+ {k:'des',l:'Halk desteği',u:'%',d:1,st:v=>v>=45?'good':v>=32?'warn':'bad',lb:['Güçlü','Kırılgan','Kritik']},
+ {k:'par',l:'Parti içi birlik',u:'/10',d:1,st:v=>v>=7?'good':v>=4?'warn':'bad',lb:['Sağlam','Gergin','Yarılma']},
+ {k:'kol',l:'Koalisyon uyumu',u:'/10',d:1,st:v=>v>=7?'good':v>=4?'warn':'bad',lb:['Sağlam','Gergin','Kopuyor']},
+ {k:'ord',l:'Ordu memnuniyeti',u:'/10',d:1,st:v=>v>=7?'good':v>=4?'warn':'bad',lb:['Yüksek','Orta','Tehlike']},
+ {k:'huz',l:'Toplumsal huzur',u:'/10',d:1,st:v=>v>=7?'good':v>=4?'warn':'bad',lb:['Sakin','Gergin','Patlama']},
+ {k:'bat',l:'İtibar: Batı',u:'/10',d:1,st:v=>v>=7?'good':v>=4?'warn':'bad',lb:['İyi','Soğuk','Kopuk']},
+ {k:'dog',l:'İtibar: Doğu',u:'/10',d:1,st:v=>v>=7?'good':v>=4?'warn':'bad',lb:['İyi','Soğuk','Kopuk']},
+ {k:'bol',l:'İtibar: Bölge',u:'/10',d:1,st:v=>v>=7?'good':v>=4?'warn':'bad',lb:['İyi','Soğuk','Kopuk']}
+];
+const RANGE={enf:[2,300],buy:[-12,12],isz:[3,40],acik:[-2,20],borc:[10,150],cari:[2,90],rez:[-5,120],kur:[10,500],des:[0,100],par:[0,10],kol:[0,10],ord:[0,10],huz:[0,10],bat:[0,10],dog:[0,10],bol:[0,10],kamp:[-10,12]};
+const LVR={faiz:[-10,500,5]};
+const TERM=60,BAR=7;
+/* Bakanlık: [anahtar, ad, taban bütçe (GSYH %), 100% artışın aylık etkisi] */
+const MIN=[['egit','Milli Eğitim',3.2,{buy:.5,des:.3,huz:.3}],['saglik','Sağlık',2.4,{des:.5,huz:.3}],['calisma','Çalışma ve Sosyal Güvenlik',5,{des:.6,huz:.4,enf:.1}],['aile','Aile ve Sosyal Hizmetler',.9,{des:.4,huz:.5}],['sav','Milli Savunma',2.1,{ord:.14,cari:.03}],['ic','İçişleri',1.8,{huz:.6,des:.1}],['adalet','Adalet',.6,{bat:.5,des:.2,huz:.2}],['dis','Dışişleri',.2,{bat:.5,dog:.5,bol:.6}],['maliye','Hazine ve Maliye',2.5,{acik:-.4}],['tarim','Tarım ve Orman',.9,{enf:-.08,des:.2,cari:-.06}],['ulas','Ulaştırma ve Altyapı',1.8,{buy:.4,des:.2}],['enerji','Enerji ve Tabii Kaynaklar',.8,{cari:-.12,enf:-.08}],['sanayi','Sanayi ve Teknoloji',.7,{buy:.5,cari:-.1}],['ticaret','Ticaret',.2,{cari:-.1,enf:-.08}],['cevre','Çevre, Şehircilik ve İklim',1,{huz:.3,des:.3,buy:.2}],['genc','Gençlik ve Spor',.3,{des:.4,huz:.3}],['kultur','Kültür ve Turizm',.3,{cari:-.08,bat:.2}],['diyanet','Diyanet İşleri Başkanlığı',.3,{des:.1,huz:.1},1],['mit','Millî İstihbarat Teşkilatı',.1,{huz:.3,ord:.05},1],['afad','AFAD',.2,{huz:.3,des:.2},1],['ssb','Savunma Sanayii Başkanlığı',.4,{buy:.2,ord:.1,cari:-.05},1],['tubitak','TÜBİTAK',.1,{buy:.3,cari:-.05},1]];
+const MB=Object.fromEntries(MIN.map(m=>[m[0],m[2]]));
+/* Vergi: [anahtar, ad, tür (2 = mevcut vergi, 1 = yeni/ek vergi), toplam gelir (GSYH %, referans oranda), 10 puanlık %10 değişimin aylık etkisi, referans oran %] */
+const TAX=[['kdv','KDV',2,5.5,{enf:0.2,des:-0.12,buy:-0.04},20],['otvyakit','ÖTV (akaryakıt)',2,1.5,{enf:0.15,des:-0.08,cari:-0.03},50],['otvoto','ÖTV (otomobil)',2,0.6,{des:-0.03,buy:-0.02},60],['otvtutun','ÖTV (tütün, alkol)',2,1,{des:-0.04,enf:0.05},60],['gelir','Gelir vergisi',2,4,{des:-0.15,buy:-0.04},27],['kurum','Kurumlar vergisi',2,2.5,{buy:-0.1,des:-0.04},25],['stopaj','Stopaj (menkul sermaye)',2,0.8,{buy:-0.03,rez:-0.03},10],['damga','Damga vergisi',2,0.5,{des:-0.03},0.9],['harc','Harçlar',2,0.5,{des:-0.03},5],['gumruk','Gümrük vergisi',2,0.7,{enf:0.05,cari:-0.05,bat:-0.02},5],['mtv','Motorlu Taşıtlar Vergisi',2,0.3,{des:-0.03},10],['emlak','Emlak vergisi',2,0.3,{des:-0.03,huz:-0.01},0.2],['veraset','Veraset ve intikal vergisi',2,0.1,{des:-0.01},5],['bsmv','BSMV (banka ve sigorta işlemleri)',2,0.3,{buy:-0.02},5],['iletisim','Özel iletişim vergisi',2,0.2,{des:-0.02},7.5],['lux','Lüks tüketim vergisi',1,0.25,{des:0.05,cari:-0.05},10],['banka','Bankalar ek vergisi',1,0.3,{des:0.08,buy:-0.04,bat:-0.02},5],['servet','Servet vergisi',1,0.35,{des:0.06,rez:-0.1,par:-0.03},1],['karbon','Karbon vergisi',1,0.25,{bat:0.04,buy:-0.06,des:-0.06},10],['tutun','Tütün, şeker, alkol ek vergisi',1,0.2,{des:-0.06},10],['dijital','Dijital hizmet vergisi',1,0.15,{bat:-0.05,des:-0.02},5],['kripto','Kripto işlem vergisi',1,0.1,{},1],['fazlakar','Fazla kâr vergisi',1,0.3,{des:0.05,buy:-0.05,bat:-0.02},10],['seker','Şeker ve tatlandırıcı vergisi',1,0.05,{des:-0.02},10],['ambalaj','Plastik ambalaj çevre vergisi',1,0.05,{bat:0.02,des:-0.01},10]];
+const PK=['AKP','CHP','MHP','IYI','DEM','YRP'];
+/* Gerçek partiler; liderler kurgusaldır. x: ideolojik eksen (−1 sol, +1 sağ), w: taban oy ağırlığı, want: istediği bakanlıklar */
+const PART={AKP:{n:'AK Parti',x:.6,w:35,lead:'Kerem Aslanoğlu',want:['maliye','ic','dis','sav','ulas']},CHP:{n:'CHP',x:-.4,w:25,lead:'Deniz Yaltırık',want:['adalet','egit','saglik','calisma','cevre']},MHP:{n:'MHP',x:.8,w:10,lead:'Hakan Bozkurt',want:['ic','sav','dis','adalet','tarim']},IYI:{n:'İYİ Parti',x:.5,w:9,lead:'Nermin Karaca',want:['dis','sav','egit','sanayi','ic']},DEM:{n:'DEM Parti',x:-.7,w:9,lead:'Cemal Erdem',want:['kultur','egit','aile','cevre','calisma']},YRP:{n:'Yeniden Refah',x:.7,w:4,lead:'Osman Tekin',want:['calisma','aile','saglik','ticaret','enerji']}};
+/* Yasa: [anahtar, ad, SS, gereken oy, muhalefetin destek eğilimi, açıklama, etki] */
+const LAWS=[['vergiref','Vergi Reformu Yasası',3,301,.3,'Vergi sistemi sadeleşir, kayıt dışı azalır.',{acik:-.6,bat:.5,des:-.8}],['emekli','Emeklilik Yaşı Yasası',3,301,.2,'Emeklilik yaşı yükselir, sosyal güvenlik yükü hafifler.',{acik:-.4,des:-1.2,huz:-.3}],['yardim','Sosyal Yardım Yasası',3,301,.7,'Dar gelirlilere düzenli nakit destek.',{des:1.5,huz:.5,acik:.4}],['kira','Kira Düzenleme Yasası',3,301,.6,'Kira artışına tavan getirir.',{des:1.5,huz:.5,buy:-.2}],['calisma','Esnek Çalışma Yasası',3,301,.2,'İşverene esneklik, sendikalara tepki.',{buy:.3,isz:-.4,des:-1,huz:-.5}],['yerli','Yerli Üretim Teşvik Yasası',3,301,.5,'İthal girdi yerine yerli üretim teşviki.',{buy:.4,cari:-1,acik:.3,bat:-.2}],['medya','Medya Düzenleme Yasası',3,301,.1,'Yayın ve internet düzenlemesi.',{des:.3,bat:-1,huz:-.4}],['af','Af Yasası',3,301,.3,'Bazı suçlar için af çıkarır.',{des:-1,huz:-.3,kol:.3}],['askerlik','Askerlik Yasası',3,301,.6,'Askerlik süresi kısalır.',{des:1,ord:-.5}],['kadin','Kadın ve Çocuk Koruma Yasası',3,301,.8,'Şiddete karşı koruma güçlenir.',{des:1.2,bat:.6,huz:.4}],['ihale','Kamu İhale Yasası',3,301,.6,'Şeffaf ihale sistemi kurar.',{bat:.6,des:.5,par:-.3}],['yargi','Yargı Bağımsızlığı Yasası',3,301,.5,'Yargıda bağımsızlık güvencesi getirir.',{bat:1.2,des:.3,par:-.5}],['baraj','Seçim Barajı Düzenlemesi',3,301,.4,'Baraj %7\'den %5\'e iner.',{par:.3,kol:.5}],['anayasa','Yeni Anayasa',5,360,.2,'Yönetim sistemini yeniden düzenler. 360 oy gerekir.',{des:-1,par:.5,bat:-.5}]];
+/* Vaat: [anahtar, metin, sağlandı mı?] */
+const VAAT=[['enf','Enflasyonu %25\'in altına indireceğim',()=>S.enf<25],['isz','İşsizliği %7\'nin altına çekeceğim',()=>S.isz<7],['buy','Ekonomiyi %4 büyüteceğim',()=>S.buy>=4],['acik','Bütçe açığını %3\'ün altına indireceğim',()=>S.acik<3],['kur','Doları 60 TL\'nin altında tutacağım',()=>S.kur<60],['rez','Rezervleri 50 milyar dolara çıkaracağım',()=>S.rez>=50],['huz','Toplumsal huzuru 7/10\'a çıkaracağım',()=>S.huz>=7],['vergi','Vergi yükünü azaltacağım',()=>eco().rev<0],['egit','Eğitim bütçesini %25 artıracağım',()=>S.bud.egit>=MB.egit*1.25],['saglik','Sağlık bütçesini %25 artıracağım',()=>S.bud.saglik>=MB.saglik*1.25],['sav','Savunmayı GSYH\'nin %3\'üne çıkaracağım',()=>S.bud.sav>=3],['anayasa','Yeni anayasayı çıkaracağım',()=>!!S.laws.anayasa],['kira','Kira düzenlemesini yasalaştıracağım',()=>!!S.laws.kira]];
+
+const NAMES1=['Emre','Ayşe','Murat','Zeynep','Burak','Deniz','Gökhan','Selin','Tarık','Aylin','Onur','Nazlı','Barış','Melis','Yiğit','Sevgi'];
+const NAMES2=['Karaca','Demirtaş','Erol','Yıldırım','Akbulut','Sezer','Tuna','Kaplan','Bayram','Özkan','Çelik','Aydemir','Türker','Gündoğdu','Polat','Somer'];
+const ROLES={maliye:['Maliye Bakanı','Kur baskısı'],ic:['İçişleri Bakanı','Toplumsal huzur'],dis:['Dışişleri Bakanı','İtibar'],sav:['Milli Savunma Bakanı','Ordu memnuniyeti'],mb:['Merkez Bankası Başkanı','Enflasyon']};
+
+/* ---------- Durum ---------- */
+let S=null;
+function newGame(){
+  S={month:0,pool:10,tab:'masa',me:'AKP',pick:true,
+   enf:48,buy:2.8,isz:9.2,acik:4.6,borc:48,cari:34,rez:22,kur:46,des:41,par:6,kol:6,ord:6,huz:5,bat:5,dog:5,bol:6,
+   lv:{faiz:45},lv0:{faiz:45},
+   fac:{R:35,G:40,S:25},
+   M:{maliye:{name:'Selim Arda',sk:7,note:'Teknokrat, disiplinli, popülist harcamaya karşı'},ic:{name:'Kemal Yüce',sk:7,note:'Sert, güvenlik odaklı, emniyette güçlü'},dis:{name:'Leyla Aksoy',sk:7,note:'Deneyimli diplomat, dengeci'},sav:{name:'Cevdet Tamer',sk:8,note:'Orgeneral (E), yerli üretim savunucusu'},mb:{name:'Prof. Nihat Erdem',sk:7,note:'Bağımsızlıktan yana, faiz indirimine temkinli'}},
+   used:[],sched:[],hist:{},log:[],cur:{events:[],spent:0},prev:null,report:null,over:null,confirm:null,flags:{},kamp:0};
+  ensure();STATS.forEach(s=>S.hist[s.k]=[S[s.k]]);
+  S.prev=snap();
+  genEvents(['e_rez','i_sendika','d_multeci']);
+  save();
+}
+const snap=()=>{const o={};STATS.forEach(s=>o[s.k]=S[s.k]);return o;};
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function load(){try{const r=localStorage.getItem(KEY);if(r){S=JSON.parse(r);ensure();return true;}}catch(e){}return false;}
+function ensure(){
+  S.kamp=S.kamp||0;S.bud=S.bud||{};S.tax=S.tax||{};S.laws=S.laws||{};S.lawT=S.lawT||{};S.prom=S.prom||[];S.term=S.term||1;S.own=S.own||{};S.gdp=S.gdp||1350;
+  MIN.forEach(m=>{if(S.bud[m[0]]===undefined)S.bud[m[0]]=m[2];if(!m[4]&&!S.M[m[0]])S.M[m[0]]=newM();});
+  S.ui=S.ui||{};S.cool=S.cool||{};S.loans=S.loans||[];S.pens=S.pens||17.2;S.minw=S.minw||28075;if(S.wage===undefined)S.wage=null;
+  if(!S.taxv){const o=S.tax;S.tax={};TAX.forEach(t=>{const v=o[t[0]]||0;S.tax[t[0]]=t[2]===1?(v>0?t[5]:0):t[5]*(1+.1*v);});S.taxv=1;}
+  TAX.forEach(t=>{if(S.tax[t[0]]===undefined)S.tax[t[0]]=t[2]===1?0:t[5];});
+  S.lv={faiz:S.lv.faiz};S.lv0={faiz:S.lv0.faiz};
+  if(!S.me||(S.seats&&S.seats.A!==undefined)){S.me='AKP';S.seats=null;S.coal=[];S.own={};}
+  if(!S.seats)initGov();
+}
+const levCost=()=>Object.keys(S.lv).filter(k=>S.lv[k]!==S.lv0[k]).length;
+const avail=()=>S.pool-S.cur.spent-levCost();
+const M=new Proxy({},{get:(_,k)=>S.M[k]});
+
+/* ---------- Olay verisi ---------- */
+const ch=(l,ss,d,fx,m,x)=>Object.assign({l,ss,d,fx:fx||{},m:m||''},x||{});
+const EV=[
+/* EKONOMİ */
+{id:'e_rez',g:'eko',tag:'Ekonomi',t:'Rezervler Eriyor',x:()=>`Merkez Bankası'nın net rezervi ${nf(S.rez,1)} milyar dolara geriledi. ${M.maliye.name} acil toplantı istiyor: "Ya sıkılaşma ya dışarıdan finansman. Bekleyemeyiz."`,c:[ ch('Sıkılaşma paketi',3,'Vergi artışı ve harcama kesintisi. Enflasyon düşer, halk tepki gösterir.',{enf:-1.2,acik:-0.8,rez:2,des:-3,huz:-1,isz:0.4,par:-0.5,lv:{vergi:1}},'Paket Meclis\'ten geçti. Piyasalar olumlu karşıladı, sokaklar sessiz kalmadı.'), ch('Körfez ve Çin ile swap görüşmesi',2,'Rezerv rahatlar, dış politikada bağımlılık riski doğar.',{rez:9,kur:-2,borc:1.5,dog:1,bat:-0.5,bol:0.5},'Swap hatları açıldı ama şartlar henüz kamuoyuna anlatılmadı.',{later:[{m:2,id:'l_swap'}]}), ch('IMF ile temasa geç',4,'Piyasa güveni artar. Parti içi ve sokakta büyük tepki olur.',{rez:12,kur:-4,enf:-1,borc:2,bat:1.5,dog:-0.5,des:-4,par:-1,fG:-8,fR:5},'IMF heyeti Ankara\'da. Gelenekçi kanat "egemenlik" diyerek ayağa kalktı.',{later:[{m:3,id:'l_imf'}]}), ch('Faizi sabit tut, kuru kontrollü serbest bırak',1,'Riskli bir kumar. Kur ya oturur ya sıçrar.',{},'',{fn:()=>Math.random()<0.4?{fx:{kur:2,rez:1,des:0.5},msg:'Piyasa sakin karşıladı, kur kontrollü kaldı.'}:{fx:{kur:9,enf:2,rez:-3,des:-2,huz:-0.5},msg:'Kur sıçradı. Ertesi gün borsa sert düştü.',later:[{m:1,id:'l_kur'}]}}) ]},
+{id:'e_enerji',g:'eko',tag:'Ekonomi · Enerji',t:'Enerji Fiyatları Fırladı',x:()=>`Petrol varil başına 104 dolara çıktı, doğalgaz spot fiyatları kış öncesi yükseliyor. BOTAŞ zarar yazıyor, ${M.maliye.name} "bu fatura bütçeye sığmaz" diyor.`,c:[ ch('Faturaları sübvanse et',2,'BOTAŞ\'a bütçeden kaynak aktarılır. Fatura sabit kalır.',{acik:0.6,enf:-0.4,des:1,huz:0.2},'Faturalar sabit kaldı. Bütçe açığı biraz büyüdü.'), ch('Zammı tüketiciye yansıt',1,'Bütçe rahatlar, hane bütçeleri sıkışır.',{enf:1.8,des:-2.5,huz:-0.5,acik:-0.2},'Elektrik ve doğalgaza zam geldi. Sosyal medyada tepki büyüdü.'), ch('Uzun vadeli doğalgaz anlaşması',3,'Azerbaycan, Rusya ve Katar arasında dengeli tedarik.',{cari:-1.5,dog:0.5,bat:-0.3,bol:0.3,acik:0.2},'On yıllık tedarik sözleşmeleri imzalandı. Enerji arzı güvenceye alındı.'), ch('Yenilenebilir ve nükleer teşvik paketi',3,'Uzun vadeli çözüm, kısa vadede maliyetli.',{acik:0.4,cari:-2,buy:0.2,des:0.5},'Teşvik paketi yatırımcı ilgisi çekti. Etkisi yıllar içinde görünecek.') ]},
+{id:'e_banka',g:'eko',tag:'Ekonomi · Finans',t:'Orta Boy Banka Batıyor',x:()=>`Mevduatın yaklaşık %6\'sını tutan özel bir banka sermaye yetersizliği bildirdi. Mevduat sahipleri şubelere gidiyor. Merkez Bankası Başkanı ${M.mb.name} müdahale bekliyor.`,c:[ ch('TMSF\'ye devret, mevduatı garanti et',3,'Panik durur, maliyet devlete yazılır.',{acik:0.7,borc:0.8,des:1,rez:-1},'Mevduatlar garanti altına alındı. Kuyruklar dağıldı.'), ch('Kamu bankalarına devrettir',2,'Hızlı çözüm, kamu bilançosuna yük.',{acik:0.3,enf:0.3,bat:-0.3,par:0.3},'Banka kamu bankalarınca devralındı. Muhalefet "kayırma" dedi.'), ch('Batmasına izin ver',1,'Piyasa disiplini, ama yayılma riski.',{isz:0.6,des:-3,kur:5,rez:-2,bat:0.3},'Banka kapandı. Yayılma korkusuyla kur yükseldi.'), ch('Yabancı ortak bul',2,'Batılı bir fon sermaye koyar, yönetim payı ister.',{bat:0.8,dog:-0.2,rez:3,des:-0.5,fG:-3},'Yabancı ortak bulundu. Gelenekçiler "yabancıya satış" diye eleştirdi.') ]},
+{id:'e_reyting',g:'eko',tag:'Ekonomi · Piyasa',t:'Kredi Derecelendirme Uyarısı',x:()=>`Büyük bir derecelendirme kuruluşu görünümü negatife çekmekle tehdit ediyor. Yabancı yatırımcının tahvil pozisyonları izleniyor.`,c:[ ch('Orta vadeli disiplin programı açıkla',2,'Bütçe hedeflerini kamuoyuyla paylaş.',{acik:-0.6,bat:0.8,des:-1,huz:-0.2},'Program duyuruldu. Kurum uyarısını erteledi.'), ch('Yatırımcı turu (roadshow)',1,'Bakanlar dünya finans merkezlerinde sunum yapar.',{bat:0.5,rez:2,kur:-1},'Turdan olumlu mesajlar geldi. Somut sonuç sınırlı.'), ch('Ulusal irade söylemine yaslan',0,'Kuruma sert yanıt ver, iç kamuoyunu toparla.',{des:1,bat:-1,rez:-3,kur:3},'Söylem sokakta karşılık buldu. Piyasa aynı şekilde tepki vermedi.') ]},
+{id:'e_ihracat',g:'eko',tag:'Ekonomi · Sanayi',t:'İhracatçılar Sıkıştı',x:()=>`Reel değerlenen kur ve pahalı kredi yüzünden ihracat siparişleri düşüyor. Sanayi odaları acil paket istiyor, bazı organize sanayi bölgelerinde vardiyalar kısıldı.`,c:[ ch('Düşük faizli Eximbank kredisi',2,'İhracatçıya ucuz kaynak.',{buy:0.4,acik:0.3,isz:-0.3,des:1,enf:0.2},'Kredi paketi devreye girdi. Siparişler toparlanıyor.'), ch('Vergi indirimi',3,'Kurumlar vergisinde geçici indirim.',{acik:0.7,buy:0.3,des:1,par:0.3},'İndirim geçti. Sanayiciler memnun, Maliye endişeli.'), ch('Yeni pazarlar için ticaret heyetleri',2,'Afrika, Körfez, Orta Asya.',{cari:-2,dog:0.7,buy:0.2,bol:0.3},'Heyetler yola çıktı. İlk anlaşmalar aylar içinde gelecek.'), ch('Piyasaya bırak',0,'Müdahale etme.',{buy:-0.4,isz:0.4,des:-1.5},'Sanayi odaları hükümeti "ilgisizlikle" suçladı.') ]},
+{id:'e_tarim',g:'eko',tag:'Ekonomi · Tarım',t:'Kuraklık Hasadı Vurdu',x:()=>`İç Anadolu'da rekolte %20 düştü. Buğday fiyatları yükseliyor, çiftçi kooperatifleri devlet desteği bekliyor.`,c:[ ch('Çiftçiye doğrudan destek',2,'Nakit yardım ve mazot desteği.',{acik:0.4,des:1.5,huz:0.3,enf:0.1},'Destek ödemeleri başladı. Kırsalda memnuniyet arttı.'), ch('Buğday ithalatı, gümrük indirimi',1,'Fiyat baskısını kırar, döviz harcatır.',{cari:1.2,enf:-0.6,des:-0.5},'İthalat gemileri limana yanaştı. Ekmek fiyatı sabit kaldı.'), ch('Uzun vadeli sulama yatırımı',3,'Kalıcı çözüm, kısa vadede maliyet.',{acik:0.3,buy:0.2,des:0.5,huz:0.3},'Sulama projeleri ihaleye çıktı.'), ch('Yardım kampanyası başlat',1,'Sivil toplumla birlikte gıda yardımı.',{des:0.5,huz:0.2},'Kampanya kısa vadede rahatlattı.') ]},
+{id:'e_borsa',g:'eko',tag:'Ekonomi · Piyasa',t:'Piyasalarda Panik',cond:()=>S.kur>52||S.rez<15,x:()=>`Risk primi (CDS) sıçradı, yabancı çıkışı hızlandı. Kur ${nf(S.kur,2)}, rezerv ${nf(S.rez,1)} milyar dolar. Ekranlar kırmızı.`,c:[ ch('Sürpriz faiz artırımı',2,'Politika faizi 5 puan artar.',{rez:3,kur:-3,buy:-0.3,des:-1,lv:{faiz:5}},'Merkez Bankası sürpriz kararla faizi artırdı. Kur geriledi.'), ch('Sermaye kontrolleri',4,'Kur baskısı azalır, itibar zedelenir.',{kur:-5,rez:5,bat:-2,par:-0.5,des:-1},'Yeni düzenlemeler yürürlüğe girdi. Yabancı fonlar tepki gösterdi.'), ch('Rezervden döviz sat',1,'Kuru tutmaya çalış.',{rez:-6,kur:-4},'Bankalar dövizi satış ekranından çekti. Rezerv 6 milyar dolar eridi.'), ch('Sakinlik mesajı ver',1,'Sadece sözle güven vermeye çalış.',{},'',{fn:()=>Math.random()<0.4?{fx:{kur:-2},msg:'Mesaj işe yaradı. Kur bir miktar geriledi.'}:{fx:{kur:7,rez:-3,des:-2},msg:'Mesaj piyasada karşılık bulmadı. Kur sıçradı.'}}) ]},
+{id:'e_turizm',g:'eko',tag:'Ekonomi · Turizm',t:'Rekor Turizm Sezonu Fırsatı',x:()=>`Yaz rezervasyonları rekor seviyede. Turizm sektörü ek destek ve kolaylık istiyor. Döviz girişi için önemli bir fırsat.`,c:[ ch('Tanıtım ve promosyon fonu',2,'Erken rezervasyon kampanyası.',{cari:-3,buy:0.3,isz:-0.3,acik:0.2},'Kampanya başladı. Rezervasyonlar arttı.'), ch('Vize kolaylığı',1,'Bazı ülkelere vizesiz giriş.',{cari:-2,bat:0.3,dog:0.5,huz:-0.2},'Vizeler kalktı. Turist sayısı yükselişte.'), ch('Kıyı yatırım teşvik affı',2,'İmar konusunda esneklik.',{cari:-2,des:-0.5,huz:-0.2,par:0.3},'İmar esnekliği yatırımcıyı sevindirdi, çevreciler eleştirdi.') ]},
+{id:'e_kayitdisi',g:'eko',tag:'Ekonomi · Maliye',t:'Kayıt Dışı Ekonomi',x:()=>`Vergi gelirleri hedefin gerisinde. ${M.maliye.name} kayıt dışılıkla mücadele planı sunuyor.`,c:[ ch('Sert denetim kampanyası',3,'Ciddi kaynak yaratır, esnafı kızdırır.',{acik:-0.8,des:-1,huz:-0.3},'Denetimler başladı. Esnaf odaları itiraz etti.'), ch('Vergi barışı',1,'Geçmiş borçlara af, yeni kayıt karşılığı.',{acik:-0.3,rez:0,des:0.5,bat:-0.2},'Af çıktı. Bir miktar gelir toplandı.'), ch('Dijital takip sistemi',2,'Fatura ve POS entegrasyonu.',{acik:-0.5,buy:-0.1,des:-0.3},'Sistem devrede. Sonuçlar birkaç ay sonra görünür.') ]},
+{id:'e_yatirim',g:'eko',tag:'Ekonomi · Yatırım',t:'Dev Fabrika Yatırım Teklifi',x:()=>`Uluslararası bir üretici, yarı iletken ve otomotiv fabrikası için ülkeye 6 milyar dolarlık yatırım teklif etti. Talepleri: arazi, teşvik, enerji garantisi.`,c:[ ch('Batılı üreticiyi seç',3,'Teknoloji transferi, Batı ile bağ güçlenir.',{bat:1,buy:0.3,rez:3,dog:-0.3},'Yatırım imzalandı. Bölgede on binlerce istihdam bekleniyor.'), ch('Doğulu üreticiyi seç',3,'Daha cömert teşvik, jeopolitik ağırlık.',{dog:1,buy:0.3,rez:3,bat:-0.5},'Yatırım imzalandı. Batı başkentleri temkinli yorum yaptı.'), ch('Yerli ortaklıkla koşullu kabul',2,'Yerli sanayiye pay şartı.',{buy:0.2,rez:1,par:0.3},'Yerli ortaklık şartı kabul edildi ama yatırım küçüldü.'), ch('Reddet',0,'Şartlar ağır.',{des:-0.5,isz:0.1},'Fabrika başka ülkeye gitti.') ]},
+/* İÇ SİYASET / GÜVENLİK */
+{id:'i_sendika',g:'ic',tag:'İç siyaset · Emek',t:'Sendikalar Ültimatom Verdi',x:()=>`Sendikalar asgari ücret için 15 günlük süre verdi. Aksi halde büyük yürüyüş ve iş bırakma. ${M.ic.name} "gerekirse yasaklarız" diyor.`,c:[ ch('Masaya otur, kısmi ara zam ver',2,'Bütçeye yük, huzur getirir.',{acik:0.5,enf:0.5,des:2,huz:1,par:0.3},'Ara zam kararlaştırıldı. Sendikalar eylemi erteledi.'), ch('Taviz verme, eylemleri sınırla',1,'Kısa vadede kontrol, uzun vadede öfke.',{huz:-1.5,des:-1.5,par:0.3},'Yürüyüşler kısıtlandı. Öfke birikiyor.',{later:[{m:2,id:'l_greve'}]}), ch('Doğrudan halka seslen',1,'Karizma testi. Başarı desteğe bağlı.',{},'',{fn:()=>Math.random()<0.3+S.des/100?{fx:{des:2.5,huz:0.5},msg:'Konuşma karşılık buldu. Sendikalar tonu düşürdü.'}:{fx:{des:-1,huz:-0.5},msg:'Konuşma soğuk karşılandı. "Fedakârlık" sözü tepki çekti.'}}) ]},
+{id:'i_skandal',g:'ic',tag:'İç siyaset · Yolsuzluk',t:'Bakan Hakkında Yolsuzluk İddiası',x:()=>`Bir gazete, ${M.maliye.name}'in yakınlarının kamu ihalelerinden pay aldığını yazdı. Muhalefet meclis araştırması istiyor, koalisyon ortağı sessiz.`,c:[ ch('Bakanı savun',2,'Bakanın yanında dur. Kısa vadede birlik, uzun vadede risk.',{des:-2,par:0.3,huz:-0.3},'Bakan yerinde kaldı. İddialar sönmedi.',{later:[{m:3,id:'l_skandal'}]}), ch('İstifa ettir',1,'Hızlı sonuç, hizip içi hesaplaşma.',{des:0.5,par:-0.5,huz:0.3},'Bakan istifa etti. Muhalefet "geç kalındı" dedi.'), ch('Bağımsız soruşturma aç',3,'Şeffaflık, ama beklenmedik sonuç riski.',{des:1.5,par:-0.7,bat:0.5,huz:0.3},'Soruşturma başladı. Hükümet "hesap vermekten çekinmiyor" imajı verdi.'), ch('Medya ambargosu',2,'Haberi bastır.',{des:-1,bat:-0.8,huz:-0.3},'Ambargo geldi. Sosyal medyada konu daha da büyüdü.') ]},
+{id:'i_koalisyon',g:'ic',tag:'İç siyaset · Koalisyon',t:'Ortağın Yeni Talepleri',cond:()=>S.coal.length>0,x:()=>`${(PART[S.coal[0]]||PART[best()]).n} lideri ${(PART[S.coal[0]]||PART[best()]).lead} iki bakanlık ve belediye kadrolarında pay istiyor. "Kabul edilmezse güvenoyunu yeniden düşünürüz" diyor.`,c:[ ch('Talepleri kabul et',2,'Koalisyon sağlam kalır, parti içinden tepki gelir.',{kol:2,par:-0.8,des:-0.5},'İki bakanlık el değiştirdi. Koalisyon rahatladı, parti içi hoşnutsuz.'), ch('Pazarlığa gir',1,'Kısmi taviz ver.',{},'',{fn:()=>Math.random()<0.55?{fx:{kol:1,par:-0.2},msg:'Orta yol bulundu. Ortak lider yumuşadı.'}:{fx:{kol:-0.5,des:-0.5},msg:'Pazarlık tıkandı. Ortak lider "sabrımız tükeniyor" dedi.'}}), ch('Reddet',1,'Otoriteni göster.',{kol:-2,par:0.5,des:0.5},'Ret yanıtı geldi. Ortak lider hükümete mesafe koydu.'), ch('Muhalefetle gizli temas',3,'Riskli yedek plan.',{kol:-1,par:-0.5},'',{fn:()=>Math.random()<0.5?{fx:{kol:-1,des:1,par:-0.3},msg:'Görüşmeler kapalı kapılar ardında ilerledi. Ortak lider bunu öğrendi ve öfkelendi.'}:{fx:{kol:-2,des:-2,par:-0.5},msg:'Görüşme basına sızdı. Skandal büyüdü.'}}) ]},
+{id:'i_hizip',g:'ic',tag:'İç siyaset · Parti',t:'Parti İçi Hizip Krizi',cond:()=>S.par<7,x:()=>`Gelenekçiler kurultay tarihi istiyor, Reformcular kadro değişimi talep ediyor. Sadakatçiler ise "lidere dokunulmaz" diyor.`,c:[ ch('Kurultay tarihi ver',2,'Demokratik görünüm, risk.',{par:0.7,des:0.3,fG:3},'Kurultay tarihi açıklandı. Gelenekçiler sakinleşti.'), ch('Kadro değişimi yap',2,'Reformculara yer aç.',{par:0.3,fR:5,fG:-4,des:0.3},'Yeni isimler görev aldı. Gelenekçiler kırgın.'), ch('Disiplin soruşturması',1,'Sert mesaj ver.',{par:-0.5,fS:3,fR:-2,des:-0.3},'Disiplin süreçleri başladı. Parti kamuoyunda "bölünme" haberleri çıktı.'), ch('Görmezden gel',0,'Zamanın çözmesini bekle.',{par:-0.8},'Hizip mücadelesi gazetelere taşındı.') ]},
+{id:'i_medya',g:'ic',tag:'İç siyaset · Basın',t:'Gazeteci Soruşturmaları',x:()=>`Haberleri hükümeti zor durumda bırakan üç gazeteci hakkında soruşturma açıldı. Uluslararası basın örgütleri ve AB temsilcileri tepki gösteriyor.`,c:[ ch('Soruşturmaları destekle',1,'Sert tutum.',{des:0.3,bat:-1.2,huz:-0.5,par:0.3},'Soruşturmalar sürüyor. Yurt dışı tepkiler artıyor.',{later:[{m:2,id:'l_ab_tepki'}]}), ch('Basın özgürlüğü paketi',3,'Uzlaşmacı jest.',{bat:1,des:0.5,par:-0.5,huz:0.3},'Paket duyuruldu. Gelenekçiler "zafiyet" dedi.'), ch('Yorum yapma',0,'Yargıya bırak.',{bat:-0.3,des:-0.3},'Konu bir süre daha gündemde kaldı.') ]},
+{id:'i_belediye',g:'ic',tag:'İç siyaset · Yerel yönetim',t:'Muhalefet Belediyesine Soruşturma',x:()=>`Büyükşehir belediye başkanı hakkında ihale iddiaları var. Savcılık gözaltı istiyor, bazı isimler kayyum önerisinde bulunuyor.`,c:[ ch('Yargı süreci işlesin',1,'Doğrudan müdahale etme.',{des:-0.3,bat:0.3,huz:-0.3},'Süreç yargıda ilerliyor. Muhalefet "siyasi" dedi.'), ch('Kayyum atanmasını destekle',2,'Sert müdahale.',{des:-1.5,bat:-1,huz:-1,par:0.3},'Kayyum atandı. Şehirde protestolar başladı.'), ch('Uzlaşı arayışı',2,'Başkan ile görüşme.',{des:0.5,huz:0.5,par:-0.4,kol:-0.3},'Görüşme yapıldı. Muhalefet temkinli olumlu.') ]},
+{id:'i_deprem',g:'ic',tag:'İç güvenlik · Afet',t:'Marmara\'da 6,4\'lük Deprem',x:()=>`Sabaha karşı Marmara\'da 6,4 büyüklüğünde deprem oldu. Yüzlerce bina hasarlı, ölü ve yaralılar var. Afet ekipleri sahada.`,c:[ ch('Tam kapasiteyle müdahale, bölgeye git',2,'Hızlı koordinasyon, kişisel liderlik.',{des:2,huz:0.5,acik:0.4,par:0.3},'Ekipler hızla bölgeye ulaştı. Liderlik imajı güçlendi.'), ch('Olağanüstü hal ilan et',2,'Merkezi kontrol.',{huz:0.3,des:0.5,bat:-0.3},'OHAL ilan edildi. Kurtarma çalışmaları merkezden yönetiliyor.'), ch('Uluslararası yardım çağrısı',1,'Batı ve Doğu\'dan yardım.',{bat:0.5,dog:0.5,bol:0.5,des:0.3},'Yardım uçakları geldi. İtibar arttı.'), ch('Yeniden imar affı',2,'Hızlı yeniden yapım.',{des:-1,huz:-0.3,acik:0.2},'İmar affı tartışması alevlendi.') ]},
+{id:'i_teror',g:'ic',tag:'İç güvenlik',t:'İstanbul\'da Bombalı Saldırı',x:()=>`Kalabalık bir meydanda bombalı saldırı: 11 ölü, 40\'tan fazla yaralı. ${M.ic.name} sert önlemler istiyor, kamuoyu kararlılık bekliyor.`,c:[ ch('OHAL ve geniş operasyonlar',3,'Sert güvenlik yaklaşımı.',{huz:-0.5,des:1,bat:-1,par:0.3},'Operasyon dalgası başladı. Yüzlerce gözaltı yapıldı, eleştiriler geldi.'), ch('Hedefli istihbarat operasyonu',2,'Sınırlı ve kesin.',{huz:0.5,des:1,ord:0.3},'Sorumlular saatler içinde yakalandı. Kamuoyu memnun.'), ch('Sakin, hukuk çerçevesinde',1,'Soğukkanlı mesaj.',{huz:0.3,bat:0.5,des:-0.5},'Hükümet sakinlik çağrısı yaptı. Muhalefet "zayıflık" dedi.'), ch('Sınır ötesi karşılık',3,'Misilleme.',{ord:0.5,des:1.5,bol:-1,bat:-0.5,huz:0.2},'Havadan operasyon yapıldı. Bölgede gerginlik arttı.') ]},
+{id:'i_anayasa',g:'ic',tag:'İç siyaset · Anayasa',t:'Anayasa Değişikliği Önerisi',x:()=>`Parti içinde, yönetim sistemini yeniden düzenleyen bir anayasa taslağı dolaşıyor. Koalisyon ortağı ve muhalefet farklı şeyler istiyor.`,c:[ ch('Masaya koy, Meclis\'e sun',4,'Büyük siyasi sermaye gerekir.',{des:-1,kol:-1,par:0.5,huz:-0.5},'Taslak Meclis\'e sunuldu. Tartışma alevlendi.'), ch('Ertele',0,'Şimdilik gündeme alma.',{par:-0.3,des:0.3},'Öneri sessizce rafa kalktı.'), ch('Muhalefetle uzlaşı komisyonu',2,'Çok partili çalışma.',{des:0.5,kol:-0.3,par:-0.3,bat:0.5},'Komisyon kuruldu. İlk toplantı olumlu geçti.') ]},
+{id:'i_universite',g:'ic',tag:'İç siyaset · Gençlik',t:'Öğrenci Eylemleri',x:()=>`Barınma krizi ve kira artışları nedeniyle üniversitelerde eylemler başladı. Talep: yurt, burs ve kira sınırı.`,c:[ ch('Yurt ve burs paketi',2,'Bütçeye ek yük.',{acik:0.3,des:1,huz:0.6,par:0.2},'Yurt kapasitesi artırılıyor, burslar yükseltildi.'), ch('Polis müdahalesi',1,'Sert cevap.',{huz:-1,des:-1,bat:-0.4},'Müdahale sonrası eylemler büyüdü.'), ch('Öğrenci temsilcileriyle görüşme',1,'Diyalog.',{huz:0.4,des:0.3},'Görüşmeler başladı. Gerilim düştü.') ]},
+{id:'i_yargi',g:'ic',tag:'İç siyaset · Yargı',t:'Yargı Reformu Paketi',x:()=>`AB ve iç kamuoyu yargı bağımsızlığı konusunda reform istiyor. Bakanlık taslağı hazırladı, parti içi görüşler farklı.`,c:[ ch('Kapsamlı reform',3,'Batı ile ilişkiler düzelir.',{bat:1.2,des:0.5,par:-0.7,huz:0.3},'Reform açıklandı. Avrupa\'dan olumlu ilk tepkiler geldi.'), ch('Sınırlı düzenleme',1,'Ufak adımlar.',{bat:0.3,par:-0.1},'Düzenleme geçti. Etki sınırlı.'), ch('Mevcut düzeni koru',0,'Değişiklik yok.',{bat:-0.3,par:0.2},'Reform gündemi rafa kalktı.') ]},
+/* DIŞ İŞLERİ / ASKERİ */
+{id:'d_multeci',g:'dis',tag:'Dış işleri · Göç',t:'Sınırda Yeni Mülteci Dalgası',x:()=>`Komşu ülkedeki iç savaş yüzünden sınıra yeni bir mülteci dalgası yaklaşıyor. Aynı bölgede silahlı grupların hareketliliği var. Genelkurmay ek birlik istiyor, ${M.dis.name} diplomasiyi öneriyor.`,c:[ ch('Ek birlik yığ, güvenli bölge seçeneği',2,'Askeri güç, uluslararası eleştiri.',{ord:0.5,bol:-0.5,bat:-0.5,huz:0.3,des:0.5},'Ek birlikler sınıra kaydırıldı. Güvenli bölge planı masada.'), ch('BM ve AB ile ortak yönetim',2,'Diplomatik kazanç, iç kamuoyu tepkisi.',{bat:1,bol:0.5,des:-1,huz:-0.3},'Finansman ve ortak yönetim müzakereleri açıldı.'), ch('Sınırı kapat, insani koridor bırak',1,'Hızlı çözüm, insan hakları eleştirisi.',{huz:0.3,bat:-1,bol:-0.5,des:0.3},'Sınır kapatıldı. Sınır kapılarında yığılma başladı.',{later:[{m:2,id:'l_sinir'}]}) ]},
+{id:'d_nato',g:'dis',tag:'Dış işleri · İttifak',t:'NATO Harcama Baskısı',x:()=>`İttifak zirvesinde savunma harcamalarının GSYH\'nin %3,5\'ine çıkarılması talebi masada. Batılı başkentler net bir taahhüt bekliyor.`,c:[ ch('Kademeli artışı kabul et',3,'İttifaka güvence, bütçeye yük.',{bat:1.5,ord:0.5,acik:0.4,dog:-0.5,lv:{sav:0.5}},'Kademeli artış taahhüdü verildi. Müttefikler memnun.'), ch('Kısmi taahhüt ver',1,'Orta yol.',{bat:0.3},'Sınırlı bir taahhüt verildi.'), ch('Doğu ile ilişkileri öne çıkar',2,'Alternatif ittifak sinyali.',{dog:1,bat:-1.5,ord:-0.3},'Doğu başkentlerine yönelik açılım basında geniş yankı buldu.') ]},
+{id:'d_ab',g:'dis',tag:'Dış işleri · Avrupa',t:'AB Gümrük Birliği Güncellemesi',x:()=>`Brüksel, gümrük birliğinin güncellenmesi için bazı siyasi şartlar öne sürüyor. Sanayiciler ve turizm sektörü olumlu, parti içinde ise itiraz var.`,c:[ ch('Şartları kabul et, müzakereyi ilerlet',3,'Ekonomik kazanç, iç siyasette maliyet.',{bat:1.5,buy:0.4,cari:-1.5,par:-0.7,des:-0.5},'Müzakere süreci hızlandı. Sanayi odaları memnun.'), ch('Şartları pazarlık konusu yap',2,'Tavizleri sınırla.',{bat:0.5,buy:0.2,par:-0.2},'Karşılıklı tavizlerle süreç canlı kaldı.'), ch('Müzakereyi dondur',0,'Alternatif pazarlar ara.',{bat:-1,dog:0.5,par:0.3,des:0.3},'Masadan kalkıldı. AB yorum yapmadı.') ]},
+{id:'d_rusya',g:'dis',tag:'Dış işleri · Yaptırım',t:'İkincil Yaptırım Baskısı',x:()=>`Batılı başkentler, üçüncü ülkeler üzerinden yapılan ticareti hedef alan yaptırımlar hazırlıyor. Bazı bankalar ve şirketler risk altında.`,c:[ ch('Yaptırımlara uy',2,'Batı memnun, ticaret düşer.',{bat:1.2,dog:-1,cari:1,buy:-0.2},'Riskli işlemler durduruldu. Müttefikler olumlu yanıt verdi.'), ch('Dengeli tutum, resmi uyumsuzluk',2,'Sessiz esneklik.',{bat:-0.4,dog:0.4,cari:-1},'Resmi çizgi korunurken bazı ticaret sürdü.'), ch('Açıkça karşı çık',1,'Bağımsız dış politika vurgusu.',{dog:0.8,bat:-1.5,des:0.8,rez:-2,kur:2},'Yaptırımlara açık itiraz edildi. Piyasa tepki verdi.') ]},
+{id:'d_deniz',g:'dis',tag:'Dış işleri · Deniz yetki alanı',t:'Doğu Akdeniz\'de Sondaj Gerilimi',x:()=>`Komşu bir ülke tartışmalı sularda arama izni verdi. Deniz Kuvvetleri alarmda, ${M.dis.name} "kriz büyümeden masaya oturalım" diyor.`,c:[ ch('Donanma eşliğinde sondaj gemisi',3,'Kararlılık gösterisi.',{ord:0.7,des:1.5,bat:-1.2,bol:-1,huz:-0.2},'Gemiler bölgeye yöneldi. Müttefikler "sükûnet" çağrısı yaptı.'), ch('Ortak enerji formülü ile diplomasi',2,'Uzlaşı arayışı.',{bol:1,bat:0.7,des:-0.5,ord:-0.3},'Görüşmeler başladı. Kamuoyunda "taviz" tartışması çıktı.'), ch('Uluslararası tahkim',2,'Hukuk yolu.',{bat:0.7,bol:0.4,des:-0.3},'Konu uluslararası mahkemeye taşındı.'), ch('Geri adım at',0,'Gerginliği düşür.',{ord:-0.7,des:-1.5,bol:0.5,par:-0.3},'Geri adım kamuoyunda zayıflık olarak yorumlandı.') ]},
+{id:'d_arabulucu',g:'dis',tag:'Dış işleri · Diplomasi',t:'Arabuluculuk Fırsatı',x:()=>`İki komşu ülke arasında gerilim yükseliyor. Her iki taraf da ${M.dis.name} üzerinden gizli mesajlar gönderiyor. Bir zirve düzenleme fırsatı var.`,c:[ ch('Zirve ev sahipliği yap',3,'İtibar kazandırır, başarısızlık riski.',{},'',{fn:()=>Math.random()<0.55?{fx:{bol:1.5,bat:0.8,dog:0.8,des:1},msg:'Zirve ortak bildiriyle sonuçlandı. Diplomasi başarısı kutlandı.'}:{fx:{bol:-0.5,des:-1},msg:'Zirve sonuçsuz kaldı. Taraflar birbirini suçladı.'}}), ch('Perde arkası temas',1,'Gizli çaba.',{bol:0.5,des:0.2},'Temaslar başladı, sessizce ilerliyor.'), ch('Taraf tutma, uzak dur',0,'Kendi çıkarını koru.',{bol:-0.3},'Türkiye tarafsız kaldı.') ]},
+{id:'d_abd',g:'dis',tag:'Dış işleri · Tedarik',t:'Savaş Uçağı Tedariki Engellendi',x:()=>`Müttefik bir ülkenin parlamentosu savaş uçağı satışını bloke etti. ${M.sav.name}: "Yerli üretimi hızlandırmamız şart."`,c:[ ch('Yerli savaş uçağı programına ek kaynak',3,'Uzun vadede bağımsızlık.',{ord:0.7,acik:0.4,buy:0.2,des:0.5},'Ek kaynak aktarıldı. Yerli program hızlanacak.'), ch('Avrupa/Asya alternatifi ara',2,'Geçici çözüm.',{ord:0.2,bat:-0.2,dog:0.3},'Alternatif tedarikçilerle görüşmeler başladı.'), ch('Müttefikle müzakere',2,'Taviz karşılığı serbest bırak.',{bat:0.5,ord:0.2,des:-0.5},'Müzakere sonucu bazı şartlarla sevkiyat izni çıktı.') ]},
+{id:'d_cin',g:'dis',tag:'Dış işleri · Yatırım',t:'Çin\'den 18 Milyar Dolarlık Paket',x:()=>`Çin, altyapı ve enerji projeleri için 18 milyar dolarlık finansman önerdi. Şartlar ağır, borç tuzağı riski var.`,c:[ ch('Kabul et',3,'Hızlı finansman.',{rez:5,buy:0.5,borc:2,dog:1,bat:-1},'Anlaşma imzalandı. Batılı başkentler kaygı bildirdi.'), ch('Şartlı ve küçültülmüş paket',2,'Pazarlıkla daha güvenli.',{rez:2,buy:0.2,borc:0.7,dog:0.5},'Paket küçültülerek kabul edildi.'), ch('Reddet',0,'Kaynak başka yerden aranır.',{dog:-0.5,bat:0.3},'Teklif reddedildi.') ]},
+/* ASKERİ */
+{id:'a_ihale',g:'dis',tag:'Askeri · Savunma sanayii',t:'İHA ve Füze İhracat Sözleşmesi',x:()=>`Yerli savunma sanayii büyük bir ihracat anlaşması için hükümetten onay bekliyor. Alıcı ülke bölgede tartışmalı bir aktör.`,c:[ ch('Onayla',2,'Döviz gelir, itibar riski.',{cari:-2.5,ord:0.5,buy:0.2,bat:-0.7,bol:-0.3},'Sözleşme imzalandı. Savunma sanayii memnun.'), ch('Şartlı onay',2,'Kullanım denetimi ile.',{cari:-1.5,bat:-0.1,ord:0.3},'Şartlı onay çıktı. Alıcı ülke kabul etti.'), ch('Reddet',0,'Etik gerekçeler.',{bat:0.5,ord:-0.3,cari:0.3},'Sözleşme iptal edildi. Sanayi hayal kırıklığına uğradı.') ]},
+{id:'a_operasyon',g:'dis',tag:'Askeri · Sınır güvenliği',t:'Sınır Ötesi Operasyon Talebi',x:()=>`Genelkurmay, sınır boyunca silahlı gruplara karşı sınır ötesi bir operasyon için onay istiyor. ${M.sav.name} destekliyor, ${M.dis.name} uyarıyor.`,c:[ ch('Tam ölçekli operasyon',4,'Güçlü mesaj, yüksek risk.',{ord:1,des:1.5,bat:-1.5,bol:-1.5,huz:-0.3,acik:0.3},'Operasyon başladı. Uluslararası eleştiriler yükseldi.'), ch('Sınırlı hava harekâtı',2,'Hedefli vuruş.',{ord:0.5,des:0.7,bat:-0.5,bol:-0.5},'Hava harekâtı sınırlı hedeflere yapıldı.'), ch('Diplomatik yol',1,'Temaslar sürsün.',{ord:-0.3,bol:0.3,bat:0.3},'Diplomatik kanallar denendi.'), ch('Ret',0,'Şimdilik gerek yok.',{ord:-0.7,des:-0.5},'Talep reddedildi. Genelkurmayda memnuniyetsizlik var.') ]},
+{id:'a_siber',g:'dis',tag:'Askeri · İstihbarat',t:'Devlet Kurumlarına Siber Saldırı',x:()=>`Enerji, maliye ve sağlık sistemlerine yönelik koordineli bir siber saldırı yaşandı. Kaynağı belirsiz.`,c:[ ch('Siber savunma kurumu kur',3,'Kalıcı çözüm.',{ord:0.4,acik:0.2,huz:0.3,bat:0.3},'Yeni siber savunma kurumu kuruldu.'), ch('Saldırgana kamuoyu önünde ithamda bulun',2,'Diplomatik tepki riski.',{des:0.8,bat:-0.5,bol:-0.5},'Suçlama yapıldı. Karşı taraf reddetti.'), ch('Sessizce onar',1,'Kamuoyuna yansımasın.',{des:-0.5,huz:-0.2},'Sistemler onarıldı. Saldırı yine de basına sızdı.') ]},
+{id:'a_yas',g:'dis',tag:'Askeri · Kadro',t:'YAŞ Terfi ve Emeklilik Kararları',x:()=>`Yüksek Askeri Şura toplanıyor. ${M.sav.name}, kendi adaylarını önceliklendirmek istiyor, bazı generaller endişeli.`,c:[ ch('Genelkurmay önerisine uy',1,'Kadro istikrarı.',{ord:0.7,par:-0.2},'Kararlar orduda memnuniyetle karşılandı.'), ch('Sivil iradenin önceliği',3,'Sivil kontrolü güçlendir.',{ord:-0.7,bat:0.5,des:0.3,par:0.2},'Bazı atamalar hükümetin tercihine göre yapıldı.'), ch('Orta yol',2,'İki tarafı uzlaştır.',{ord:0.2},'Uzlaşmayla karar alındı.') ]},
+{id:'a_darbe',g:'dis',tag:'Askeri · Kriz',t:'Kışlada Huzursuzluk İddiaları',cond:()=>S.ord<5,x:()=>`Gizli bir kaynak, bazı subayların hükümetin politikalarından rahatsız olduğunu ve "çözüm arayışında" olduğunu ileriyor. Tehdit gerçek mi, söylenti mi belirsiz.`,c:[ ch('Ordu ile açık görüşme',2,'Sorunları duy.',{ord:1.5,par:-0.3,des:-0.3},'Görüşmeler yapıldı. Gerginlik düştü.'), ch('Şüphelileri emekli et',3,'Sert temizlik.',{ord:-1,huz:-0.5,des:0.3,bat:-0.3},'Bir grup subay emekli edildi. Ordu içinde ürperti var.'), ch('Savunma harcamalarını artır',3,'Moral ve maaş.',{ord:1.2,acik:0.4,lv:{sav:0.25}},'Maaş ve donanım artışı açıklandı. Ordu memnun.'), ch('Aldırma',0,'Söylenti.',{ord:-0.5,huz:-0.5},'Söylentiler sürdü.') ]},
+/* GECİKMELİ ETKİLER */
+{id:'l_greve',g:'later',tag:'Sonuç · Emek',t:'Genel Grev Başladı',x:()=>`İki ay önce verdiğin sert karar karşılığını buldu. Sendikalar birlik olup genel greve gitti. Limanlar, fabrikalar ve belediyeler durdu.`,c:[ ch('Zorunlu tahkim ve yasak',2,'Sert cevap.',{huz:-1,des:-1,par:0.3,buy:-0.3},'Grev yasaklandı. Sokakta gerilim yüksek.'), ch('Müzakere, ara zam',2,'Taviz ver.',{acik:0.6,huz:1.5,des:1,enf:0.3},'Grev sona erdi. Sendikalar kazanım elde etti.'), ch('Arabulucu ata',1,'Tarafsız üçüncü isim.',{huz:0.5,des:0.3},'Arabulucu görüşmelere başladı.') ]},
+{id:'l_kur',g:'later',tag:'Sonuç · Ekonomi',t:'Kur Şoku Yayılıyor',x:()=>`Dolar\'ın sıçraması fiyatlara yansıyor. Şirketler döviz borcunu ödemekte zorlanıyor.`,c:[ ch('Acil faiz artırımı',2,'7,5 puan.',{kur:-4,rez:3,buy:-0.4,des:-1,lv:{faiz:7.5}},'Faiz sert artırıldı. Kur bir miktar toparlandı.'), ch('Rezervden döviz sat',1,'Kuru tut.',{kur:-3,rez:-5},'Rezervden döviz satıldı.'), ch('Sadece söylem',0,'Bekle.',{kur:3,des:-1.5,enf:1},'Beklenen düzelme gelmedi. Fiyat artışları hızlandı.') ]},
+{id:'l_swap',g:'later',tag:'Sonuç · Finansman',t:'Körfez Finansmanının Şartları',x:()=>`Swap anlaşmasının ayrıntıları sızdı. Yatırım ve altyapı projelerinde imtiyazlar isteniyor. Muhalefet "ülkeyi satıyorsunuz" diyor.`,c:[ ch('Şartları kabul et',2,'Finansmanı koru.',{rez:3,dog:0.5,des:-1.5,par:-0.5},'Şartlar kabul edildi. Kamuoyunda tartışma çıktı.'), ch('Yeniden pazarlık',2,'Daha ılımlı şartlar.',{rez:1,des:-0.3,dog:0.2},'Pazarlık yapıldı. Şartlar yumuşadı.'), ch('Şeffaf açıklama yap',1,'Tüm ayrıntıları paylaş.',{des:0.5,par:-0.2},'Ayrıntılar açıklandı. Tartışma yatıştı.') ]},
+{id:'l_imf',g:'later',tag:'Sonuç · IMF',t:'IMF İlk Gözden Geçirme',x:()=>`IMF ekibi ilk değerlendirme için geldi. Harcama kesintisi ve bazı kamu ihaleleri için şeffaflık şartları getirdi.`,c:[ ch('Şartları kabul et',2,'Güven ve kaynak.',{acik:-0.8,rez:3,bat:0.5,des:-1.5,huz:-0.4},'Şartlar kabul edildi. Kaynak dilimi serbest bırakıldı.'), ch('Pazarlıkla esnet',3,'Bazı şartları yumuşat.',{acik:-0.3,rez:1.5,des:-0.5},'Bazı şartlar esnetildi.'), ch('Programdan çekil',4,'Egemenlik söylemi.',{rez:-5,kur:6,des:1,par:0.5,bat:-1.5},'Programdan çekilme kararı verildi. Piyasalar sert tepki verdi.') ]},
+{id:'l_skandal',g:'later',tag:'Sonuç · Yolsuzluk',t:'Skandal Yeniden Gündemde',x:()=>`Savunduğun bakanla ilgili yeni belgeler ortaya çıktı. Koalisyon ortağı ve parti içi sesler yükseliyor.`,c:[ ch('İstifa ettir',1,'Bu sefer geç kalma.',{des:-0.5,par:-0.5},'Bakan istifa etti. Geç kalındığı yorumları yapıldı.'), ch('Savunmaya devam et',2,'Direnişi sürdür.',{des:-2,kol:-1,par:-0.7},'Savunma sürüyor. Koalisyon ortağı öfkeli.') ]},
+{id:'l_ab_tepki',g:'later',tag:'Sonuç · Avrupa',t:'AB Parlamentosu Kararı',x:()=>`Avrupa Parlamentosu, basın özgürlüğü konusunda sert bir karar tasarısı hazırladı. Gümrük birliği ve fon konularında baskı artabilir.`,c:[ ch('Sert yanıt ver',1,'Egemenlik vurgusu.',{bat:-1,des:0.8,par:0.3},'Sert bir yanıt verildi. Avrupa ile ilişkiler soğudu.'), ch('Diyalog kanalı aç',2,'Yumuşat.',{bat:0.7,des:-0.3},'Diyalog kanalı açıldı.'), ch('Yok say',0,'Yorum yapma.',{bat:-0.4},'Karar geldi ve gitti.') ]},
+{id:'l_sinir',g:'later',tag:'Sonuç · Sınır',t:'Kapıda İnsani Kriz',x:()=>`Kapatılan sınır kapılarında binlerce kişi bekliyor. Uluslararası kuruluşlar acil insani yardım çağrısı yaptı.`,c:[ ch('Sınırlı koridor aç',2,'Baskıyı azalt.',{bol:0.5,bat:0.5,huz:-0.3,des:-0.5},'Sınırlı bir geçiş açıldı.'), ch('Sınırda kamp kur',2,'Yardımı sınırın öbür yanında ver.',{bat:0.3,acik:0.3,huz:0.2},'Kamp kuruldu. Yardım kuruluşlarıyla ortak çalışıldı.'), ch('Kapıyı kapalı tut',0,'Sert tutum.',{bat:-1,bol:-0.7,des:0.3},'Sınır kapalı kaldı. Uluslararası eleştiri arttı.') ]}
+,
+/* --- YENİ: EKONOMİ --- */
+{id:'e_faizbaski',g:'eko',tag:'Ekonomi · Para politikası',t:'Faiz İndirimi Baskısı',x:()=>`Sanayi lobisi ve parti içinden bir grup "faizler indirilsin, üretim durdu" diyor. ${M.mb.name} enflasyon düşmeden indirimin kur şoku yaratacağı görüşünde.`,c:[ ch(`Faizi 5 puan indir`,3,`Krediler ucuzlar, büyüme canlanır. Kur ve enflasyon riski artar.`,{buy:0.5,des:1,kur:4,enf:1,rez:-2,lv:{faiz:-5}},`Faiz indirildi. Krediler ucuzladı, dolar yukarı yürüdü.`), ch(`Merkez Bankası'na dokunma`,1,`Bağımsızlığı koru.`,{bat:0.4,par:-0.3,des:-0.5},`Karar değişmedi. Sanayiciler hayal kırıklığını dile getirdi.`), ch(`Kademeli indirim takvimi`,2,`Piyasaya sinyal ver.`,{buy:0.2,kur:1,par:0.2,lv:{faiz:-2.5}},`Takvim açıklandı. Piyasa temkinli.`) ]},
+{id:'e_konut',g:'eko',tag:'Ekonomi · Konut',t:'Kira ve Konut Fiyatı Patlaması',x:()=>`Büyükşehirlerde kiralar bir yılda ikiye katlandı. Gençler ve dar gelirliler tepkili, müteahhitler ise sınırlama istemiyor.`,c:[ ch(`Kira artışına tavan koy`,2,`Kiracı rahatlar, yatırımcı tepki gösterir.`,{des:1.5,huz:0.5,buy:-0.2,enf:-0.3},`Tavan yasası çıktı. Ev sahipleri dava yoluna gitti.`), ch(`Sosyal konut seferberliği`,3,`Uzun vadeli çözüm, bütçe yükü.`,{acik:0.5,des:1,isz:-0.3,buy:0.3},`Yüz binlerce konut için ihale açıldı.`), ch(`Piyasaya bırak`,0,`Müdahale etme.`,{des:-1.5,huz:-0.5},`Kiralar yükselmeye devam etti.`) ]},
+{id:'e_megaproje',g:'eko',tag:'Ekonomi · Altyapı',t:'Mega Proje İhalesi',x:()=>`Bir köprü ve otoyol projesi için dev bir ihale hazır. Getiri-geçiş garantisi döviz cinsinden veriliyor, bütçe uzmanları uyarıyor.`,c:[ ch(`Garantili ihale ver`,2,`İstihdam ve prestij, gelecek yıllara borç.`,{buy:0.4,isz:-0.3,borc:1.5,des:0.5,cari:1},`İhale sonuçlandı. Açılış törenlerinin tarihi bile belli.`), ch(`Garanti olmadan yeniden tasarla`,2,`Yatırımcı çekilir mi, bilinmez.`,{buy:0.1,acik:-0.2,par:-0.2},`Proje küçüldü ama borç yükü de azaldı.`), ch(`Projeyi iptal et`,1,`Bütçeyi koru.`,{buy:-0.2,des:-1,par:0.2},`Proje iptal edildi. Yerel yönetimler öfkeli.`) ]},
+{id:'e_emekli',g:'eko',tag:'Ekonomi · Sosyal',t:'Emekli Maaşı Zammı',x:()=>`Emekliler enflasyona ezildi. Dernekler Ankara'da yürüyüş hazırlığında. ${M.maliye.name} tam telafiyi bütçeye sığdıramıyor.`,c:[ ch(`Tam telafi zammı`,3,`Büyük memnuniyet, büyük maliyet.`,{acik:0.9,enf:0.6,des:2.5,huz:0.6},`Zam yapıldı. Emekliler sevindi, Maliye kaygılı.`), ch(`Kısmi zam ve bayram ikramiyesi`,2,`Orta yol.`,{acik:0.4,des:1,huz:0.3},`Kısmi zam açıklandı.`), ch(`Zam yapma`,0,`Bütçeyi koru.`,{des:-2,huz:-0.7,acik:-0.2},`Emekliler sokağa çıktı.`) ]},
+{id:'e_gida',g:'eko',tag:'Ekonomi · Gıda',t:'Market Fiyatları ve Stokçuluk',x:()=>`Bazı zincir marketlerin fiyat artışlarını sürdürmek için stok tuttuğu söyleniyor. Halk öfkeli, ticaret odaları "serbest piyasa" diyor.`,c:[ ch(`Sert fiyat denetimi ve cezalar`,2,`Kısa vadede etki, arz sıkıntısı riski.`,{enf:-0.5,des:1,buy:-0.1},`Denetimler yapıldı. Bazı raflar boşaldı.`), ch(`Kamu marketlerini yaygınlaştır`,3,`Devlet piyasaya girer.`,{acik:0.4,enf:-0.4,des:1,huz:0.3},`Kamu marketleri açıldı. Kuyruklar oluştu.`), ch(`Gönüllü fiyat anlaşması`,1,`Zincirlerle uzlaşı.`,{},``,{fn:()=>Math.random()<0.5?{fx:{enf:-0.3,des:0.5},msg:`Anlaşma imzalandı. Fiyatlar bir süre sabit kaldı.`}:{fx:{des:-0.5},msg:`Zincirler sözünü tutmadı.`}}) ]},
+{id:'e_altin',g:'eko',tag:'Ekonomi · Tasarruf',t:'Yastık Altı Altın Sorunu',x:()=>`Vatandaşın evde tuttuğu altın ve dövizin ekonomiye kazandırılması gerekiyor. Yeni bir dönüşüm planı masada.`,c:[ ch(`Altın mevduat teşviki`,2,`Faiz avantajı ile bankaya çek.`,{rez:3,acik:0.2,des:0.3},`Kampanya başladı. Bankalara altın akışı görüldü.`), ch(`Vergi barışı ile beyan`,2,`Kaynağı sorulmadan beyan.`,{rez:4,bat:-0.3,des:-0.5,par:0.2},`Beyan penceresi açıldı.`), ch(`Hiçbir şey yapma`,0,`Kendi haline bırak.`,{},`Konu gündemden düştü.`) ]},
+{id:'e_kredikarti',g:'eko',tag:'Ekonomi · Hane halkı',t:'Kredi Kartı Borç Bombası',x:()=>`Hanelerin kart borçları rekor. Bankalar temerrüt bekliyor, tüketici dernekleri yapılandırma istiyor.`,c:[ ch(`Yapılandırma ve faiz tavanı`,2,`Halk rahatlar, bankalar sıkışır.`,{des:1.5,huz:0.4,acik:0.2,bat:-0.2},`Yapılandırma geçti. Bankalar itiraz etti.`), ch(`Kredi kartı limitlerini sıkılaştır`,1,`Riski azalt.`,{enf:-0.2,des:-0.7,buy:-0.2},`Limitler düştü. Tüketim yavaşladı.`), ch(`Piyasa çözer`,0,`Müdahale etme.`,{des:-1,isz:0.2},`Temerrütler arttı.`) ]},
+{id:'e_ozel',g:'eko',tag:'Ekonomi · Kamu varlıkları',t:'Kamu Varlıklarının Satışı',x:()=>`Hazine, limanlar ve enerji şirketlerinin hisselerinin satışıyla bütçe açığını kapatmayı öneriyor. Sendikalar ve Gelenekçiler karşı.`,c:[ ch(`Büyük satış planı`,3,`Hızlı kaynak, siyasi bedel.`,{acik:-0.9,rez:4,des:-1.5,par:-0.8,fG:-4,bat:0.5},`Satış ihaleye çıktı. Muhalefet "vatan satılıyor" dedi.`), ch(`Halka arz ile sınırlı satış`,2,`Vatandaşa pay.`,{acik:-0.4,rez:1.5,des:0.3},`Halka arz ilgi gördü.`), ch(`Satma`,0,`Stratejik varlıkları koru.`,{par:0.3,acik:0.2},`Satış gündemden kalktı.`) ]},
+{id:'e_maden',g:'eko',tag:'Ekonomi · Çevre',t:'Maden ve Enerji Yatırımı',x:()=>`Ege'de büyük bir altın madeni yatırımı ihracat gelirini artıracak. Köylüler ve çevre örgütleri zeytinlikler için karşı çıkıyor.`,c:[ ch(`Ruhsatı ver`,2,`Döviz ve istihdam getirir.`,{cari:-2,buy:0.3,huz:-0.6,des:-0.5,bat:-0.3},`Ruhsat verildi. Eylemler başladı.`), ch(`Sıkı çevre şartlarıyla izin`,2,`Orta yol.`,{cari:-1,buy:0.1,huz:-0.2},`Şartlı izin çıktı.`), ch(`Reddet`,0,`Doğayı koru.`,{des:0.5,huz:0.4,cari:0.3},`Ruhsat reddedildi. Şirket uluslararası tahkime gitti.`) ]},
+{id:'e_girisim',g:'eko',tag:'Ekonomi · Teknoloji',t:'Yazılım ve Girişimci Teşviği',x:()=>`Genç girişimciler vergi ve düzenleme baskısından bunalıyor, yetenekli mühendisler yurt dışına gidiyor.`,c:[ ch(`Teknokent vergi bağışıklığı`,3,`Yetenek kaçışını yavaşlatır.`,{cari:-1.5,buy:0.4,isz:-0.2,acik:0.3,bat:0.3},`Teşvik yasası çıktı. Yabancı fonlar ilgi gösterdi.`), ch(`Risk sermayesi fonu kur`,2,`Devlet fonu.`,{buy:0.3,acik:0.2,des:0.3},`Fon kuruldu. İlk yatırımlar duyuruldu.`), ch(`Sadece söz ver`,0,`Program açıkla.`,{des:0.2},`Söz verildi, somut adım yok.`) ]},
+{id:'e_calisma',g:'eko',tag:'Ekonomi · İşgücü',t:'Göçmen Çalışma İzni',x:()=>`Milyonlarca mülteci kayıt dışı çalışıyor. Sanayiciler yasal izin istiyor, kamuoyunda ise "işimizi alıyorlar" tepkisi var.`,c:[ ch(`Kısıtlı çalışma izni`,2,`Vergi ve sigorta gelir getirir.`,{acik:-0.4,buy:0.2,des:-1,huz:-0.3,bat:0.4},`İzin sistemi devreye girdi. Sokakta itirazlar arttı.`), ch(`Sıkı denetim ve sınırlama`,2,`Kayıt dışını azalt.`,{des:0.5,buy:-0.2,bat:-0.4},`Denetimler sıkılaştı. Bazı fabrikalar işçi bulamadı.`), ch(`Dokunma`,0,`Mevcut düzen.`,{},`Durum aynı kaldı.`) ]},
+{id:'e_elektrik',g:'eko',tag:'Ekonomi · Enerji',t:'Elektrik Kesintileri',x:()=>`Sıcak hava dalgası tüketimi rekora çıkardı. Şebeke yetersiz, sanayi bölgelerinde planlı kesintiler başladı.`,c:[ ch(`Sanayiye öncelik ver`,1,`Üretim sürer, evler karanlık kalır.`,{buy:0.1,des:-1.5,huz:-0.5},`Konutlarda kesintiler sürdü.`), ch(`Evlere öncelik ver`,1,`Halk rahat, sanayi zarar eder.`,{buy:-0.4,isz:0.2,des:0.5},`Fabrikalar vardiya azalttı.`), ch(`Acil ithalat ve santral devreye alma`,3,`Pahalı ama etkili.`,{cari:1.2,acik:0.3,des:0.8,huz:0.3},`Kesintiler sona erdi. Fatura bütçeye yazıldı.`) ]},
+{id:'e_bogaz',g:'eko',tag:'Ekonomi · Lojistik',t:'Boğazlarda Gemi Trafiği Krizi',x:()=>`Karadeniz'deki gerginlik yüzünden Boğazlardan geçen gemi sayısı arttı. Sigorta primleri ve geçiş ücretleri tartışılıyor.`,c:[ ch(`Ek geçiş ücreti ve düzenleme`,2,`Gelir artar, sürtüşme çıkar.`,{cari:-1,acik:-0.2,bat:-0.5,dog:-0.3},`Yeni düzenleme yürürlükte. Bazı ülkeler itiraz etti.`), ch(`Uluslararası koordinasyon`,2,`Ortak trafik yönetimi.`,{bat:0.6,bol:0.4,des:-0.3},`Toplantılar yapıldı. Trafik yönetimi iyileşti.`), ch(`Mevcut düzeni sürdür`,0,`Değişiklik yok.`,{},`Gemi trafiği sıkışık kalmaya devam etti.`) ]},
+{id:'e_hazine',g:'eko',tag:'Ekonomi · Borçlanma',t:'Hazine İhalesi Tutmadı',x:()=>`Devlet tahvili ihalesine beklenenden az talep geldi. Faizler yükselmeden yeni borç bulmak zorlaşıyor.`,c:[ ch(`Yüksek faizle borçlan`,2,`Kaynak bulunur, maliyet artar.`,{borc:1,acik:0.4,rez:1},`Borçlanma tamamlandı, faiz yüksek.`), ch(`Harcama kesintisi ilan et`,3,`Güven verir, sosyal maliyeti var.`,{acik:-0.7,des:-1,huz:-0.3,bat:0.5},`Kesinti duyuruldu. Piyasa olumlu baktı.`), ch(`Merkez Bankası'ndan avans al`,2,`Enflasyonist yol.`,{enf:1.5,kur:3,bat:-0.5},`Avans alındı. Piyasa alarm verdi.`) ]},
+{id:'e_toplusoz',g:'eko',tag:'Ekonomi · Kamu',t:'Kamu Çalışanları Toplu Sözleşme',x:()=>`Memurlar zam talebiyle masaya oturdu. Öğretmenler ve sağlıkçılar uyarı eylemine hazırlanıyor.`,c:[ ch(`Talebin büyük bölümünü kabul et`,3,`Huzur getirir, açık büyür.`,{acik:0.7,enf:0.4,des:1.5,huz:0.6,par:0.3},`Sözleşme imzalandı. Memurlar memnun.`), ch(`Enflasyon hedefi kadar zam`,1,`Bütçeye uyumlu.`,{des:-0.5,huz:-0.2},`Zam kabul edildi ama hoşnutsuzluk sürdü.`), ch(`Sert pazarlık, eylemleri yasakla`,2,`Kararlılık göster.`,{des:-1.5,huz:-1,par:0.3},`Sözleşme tıkandı. İş bırakmalar başladı.`) ]},
+{id:'e_varlik',g:'eko',tag:'Ekonomi · Sermaye',t:'Yurt Dışındaki Sermayeyi Geri Çekme',x:()=>`Yurt dışında tutulan büyük bir sermaye var. Beyan karşılığında vergi indirimi önerisi geldi.`,c:[ ch(`Yüzde 5 vergiyle geri getir`,2,`Döviz gelir, eşitlik tartışması çıkar.`,{rez:6,acik:-0.3,des:-1,huz:-0.2},`Kanun çıktı. Milyarlarca dolar geri döndü.`), ch(`Yüzde 15 vergiyle daha sınırlı`,2,`Daha adil, daha az döviz.`,{rez:3,acik:-0.3,des:-0.3},`Sınırlı düzenleme geçti.`), ch(`Yapma`,0,`Vergi kaçakçılığı gündemi kalmasın.`,{des:0.3},`Konu kapandı.`) ]},
+/* --- YENİ: İÇ SİYASET --- */
+{id:'i_gerilim',g:'ic',tag:'İç siyaset · Toplum',t:'Mülteci Karşıtı Olaylar',x:()=>`Bir şehirde çıkan bir kavga mültecilere yönelik saldırılara dönüştü. Sosyal medyada nefret söylemi yükseliyor. ${M.ic.name} kararlı adım bekliyor.`,c:[ ch(`Olayları sert bastır`,2,`Huzur sağlanır, eleştiri gelir.`,{huz:0.8,des:0.3,bat:-0.3},`Olaylar bastırıldı. Gözaltılar yapıldı.`), ch(`Uzlaşma ve uyum programı`,3,`Kalıcı çözüm arayışı.`,{huz:0.6,bat:0.7,des:-0.5},`Programın ilk adımları atıldı.`), ch(`Göçmenleri geri gönderme sözü`,2,`Sokağı yatıştır.`,{des:1,huz:0.2,bat:-1,bol:-0.5},`Söz verildi. Uluslararası kuruluşlar tepki gösterdi.`) ]},
+{id:'i_infaz',g:'ic',tag:'İç siyaset · Ceza infaz',t:'Cezaevleri ve Af Tartışması',x:()=>`Cezaevleri kapasitenin üstünde. Af kanunu için bir grup parti destek veriyor, kamuoyu ise ikiye bölünmüş durumda.`,c:[ ch(`Genel af çıkar`,3,`Kapasite rahatlar, tepki büyür.`,{des:-1.5,huz:-0.5,par:-0.4,kol:0.5},`Af çıktı. Kamuoyunda büyük tartışma yaşandı.`), ch(`Sınırlı infaz düzenlemesi`,2,`Sadece suç türlerine göre.`,{des:-0.3,huz:0.2},`Düzenleme geçti.`), ch(`Yeni cezaevi yap`,3,`Bütçe yükü.`,{acik:0.4,des:0.3,huz:0.2},`İhale açıldı.`) ]},
+{id:'i_saglik',g:'ic',tag:'İç siyaset · Sağlık',t:'Sağlık Çalışanları Eylemi',x:()=>`Doktorlar ve hemşireler düşük maaş ve şiddet nedeniyle iş bıraktı. Hastanelerde ameliyatlar erteleniyor.`,c:[ ch(`Maaş ve şiddet önleme paketi`,3,`Talepleri karşıla.`,{acik:0.5,des:1.5,huz:0.6,par:0.2},`Paket açıklandı. Eylem sona erdi.`), ch(`Zorunlu hizmet kararı`,2,`Sert çözüm.`,{des:-1,huz:-0.7,par:0.2},`Eylemciler sürgün tehdidi aldı, sistem sarsıldı.`), ch(`Görüşme ve söz`,1,`Zaman kazan.`,{huz:0.1,des:-0.3},`Sözler verildi, somut adım yok.`) ]},
+{id:'i_kadin',g:'ic',tag:'İç siyaset · Toplumsal',t:'Kadın Hakları Yürüyüşü',x:()=>`Kadın örgütleri, şiddete karşı yasal düzenleme talebiyle büyük bir yürüyüş çağrısı yaptı. Koalisyon ortağı ise karşıt bir çizgide.`,c:[ ch(`Güçlü koruma yasası`,3,`Toplumun büyük kesimi destekler.`,{des:1.5,bat:0.7,huz:0.5,kol:-0.8,par:-0.3},`Yasa çıktı. Koalisyonda gerilim oldu.`), ch(`Mevcut yasaların uygulanmasını sıkılaştır`,1,`Yeni yasa çıkarma.`,{des:0.3,huz:0.2},`Kılavuz yayımlandı.`), ch(`Yürüyüşü yasakla`,1,`Sert cevap.`,{huz:-1,des:-1.5,bat:-0.6},`Yürüyüş engellendi. Tepki büyüdü.`) ]},
+{id:'i_mufredat',g:'ic',tag:'İç siyaset · Eğitim',t:'Eğitim Müfredatı Tartışması',x:()=>`Yeni müfredat taslağı iç kamuoyunu böldü. Öğretmen sendikaları, veliler ve muhafazakâr çevreler farklı istekler sıralıyor.`,c:[ ch(`Taslağı olduğu gibi uygula`,2,`Kararlılık göster.`,{des:-0.5,huz:-0.4,kol:0.4,par:0.2},`Müfredat yürürlüğe girdi. Tartışma sürdü.`), ch(`Geniş bir danışma süreci`,2,`Uzlaşı ara.`,{des:0.4,huz:0.4,par:-0.2},`Danışma toplantıları başladı.`), ch(`Taslağı geri çek`,1,`Tartışmayı kapat.`,{des:0.3,kol:-0.5,par:-0.2},`Taslak geri çekildi. Koalisyon ortağı hoşnutsuz.`) ]},
+{id:'i_spor',g:'ic',tag:'İç güvenlik · Spor',t:'Derbi Sonrası Şiddet',x:()=>`Büyük bir derbinin ardından taraftar grupları arasında kanlı olaylar yaşandı. Yayıncı kuruluşlar ve federasyon önlem bekliyor.`,c:[ ch(`Seyirci yasağı ve sert cezalar`,2,`Kısa vadede rahatlık.`,{huz:0.5,des:0.2},`Yasak geldi. Kulüpler mali kayıp yaşadı.`), ch(`Kimlik ve biletli giriş sistemi`,2,`Uzun vadeli tedbir.`,{huz:0.6,des:0.3,acik:0.1},`Yeni sistem kuruldu.`), ch(`Federasyona bırak`,0,`Müdahale etme.`,{huz:-0.3},`Olaylar sonraki haftalarda da yaşandı.`) ]},
+{id:'i_sosyalmedya',g:'ic',tag:'İç siyaset · İnternet',t:'Sosyal Medya Kısıtlaması',x:()=>`Bir skandal haberinin yayılmasının ardından, sosyal medya platformlarına bant daraltma önerisi geldi. Gençler ve iş dünyası itiraz ediyor.`,c:[ ch(`Bant daraltma uygula`,2,`Haber yayılımı durur, ama tepki büyür.`,{des:-1.5,huz:-0.8,bat:-1,par:0.2},`Kısıtlama getirildi. VPN indirmeleri arttı.`), ch(`Platformlarla temsilci şartı`,2,`Yasal düzenleme.`,{bat:-0.2,des:-0.3},`Şartlar konuldu. Bazı platformlar uyum sağladı.`), ch(`Dokunma`,0,`Serbest bırak.`,{bat:0.3,des:0.2},`Konu kendi kendine söndü.`) ]},
+{id:'i_esnaf',g:'ic',tag:'İç siyaset · Ekonomi',t:'Esnaf Kepenk Kapattı',x:()=>`Kira, vergi ve enerji giderlerinden bunalan esnaf odaları uyarı olarak bir günlük kepenk kapatma kararı aldı.`,c:[ ch(`Vergi ve SGK erteleme paketi`,2,`Esnafı rahatlat.`,{acik:0.4,des:1.5,huz:0.4},`Paket açıklandı. Kepenkler açıldı.`), ch(`Odalarla görüş, ufak destek`,1,`Sembolik destek.`,{des:0.3,acik:0.1},`Görüşme yapıldı. Esnaf yeterli bulmadı.`), ch(`Aldırma`,0,`Tepkiyi yoksay.`,{des:-1.2,huz:-0.3},`Eylem büyüdü.`) ]},
+{id:'i_orman',g:'ic',tag:'İç güvenlik · Afet',t:'Orman Yangınları',x:()=>`Ege ve Akdeniz'de yüzlerce hektar orman yanıyor. Yangın söndürme uçakları yetersiz, köyler tahliye ediliyor.`,c:[ ch(`Kalıcı yangın filosu kur`,3,`Uzun vadeli ama pahalı.`,{acik:0.4,des:1,huz:0.4,ord:0.2},`Filo için ihale açıldı. Yeni yangınlara daha hazırsınız.`), ch(`Uluslararası yardım iste`,1,`Hızlı çözüm.`,{bat:0.4,bol:0.4,des:0.2},`Yardım uçakları geldi.`), ch(`Bölgeye git, liderlik göster`,2,`Kişisel varlık.`,{des:1.2,huz:0.3},`Ziyaret medyada geniş yer buldu.`) ]},
+{id:'i_donusum',g:'ic',tag:'İç siyaset · Kentsel dönüşüm',t:'Kentsel Dönüşüm Direnişi',x:()=>`Kentsel dönüşüm kapsamındaki bir mahallede sakinler tahliyeye direniyor. Müteahhit ve belediye arasında rant tartışması var.`,c:[ ch(`Yüksek tazminat ve yeniden yerleşim`,3,`Halkı ikna et.`,{acik:0.3,des:0.8,huz:0.3},`Sakinler ikna edildi. Yıkım başladı.`), ch(`Zorla tahliye`,2,`Hızlı sonuç, sert tepki.`,{des:-1.5,huz:-1,par:0.2},`Tahliye yapıldı. Görüntüler sosyal medyada infiale yol açtı.`), ch(`Projeyi durdur`,1,`Yeniden değerlendir.`,{des:0.5,huz:0.4,buy:-0.1},`Proje askıya alındı.`) ]},
+{id:'i_lider',g:'ic',tag:'İç siyaset · Parti',t:'Genç Lider Adayı Çıktı',x:()=>`Partide popüler bir genç bakan, liderlik için "vakit geldi" demeye başladı. Sadakatçiler rahatsız, Reformcular ise heyecanlı.`,c:[ ch(`Genç lideri kabineye al`,2,`Yakınına çek.`,{par:0.4,fR:4,des:0.5,fS:-2},`Genç lider kabinede yerini aldı.`), ch(`Etkisizleştir`,2,`Görev alanını daralt.`,{par:-0.6,fS:3,fR:-3,des:-0.3},`Genç lider geri plana itildi. Reformcular rahatsız.`), ch(`Açıkça destekle`,1,`Halefiyet planı.`,{des:0.8,par:0.3,fR:5,fG:-3},`Destek açıklandı. Kamuoyu heyecanlandı.`) ]},
+{id:'i_dokunulmaz',g:'ic',tag:'İç siyaset · Meclis',t:'Milletvekili Dokunulmazlığı',x:()=>`Muhalefet ve iktidardan birkaç milletvekili hakkında fezleke geldi. Meclis'te dokunulmazlık kaldırılsın mı tartışması yaşanıyor.`,c:[ ch(`Dokunulmazlıkları kaldır`,3,`Eşitlik mesajı.`,{des:1,par:-0.5,kol:-0.3,huz:0.2},`Meclis oylaması sonuçlandı. Kamuoyu memnun.`), ch(`Sadece kendi vekillerini koru`,2,`Kısmi koruma.`,{des:-1.5,bat:-0.4,par:0.3},`Seçici davranış eleştirildi.`), ch(`Meclis komisyonuna havale et`,0,`Ertele.`,{},`Komisyon dosyayı bekletti.`) ]},
+{id:'i_muhittifak',g:'ic',tag:'İç siyaset · Muhalefet',t:'Muhalefet Birleşiyor',x:()=>`Farklı görüşten muhalefet partileri ortak aday ve ortak seçim stratejisi konusunda anlaştı. Anketlerde hükümetin önüne geçme ihtimali var.`,c:[ ch(`Karşı ittifak duyur`,3,`Ortaklarla güç birliği.`,{kol:1,des:0.5,par:0.3,kamp:0},`İttifak duyuruldu. Koalisyon ortağıyla sıkı işbirliği sağlandı.`), ch(`Muhalefeti bölmeye çalış`,3,`Riskli manevra.`,{},``,{fn:()=>Math.random()<0.45?{fx:{des:1.5,kol:0.3},msg:`Muhalefet içinde çatlak oluştu.`}:{fx:{des:-1,par:-0.3},msg:`Girişim ortaya çıktı, itibar zedelendi.`}}), ch(`Sadece kendi işine bak`,0,`Ekonomiye odaklan.`,{des:-0.5},`Muhalefet güçlendi.`) ]},
+{id:'i_stk',g:'ic',tag:'İç siyaset · Sivil toplum',t:'Yabancı Finansman Yasası',x:()=>`Yabancı kaynaktan fon alan sivil toplum kuruluşlarını denetleyen bir yasa önerisi hazırlandı. AB ve Batılı elçilikler kaygılı.`,c:[ ch(`Yasayı çıkar`,2,`Denetim güçlenir, tepki artar.`,{des:0.3,bat:-1.5,huz:-0.4,par:0.3},`Yasa çıktı. Uluslararası eleştiriler yükseldi.`), ch(`Yumuşatılmış versiyon`,2,`Şeffaflık odaklı.`,{bat:-0.3,des:0.1},`Metin yumuşatıldı ve kabul edildi.`), ch(`Rafa kaldır`,0,`Şimdilik gerek yok.`,{bat:0.3,par:-0.2},`Yasa taslağı rafa kalktı.`) ]},
+{id:'i_transfer',g:'ic',tag:'İç siyaset · Meclis',t:'Milletvekili Transferi',x:()=>`Muhalefetten üç milletvekili partine geçmek için pazarlığa oturdu. Bakanlık ve liste sırası istiyorlar.`,c:[ ch(`Kabul et`,2,`Meclis çoğunluğu güçlenir.`,{kol:0.5,des:-0.5,par:-0.4,huz:-0.1},`Transfer gerçekleşti. Parti içi tepki geldi.`), ch(`Şartlı kabul`,2,`Bakanlık yok, liste garantisi yok.`,{par:0.1,des:0.1},`Şartlı olarak kabul edildi.`), ch(`Reddet`,0,`İlkeli duruş.`,{des:0.5,par:0.3,kol:-0.2},`Transfer teklifi reddedildi.`) ]},
+/* --- YENİ: DIŞ İŞLERİ / ASKERİ --- */
+{id:'d_karadeniz',g:'dis',tag:'Dış işleri · Karadeniz',t:'Karadeniz\'de Savaşın Taşması',x:()=>`Karadeniz'de savaşan iki ülkenin gemileri Boğaz yakınlarında olay çıkardı. Bir seyir güvenliği krizi doğdu.`,c:[ ch(`Boğazları kapat`,3,`Sözleşme gereği kararlı adım.`,{bat:0.5,dog:-0.5,bol:0.5,ord:0.3,cari:0.5},`Boğazlar askeri gemilere kapatıldı. Taraflar tepki gösterdi.`), ch(`Arabuluculuk teklifi`,2,`Diplomatik çıkış.`,{bol:0.8,bat:0.4,dog:0.4},`Teklif her iki tarafça ilgiyle karşılandı.`), ch(`Tarafsız kal, bekle`,0,`Kendi çıkarını gözet.`,{},`Ülke tarafsız kaldı.`) ]},
+{id:'d_ateskes',g:'dis',tag:'Dış işleri · Bölge',t:'Bölgesel Çatışmada Ateşkes Fırsatı',x:()=>`Komşu bölgede iki silahlı taraf arasında ateşkes için garantör ülke aranıyor. Sorumluluk büyük, itibar getirisi de öyle.`,c:[ ch(`Garantör olmayı kabul et`,3,`Kalıcı barış şansı, risk var.`,{},``,{fn:()=>Math.random()<0.55?{fx:{bol:1.5,bat:0.7,dog:0.7,des:1},msg:`Ateşkes sağlandı. Diplomatik başarı kutlandı.`}:{fx:{bol:-0.5,des:-1,ord:-0.3},msg:`Ateşkes çöktü. Türkiye suçlamalara maruz kaldı.`}}), ch(`Destekleyici rol`,1,`Arka planda kal.`,{bol:0.4,bat:0.2},`Destek sunuldu, sorumluluk paylaşıldı.`), ch(`Katılma`,0,`Sorumluluk alma.`,{bol:-0.3},`Türkiye görüşmelerin dışında kaldı.`) ]},
+{id:'d_iran',g:'dis',tag:'Dış işleri · Komşular',t:'Komşuyla Nükleer Gerginlik',x:()=>`Komşu bir ülkenin nükleer programı yüzünden bölgede savaş korkusu var. Batı, yaptırım için desteğini istiyor.`,c:[ ch(`Yaptırımlara destek ver`,2,`Batı memnun, komşu öfkeli.`,{bat:1.2,bol:-1,cari:1,dog:-0.5},`Destek açıklandı. Komşuyla ilişkiler gerildi.`), ch(`Diplomasi ve arabuluculuk`,2,`Dengeli tutum.`,{bol:0.8,bat:0.3,des:0.3},`Görüşmeler yürütüldü.`), ch(`Enerji ticaretini koru, sessiz kal`,1,`Pragmatik yaklaşım.`,{cari:-1,bat:-0.4,dog:0.3},`Enerji ticareti devam etti.`) ]},
+{id:'d_ada',g:'dis',tag:'Dış işleri · Ada meselesi',t:'Ada Meselesinde Müzakere Baskısı',x:()=>`BM, adanın geleceği için yeni bir müzakere turu düzenlemek istiyor. Taraflar birbirine şartlar öne sürüyor.`,c:[ ch(`Federal çözüme açık ol`,3,`Uzlaşma jesti, iç siyasette maliyeti var.`,{bat:1,bol:0.6,des:-1.5,par:-0.5,kol:-0.6},`Federal çözüme açıklık sinyali verildi. Milliyetçi çevreler öfkelendi.`), ch(`İki devletli çözümde ısrar`,1,`Mevcut çizgi.`,{des:0.8,bat:-0.8,kol:0.3},`Sert tutum sürdü. Müzakereler tıkandı.`), ch(`Masaya oturma`,0,`Süreci bekle.`,{bat:-0.3},`Türkiye müzakereye katılmadı.`) ]},
+{id:'d_afrika',g:'dis',tag:'Dış işleri · Afrika',t:'Afrika\'da Askeri Üs Teklifi',x:()=>`Doğu Afrika'da bir ülke, ticaret ve savunma iş birliği karşılığında askeri üs teklif etti. Bölgesel güç dengeleri hassas.`,c:[ ch(`Üsse ve anlaşmaya evet`,3,`Nüfuz alanı genişler.`,{ord:0.5,cari:-1.5,bol:-0.5,bat:-0.5,dog:0.5},`Anlaşma imzalandı. Bölge rakipleri kaygılı.`), ch(`Sadece ticari ortaklık`,2,`Askeri unsur olmadan.`,{cari:-1.5,dog:0.4,bol:0.2},`Ticari anlaşma imzalandı.`), ch(`Reddet`,0,`Riskten kaçın.`,{},`Teklif geri çevrildi.`) ]},
+{id:'d_brics',g:'dis',tag:'Dış işleri · Ekonomik blok',t:'BRICS Üyelik Daveti',x:()=>`Yükselen ekonomiler bloku, ülkeyi üyelik görüşmelerine çağırdı. Batı ittifakının bu durumdan hoşnut olmayacağı belli.`,c:[ ch(`Üyelik başvurusu yap`,3,`Doğu'yla bağı güçlendirir.`,{dog:1.5,bat:-1.5,cari:-1,rez:2,par:-0.3},`Başvuru yapıldı. Batı başkentleri tepkili.`), ch(`Gözlemci statüsü`,2,`Denge politikası.`,{dog:0.7,bat:-0.4,rez:1},`Gözlemci statüsü kabul edildi.`), ch(`Reddet`,0,`Batı ittifakını koru.`,{bat:0.6,dog:-0.6},`Teklif kibarca reddedildi.`) ]},
+{id:'d_su',g:'dis',tag:'Dış işleri · Su',t:'Sınır Aşan Nehirlerde Su Krizi',x:()=>`Komşu ülkeler kuraklık yüzünden aşağı havzadaki su paylaşımı için baskı yapıyor. Barajlardan daha fazla su bırakılması isteniyor.`,c:[ ch(`Ek su bırak`,2,`İtibar kazanır, tarım zarar görür.`,{bol:0.8,des:-0.8,buy:-0.1},`Ek su bırakıldı. Çiftçiler şikayetçi.`), ch(`Karşılıklı su-enerji anlaşması`,3,`Takas.`,{bol:0.5,cari:-1,des:0.2},`Su-enerji takas anlaşması imzalandı.`), ch(`Talebi reddet`,0,`Kendi ihtiyacını önle.`,{bol:-1,des:0.3},`Talep reddedildi. Komşu ülkeler öfkeli.`) ]},
+{id:'d_buyukelci',g:'dis',tag:'Dış işleri · Diplomasi',t:'Büyükelçi Krizi',x:()=>`Bir Batılı büyükelçinin iç siyaseti eleştiren açıklamaları gündemi karıştırdı. Parti içinde "istenmeyen adam ilan edilsin" sesleri var.`,c:[ ch(`Büyükelçiyi sınır dışı et`,2,`Sert diplomatik adım.`,{des:1.2,bat:-1.5,par:0.3},`Büyükelçi sınır dışı edildi. Karşılıklı gerginlik büyüdü.`), ch(`Resmi nota ver`,1,`Ölçülü tepki.`,{des:0.4,bat:-0.3},`Nota verildi. Büyükelçi açıklama yaptı.`), ch(`Görmezden gel`,0,`Önemsiz say.`,{des:-0.5,par:-0.2},`Kriz kendi kendine söndü.`) ]},
+{id:'d_casus',g:'dis',tag:'Dış işleri · İstihbarat',t:'Casusluk Skandalı',x:()=>`Yabancı bir istihbarat servisinin ülkede ağ kurduğu iddia edildi. Gözaltılar yapıldı, diplomatik kanallarda gerginlik var.`,c:[ ch(`Kamuoyuna açıkla`,2,`Kararlılık göster.`,{des:1,bat:-0.8,ord:0.3},`Skandal açıklandı. Kamuoyu destek verdi.`), ch(`Diplomatik kanaldan çöz`,2,`Sessizce halle.`,{bat:0.3,des:-0.3},`Sorun gizlice çözüldü.`), ch(`Karşı operasyon`,3,`Aynı yolla karşılık ver.`,{ord:0.5,bat:-0.5,huz:-0.2},`Karşı operasyon yapıldı. İki taraf da suçladı.`) ]},
+{id:'a_havasavunma',g:'dis',tag:'Askeri · Hava savunma',t:'Hava Savunma Sistemi Alımı',x:()=>`Komşu bölgede füze saldırıları arttı. Genelkurmay yeni bir hava savunma sistemi istiyor. Batılı ve Doğulu tedarikçiler yarışıyor.`,c:[ ch(`Batı sistemi al`,3,`İttifakla uyumlu.`,{bat:1,ord:0.5,acik:0.4,dog:-0.4},`Sözleşme imzalandı. Batı başkentleri memnun.`), ch(`Doğu sistemi al`,3,`Daha ucuz ve hızlı, ama yaptırım riski.`,{dog:1,ord:0.5,bat:-1.5,acik:0.3},`Sözleşme imzalandı. Yaptırım tehditleri geldi.`), ch(`Yerli sistemi hızlandır`,2,`Uzun vadeli çözüm.`,{ord:0.2,acik:0.2,buy:0.1},`Yerli proje için ek kaynak ayrıldı.`) ]},
+{id:'a_denizalti',g:'dis',tag:'Askeri · Donanma',t:'Denizaltı ve Fırkateyn Programı',x:()=>`Donanma yıpranmış. ${M.sav.name} yeni bir denizaltı ve fırkateyn programı için bütçe istiyor.`,c:[ ch(`Tam programı onayla`,3,`Uzun vadeli güç.`,{ord:0.8,acik:0.5,buy:0.2,bol:-0.2},`Program onaylandı. Tersaneler doldu.`), ch(`Aşamalı program`,2,`Bütçeyi yay.`,{ord:0.4,acik:0.2},`Aşamalı program onaylandı.`), ch(`Ertele`,0,`Kaynak yok.`,{ord:-0.5},`Program ertelendi. Donanmada memnuniyetsizlik var.`) ]},
+{id:'a_askerlik',g:'dis',tag:'Askeri · Personel',t:'Askerlik Süresi ve Bedelli',x:()=>`Ordu profesyonelleşme ve daha kısa askerlik süresi tartışıyor. Genç seçmen kısaltma istiyor, generaller tehlike görüyor.`,c:[ ch(`Süreyi kısalt, bedelliyi genişlet`,2,`Gençler memnun.`,{des:1.2,ord:-0.6,acik:-0.2},`Süre kısaltıldı. Gençler sevindi, kışlada rahatsızlık var.`), ch(`Profesyonel orduya geçiş planı`,3,`Uzun vadeli reform.`,{ord:0.3,acik:0.4,des:0.3},`Plan hazırlandı. Uygulaması yıllar alacak.`), ch(`Mevcut düzeni koru`,0,`Değişiklik yok.`,{ord:0.2,des:-0.4},`Sistem aynı kaldı.`) ]},
+{id:'a_tatbikat',g:'dis',tag:'Askeri · Tatbikat',t:'Büyük Ortak Tatbikat Daveti',x:()=>`Bir müttefikin öncülüğünde büyük bir ortak tatbikat düzenleniyor. Aynı dönemde bir Doğu ülkesi de ortak tatbikat teklif etti.`,c:[ ch(`Müttefikin tatbikatına katıl`,2,`İttifak bağı güçlenir.`,{bat:0.8,ord:0.5,dog:-0.3},`Tatbikata katılım tamamlandı. Yüksek prestij sağlandı.`), ch(`Doğu ülkesiyle tatbikat yap`,2,`Denge politikası.`,{dog:0.8,ord:0.4,bat:-0.8},`Tatbikat yapıldı. Batı tepki gösterdi.`), ch(`İkisine de katıl`,4,`Çift taraflı denge.`,{bat:0.3,dog:0.3,ord:0.6,acik:0.2},`Her iki tatbikat da yapıldı. Türkiye dengeci imajını korudu.`) ]},
+/* --- YENİ: ANİ KRİZLER --- */
+{id:'k_suikast',g:'kriz',tag:'ACİL · Suikast',t:'Suikast Girişimi',x:()=>`Bir törende yakın koruma ekibi son anda saldırganı etkisiz hale getirdi. Yaralandın ama hayattasın. Ülke nefesini tuttu.`,c:[ ch(`Ulusa seslen, sakinlik çağrısı yap`,1,`Toplumu birleştir.`,{des:3,huz:0.5,par:0.5},`Yaralı halde yaptığın konuşma büyük yankı buldu.`), ch(`OHAL ve geniş gözaltı`,3,`Sert tepki.`,{des:1,huz:-1,bat:-1,ord:0.3},`Yüzlerce gözaltı yapıldı. Eleştiriler geldi.`), ch(`Şeffaf soruşturma`,2,`Sorumluları bul.`,{des:1.5,bat:0.5,huz:0.3},`Soruşturma başladı.`) ]},
+{id:'k_darbe',g:'kriz',tag:'ACİL · Darbe',cond:()=>S.ord<5,t:'Darbe Teşebbüsü',x:()=>`Gece yarısı bir grup subay tankları harekete geçirdi. Havalimanı ve köprüler kapatıldı. Kritik saatler yaşanıyor.`,c:[ ch(`Halkı sokağa çağır`,2,`Meşruiyet direnişi.`,{},``,{fn:()=>Math.random()<0.7?{fx:{des:6,ord:-1,huz:-1,par:1},msg:`Halk sokağa çıktı. Girişim püskürtüldü, tasfiyeler başladı.`}:{fx:{des:-4,huz:-3,ord:-2,par:-1},msg:`Çatışmalar günlerce sürdü. Ülke sarsıldı.`}}), ch(`Sadık birliklere emret`,3,`Hızlı sert cevap.`,{des:2,ord:-1.5,huz:-1,par:0.5},`Sadık birlikler girişimi bastırdı.`), ch(`Müzakere ve teslim çağrısı`,1,`Kan dökmeden çöz.`,{des:-2,ord:-2,huz:-2,par:-1},`Müzakere sonuç vermedi. Kriz uzadı.`) ]},
+{id:'k_savas',g:'kriz',tag:'ACİL · Savaş',t:'Komşuda Tam Ölçekli Savaş',x:()=>`Komşu ülkede büyük bir savaş başladı. Sınıra yüz binlerce kişi yöneliyor. Uluslararası toplum bir tavır bekliyor.`,c:[ ch(`Seferberlik ve sınır tahkimi`,4,`Askeri hazırlık.`,{ord:1,des:1,acik:0.8,huz:-0.3,bol:-0.5},`Sınır boyunca tahkimat yapıldı. Ekonomi savaş etkisine girdi.`), ch(`Diplomatik seferberlik`,3,`Barış girişimi.`,{bol:1,bat:0.7,dog:0.7,des:0.3},`Yoğun diplomasi başlatıldı.`), ch(`İnsani koridor ve yardım`,3,`Sivilleri koru.`,{bol:0.8,bat:0.8,acik:0.5,des:-0.3},`İnsani koridor açıldı, yardım ulaştırıldı.`) ]},
+{id:'k_pandemi',g:'kriz',tag:'ACİL · Salgın',t:'Yeni Bir Salgın',x:()=>`Hızla yayılan yeni bir virüs görüldü. Hastaneler doluyor, bilim kurulu kısıtlama öneriyor.`,c:[ ch(`Sert kapanma`,3,`Can kaybını önler, ekonomiyi vurur.`,{buy:-1.5,isz:1.2,des:-0.5,huz:0.3,acik:0.7},`Kapanma ilan edildi. Ekonomi yavaşladı.`), ch(`Hedefli kısıtlamalar`,2,`Dengeli yaklaşım.`,{buy:-0.5,isz:0.4,des:0.3,acik:0.3},`Hedefli önlemler uygulandı.`), ch(`Aşı ve tedavi seferberliği`,3,`Bilimsel yaklaşım.`,{acik:0.6,des:0.8,bat:0.4,huz:0.4},`Aşı kampanyası hızla başlatıldı.`) ]},
+{id:'k_sebeke',g:'kriz',tag:'ACİL · Siber',t:'Ulusal Şebeke Çöktü',x:()=>`Siber saldırı sonucu iki büyük şehirde elektrik ve iletişim durdu. Hastaneler jeneratörle çalışıyor.`,c:[ ch(`Ordu ve siber birimleri devreye al`,3,`Hızlı müdahale.`,{ord:0.5,des:0.8,huz:0.3,acik:0.3},`Şebeke saatler içinde ayağa kaldırıldı.`), ch(`Yabancı uzman yardımı`,2,`Müttefik desteği.`,{bat:0.5,des:0.2,huz:0.2},`Uzmanlar yardımla sistemi onardı.`), ch(`Kamuoyunu bilgilendir ve sakin kal`,1,`Sadece iletişim.`,{des:-1,huz:-0.7},`Krizin yönetimi eleştirildi.`) ]},
+{id:'k_finans',g:'kriz',tag:'ACİL · Küresel piyasa',t:'Küresel Finans Şoku',x:()=>`Büyük bir Batı bankasının çöküşü küresel piyasaları sarstı. Gelişmekte olan ülkelerden sermaye kaçıyor.`,c:[ ch(`Rezervi savun, faizi artır`,3,`Sert savunma.`,{rez:-4,kur:-3,buy:-0.6,des:-1,lv:{faiz:5}},`Faiz artırıldı, rezerv kullanıldı.`), ch(`Kuru serbest bırak`,1,`Rezervi koru.`,{kur:10,enf:2.5,des:-2,cari:-1},`Kur sıçradı ama rezerv korundu.`), ch(`IMF ve Körfez'den acil finansman`,3,`Dışarıdan kaynak.`,{rez:8,borc:2,bat:0.5,dog:0.5,des:-1},`Acil finansman sağlandı.`) ]},
+{id:'k_yangin',g:'kriz',tag:'ACİL · Afet',t:'Büyük Sel Felaketi',x:()=>`Karadeniz bölgesinde sel felaketi yaşandı. Köprüler yıkıldı, onlarca kişi kayıp. Afet bölgesi ilan edilmesi isteniyor.`,c:[ ch(`Bölgeye git, kişisel liderlik`,2,`Kriz yönetimi ve sahada olma.`,{des:1.5,huz:0.4},`Ziyaret ve koordinasyon olumlu karşılandı.`), ch(`Afet bölgesi ilan et ve yardım seferberliği`,3,`Güçlü devlet imajı.`,{acik:0.5,des:1.2,huz:0.4},`Yardım ve onarım seferberliği başlatıldı.`), ch(`Yerel yönetime bırak`,0,`Merkezi müdahale yok.`,{des:-2,huz:-0.7},`Yerel yönetim yetersiz kaldı, tepki büyüdü.`) ]},
+{id:'k_sizinti',g:'kriz',tag:'ACİL · Sızıntı',t:'Gizli Belgeler Sızdırıldı',x:()=>`Hükümetin özel diplomatik yazışmaları ve bazı gizli iç değerlendirmeler internete sızdırıldı. Müttefiklerle ve kabine içinde güven sarsıldı.`,c:[ ch(`Sızıntıyı kabul et, özür dile`,1,`Şeffaflık.`,{des:-0.5,bat:0.3,par:-0.3},`Özür dileme yaklaşımı krizin büyümesini önledi.`), ch(`Sahte olduğunu iddia et`,2,`İnkâr stratejisi.`,{},``,{fn:()=>Math.random()<0.4?{fx:{des:0.5},msg:`İnkâr işe yaradı. Kriz söndü.`}:{fx:{des:-2.5,bat:-1},msg:`Belgelerin gerçekliği doğrulandı. İtibar sarsıldı.`}}), ch(`Kaynağı bulmak için operasyon`,3,`Sert takip.`,{des:-0.5,huz:-0.4,bat:-0.4},`Soruşturma başladı ama tepki çekti.`) ]},
+/* --- YENİ: SEÇİM KAMPANYASI --- */
+{id:'c_miting',g:'kamp',tag:'Seçim kampanyası',t:'Büyük Şehir Mitingleri',x:()=>`Seçime az kaldı. Parti teşkilatı büyükşehirlerde miting takvimi hazırladı. Katılım, mesajın gücüne ve ekonomik ruh haline bağlı.`,c:[ ch(`Tüm şehirlerde miting turu`,3,`Yoğun tempo, yüksek risk.`,{},``,{fn:()=>Math.random()<0.35+S.des/150?{fx:{kamp:2.5,des:1,par:0.3},msg:`Meydanlar doldu. Mesaj karşılık buldu.`}:{fx:{kamp:0.5,des:-0.5},msg:`Katılım beklenenin altında kaldı.`}}), ch(`Sadece kilit şehirlerde`,2,`Seçici strateji.`,{kamp:1.2,des:0.4},`Kilit şehirlerde etkili mitingler yapıldı.`), ch(`Miting yerine ev ziyaretleri`,1,`Sessiz kampanya.`,{kamp:0.5,huz:0.2},`Ev ziyaretleri sonuç verdi.`) ]},
+{id:'c_ittifak',g:'kamp',tag:'Seçim kampanyası',t:'İttifak Pazarlığı',x:()=>`Seçim öncesi küçük partiler ittifak için masaya oturdu. Her biri bakanlık ve liste sırası istiyor.`,c:[ ch(`Geniş ittifak kur`,3,`Oy tabanını büyüt, taviz ver.`,{kamp:2,kol:0.8,par:-0.6},`İttifak duyuruldu. Oy potansiyeli arttı.`), ch(`Sadece mevcut ortakla devam et`,1,`Sağlam ama dar.`,{kamp:0.5,kol:0.3},`Mevcut ittifak korundu.`), ch(`Tek başına yarış`,0,`Bağımsız duruş.`,{kamp:-0.5,par:0.3,kol:-0.5},`Tek başına yarış kararı alındı.`) ]},
+{id:'c_vaat',g:'kamp',tag:'Seçim kampanyası',t:'Seçim Vaatleri Paketi',x:()=>`Kampanya ekibi, seçim beyannamesine büyük sosyal vaatler eklenmesini öneriyor. Maliye Bakanı vaatlerin bütçeye sığmadığını söylüyor.`,c:[ ch(`Cömert vaat paketi`,2,`Oy toplar, bütçeyi zorlar.`,{kamp:2.5,acik:0.6,des:1,lv:{sosyal:1}},`Vaatler açıklandı. Kamuoyunda büyük ilgi gördü.`), ch(`Ölçülü ve maliyetlendirilmiş program`,2,`Güven verir.`,{kamp:1,bat:0.3,des:0.3},`Program açıklandı. Ekonomistler olumlu baktı.`), ch(`Vaat yerine geçmiş performansı anlat`,1,`Deneyim vurgusu.`,{kamp:0.3},`Kampanya performans odaklı ilerledi.`) ]},
+{id:'c_munazara',g:'kamp',tag:'Seçim kampanyası',t:'Canlı TV Münazarası',x:()=>`Ana muhalefet lideri seni canlı yayında münazaraya davet etti. Kabul etmezsen "kaçtı" denecek, kabul edersen risk büyük.`,c:[ ch(`Kabul et ve hazırlan`,2,`Sahnede güçlü ol.`,{},``,{fn:()=>Math.random()<0.5+M.dis.sk/50?{fx:{kamp:3,des:1.5},msg:`Münazarada net bir üstünlük sağladın.`}:{fx:{kamp:-1.5,des:-1},msg:`Münazarada zor anlar yaşadın.`}}), ch(`Yerine bir bakan gönder`,1,`Riski dağıt.`,{kamp:0.2,des:-0.3},`Bakanın performansı vasat kaldı.`), ch(`Reddet`,0,`Katılma.`,{kamp:-1,des:-0.5},`Muhalefet "kaçtı" kampanyası yaptı.`) ]},
+{id:'c_anket',g:'kamp',tag:'Seçim kampanyası',t:'Anket Savaşı',x:()=>`Anket şirketleri birbirine zıt sonuçlar açıklıyor. Kamuoyunda "hangi anket doğru" tartışması var.`,c:[ ch(`Dost anketleri öne çıkar`,1,`Algı yönetimi.`,{kamp:0.8,des:0.3,bat:-0.2},`Anket sonuçları basında geniş yer buldu.`), ch(`Bağımsız anket şirketine yaptır`,2,`Gerçeği gör.`,{kamp:0.4,des:0.2},`Sonuç objektif bir bakış sağladı.`), ch(`Anketlerle uğraşma`,0,`Sahaya odaklan.`,{kamp:0.2},`Seçmene yönelik çalışma sürdü.`) ]},
+{id:'c_medya',g:'kamp',tag:'Seçim kampanyası',t:'Medya Stratejisi',x:()=>`Seçim öncesi televizyonlarda yayın süreleri paylaşılıyor. Yandaş ve muhalif kanallar arasında dengesiz dağılım iddiaları var.`,c:[ ch(`Yoğun reklam ve yayın kampanyası`,3,`Yüksek görünürlük.`,{kamp:2,acik:0.2,bat:-0.2},`Kampanya yoğun şekilde sürdürüldü.`), ch(`Sosyal medya ağırlıklı kampanya`,2,`Genç seçmene odaklan.`,{kamp:1.3,des:0.3},`Sosyal medya kampanyası gençlerden ilgi gördü.`), ch(`Yayın eşitliği taahhüdü`,1,`Adil görün.`,{kamp:0.5,bat:0.5,des:0.2},`Eşit yayın taahhüdü verildi.`) ]},
+{id:'c_muhalefet',g:'kamp',tag:'Seçim kampanyası',t:'Muhalefet Saldırısı',x:()=>`Muhalefet, ekonomik zorlukları bir "hesap günü" söylemine dönüştürdü. Kampanya sert bir mesaj çizgisine kayıyor.`,c:[ ch(`Karşı saldırıya geç`,2,`Sert kampanya.`,{kamp:1,des:0.3,huz:-0.4},`Karşı kampanya başladı, gerilim yükseldi.`), ch(`Pozitif kampanya`,2,`Umut vurgusu.`,{kamp:1.5,huz:0.3,des:0.4},`Pozitif kampanya seçmene iyi geldi.`), ch(`Yok say`,0,`Tepki gösterme.`,{kamp:-0.5,des:-0.3},`Muhalefet gündemi belirledi.`) ]},
+{id:'c_sandik',g:'kamp',tag:'Seçim kampanyası',t:'Sandık Güvenliği',x:()=>`Seçim güvenliği ve sandık başı örgütlenmesi tartışılıyor. Her iki taraf da hile iddialarına hazırlanıyor.`,c:[ ch(`Ulusal ve uluslararası gözlemci davet et`,2,`Şeffaflık.`,{kamp:0.8,bat:0.8,des:0.3},`Gözlemciler davet edildi. Süreç güven verdi.`), ch(`Sandık başı örgütlenmesini güçlendir`,2,`Teşkilat gücü.`,{kamp:1.5,par:0.3},`Teşkilat sahaya iniyor.`), ch(`Özel önlem alma`,0,`Mevcut düzen yeterli.`,{kamp:-0.3},`Herhangi bir ek tedbir alınmadı.`) ]}
+];
+const EVB=Object.fromEntries(EV.map(e=>[e.id,e]));
+
+/* ---------- Olay üretimi ve uygulama ---------- */
+function pickFrom(g){
+  const ok=e=>e.g===g&&(!e.cond||e.cond());
+  let c=EV.filter(e=>ok(e)&&!S.used.includes(e.id));
+  if(!c.length){S.used=S.used.filter(id=>EVB[id].g!==g);c=EV.filter(ok);}
+  return c.length?c[Math.floor(Math.random()*c.length)].id:null;
+}
+function genEvents(fixed){
+  let ids=fixed||['eko','ic','dis'].map(pickFrom).filter(Boolean);
+  if(!fixed){
+    const p=0.10+(S.huz<4?0.06:0)+(S.ord<4?0.05:0);
+    if(Math.random()<p){const k=pickFrom('kriz');if(k)ids.unshift(k);}
+    if(S.month%TERM>=TERM-3){const k=pickFrom('kamp');if(k)ids.push(k);}
+  }
+  if(!fixed&&S.month>=2&&(S.month-2)%12===0){const W=Math.round(S.enf*.9+rnd(5,12)),E=Math.round(S.enf*.55);S.wage={W,E,G:Math.round((W+E)/2)};}
+  const due=S.sched.filter(s=>s.due<=S.month);
+  S.sched=S.sched.filter(s=>s.due>S.month);
+  due.forEach(s=>ids.unshift(s.id));
+  ids.forEach(id=>{if(!S.used.includes(id))S.used.push(id);});
+  S.cur={events:ids.map(id=>({id,ch:null,msg:'',fxs:null})),spent:0};
+}
+function applyFx(fx){
+  for(const k in fx){
+    const v=fx[k];
+    if(k==='lv'){for(const l in v){
+      if(l==='faiz'){const r=LVR.faiz;S.lv.faiz=clamp(S.lv.faiz+v[l],r[0],r[1]);S.lv0.faiz=clamp(S.lv0.faiz+v[l],r[0],r[1]);}
+      else if(l==='vergi')S.tax.kdv=clamp(S.tax.kdv+v[l]*2,0,100);
+      else if(l==='sosyal')S.bud.calisma=clamp(S.bud.calisma*(1+.1*v[l]),MB.calisma*.4,MB.calisma*2);
+      else if(l==='sav')S.bud.sav=clamp(S.bud.sav+v[l],MB.sav*.4,MB.sav*2);}}
+    else if(k==='kur')S.kur*=1+v/100;
+    else if(k==='fR'||k==='fG'||k==='fS'){const f=k[1];S.fac[f]=Math.max(3,S.fac[f]+v);const t=S.fac.R+S.fac.G+S.fac.S;for(const q in S.fac)S.fac[q]=S.fac[q]/t*100;}
+    else if(RANGE[k]){S[k]=clamp(S[k]+v,RANGE[k][0],RANGE[k][1]);}
+  }
+}
+function decide(ei,ci){
+  const ev=S.cur.events[ei];if(ev.ch!==null)return;
+  const d=EVB[ev.id],c=d.c[ci];
+  if(c.ss>avail()&&c.ss>Math.min(...d.c.map(x=>x.ss)))return;
+  const before=snap();
+  let fx=c.fx,msg=c.m,later=c.later;
+  if(c.fn){const r=c.fn();fx=r.fx;msg=r.msg;later=r.later||later;}
+  applyFx(fx);
+  if(later)later.forEach(l=>S.sched.push({due:S.month+l.m,id:l.id}));
+  S.cur.spent+=c.ss;
+  ev.ch=ci;ev.msg=msg;
+  const after=snap();const fxs=[];
+  STATS.forEach(s=>{const dd=after[s.k]-before[s.k];if(Math.abs(dd)>=0.05)fxs.push([s.l,dd,s.d,s.u]);});
+  ev.fxs=fxs;
+  S.log.push({m:S.month,t:d.t,c:c.l,msg});
+  save();render();
+}
+
+/* ---------- Aylık simülasyon ---------- */
+function simulate(){
+  const L=S.lv,s=S,mk=M,X=eco(),e=k=>X.E[k]||0;
+  const real=L.faiz-s.enf,sf=x=>x>20?20+(x-20)*.1:x<-20?-20+(x+20)*.1:x,rl=sf(real);
+  let depr=1.6+0.05*(s.enf-40)-0.05*(s.rez-22)-0.10*(rl+3)+rnd(-0.8,0.8)-(mk.maliye.sk-5)*0.1+(s.des<30?0.5:0)+(s.huz<4?0.4:0);
+  depr+=0.3*Math.max(0,s.acik-7);depr=clamp(depr,-0.5,9);
+  s.kur*=1+depr/100;
+  s.rez+=-0.3*Math.max(0,s.acik-7)-0.5+0.10*(rl+3)+(depr>4?-2:0)+(s.bat-5)*0.1+rnd(-0.6,0.6)+e('rez');
+  s.enf+=-0.09*(rl+3)+0.5*(depr-1.6)+0.15*(s.acik-4.6)+rnd(-0.4,0.4)-(mk.mb.sk-5)*0.06+e('enf');
+  const tg=2.8-0.05*(L.faiz-45)+e('buy')-0.03*(s.enf-48);
+  s.buy+=(tg-s.buy)*0.25+rnd(-0.1,0.1);
+  s.isz+=0.04*(3.0-s.buy)+0.02*(9.2-s.isz)+rnd(-0.05,0.05);
+  const ta=4.6+X.dev-X.rev+e('acik')+0.06*sf(L.faiz-45)-0.15*(s.buy-2.8)+loanC();
+  s.acik+=(ta-s.acik)*0.3;
+  s.borc+=0.10*(s.acik-2.5)+0.06*depr-0.1;
+  s.cari+=0.25*(s.buy-2.8)-0.1*(depr-1.6)+(34-s.cari)*0.03+rnd(-0.4,0.4)+e('cari');
+  s.des+=-0.06*(s.enf-45)+0.35*(s.buy-2.5)-0.25*(s.isz-9.2)+0.1*(s.huz-5)-0.15+(41-s.des)*0.02+e('des');
+  s.par+=(6-s.par)*0.05+(s.des-40)*0.01+e('par');
+  s.kol+=(6-s.kol)*0.04;
+  s.ord+=e('ord')+(mk.sav.sk-5)*0.03+(6-s.ord)*0.03;
+  s.huz+=(mk.ic.sk-5)*0.03+(6-s.huz)*0.05-(s.enf-45)*0.01+e('huz');
+  ['bat','dog','bol'].forEach(k=>s[k]+=(6-s[k])*0.03+(mk.dis.sk-5)*0.02+e(k));
+  s.pens+=.02;s.rez-=S.loans.reduce((a,l)=>a+l.amt*l.rate/1200,0);S.loans=S.loans.filter(l=>{if(l.end>s.month+1)return true;s.rez-=l.amt;s.borc-=l.amt/s.gdp*100;return false;});
+  s.gdp*=1+s.buy/1200;MIN.forEach(m=>{if(S.own[m[0]])s.kol+=(S.bud[m[0]]-m[2])/m[2]*.3;});
+  for(const k in RANGE)s[k]=clamp(s[k],RANGE[k][0],RANGE[k][1]);
+  return depr;
+}
+function headlines(a,b,depr){
+  const h=[];
+  const d=k=>b[k]-a[k];
+  if(d('enf')>0.8)h.push(`Enflasyon beklentilerin üzerinde: yıllık %${nf(b.enf,1)}.`);
+  if(d('enf')<-0.8)h.push(`Enflasyonda gerileme: yıllık %${nf(b.enf,1)}.`);
+  if(depr>4)h.push(`Dolar hızla yükseldi: ${nf(b.kur,2)} ₺.`);
+  if(b.rez<10)h.push('Merkez Bankası rezervleri alarm veriyor.');
+  if(d('des')<-1.5)h.push('Anketlerde iktidarın oyu düşüyor.');
+  if(d('des')>1.5)h.push('Son anketlerde iktidara destek yükseldi.');
+  if(b.ord<4)h.push('Kışlada huzursuzluk iddiaları gündemde.');
+  if(b.huz<4)h.push('Sokaklarda gerilim artıyor.');
+  if(b.kol<4)h.push('Koalisyon ortağından "erken seçim" sinyali.');
+  if(b.par<4)h.push('Parti içi muhalifler kurultay istiyor.');
+  if(b.buy>4)h.push('Ekonomi beklentilerin üzerinde büyüyor.');
+  if(b.isz>12)h.push('İşsizlik endişe verici seviyede.');
+  if(!h.length)h.push('Piyasalar sakin, siyasi gündem yoğun.');
+  return h.slice(0,4);
+}
+function vote(){return clamp(S.des*0.92+(S.huz-5)*0.6+(S.par-5)*0.5+(S.kamp||0)+promRes().reduce((a,r)=>a+(r[1]?1.5:-3),0),8,62);}
+function checkEnd(){
+  if(S.des<12)return {t:'Hükümet Düştü',x:'Halk desteği çöktü. Güvensizlik önergesi kabul edildi ve hükümet istifa etti.'};
+  if(S.par<=1)return {t:'Parti Seni Devirdi',x:'Parti içi isyan sonuç verdi. Olağanüstü kurultayda liderlikten alındın.'};
+  if(S.ord<=1)return {t:'Askeri Müdahale',x:'Ordu içinde biriken huzursuzluk patladı. Hükümet görevden uzaklaştırıldı.'};
+  if(S.rez<=-5)return {t:'Ekonomik Çöküş',x:'Rezervler tükendi, dış borç ödemeleri aksadı. Ülke ödeme dengesi krizine girdi.'};
+  return null;
+}
+function endTurn(){
+  if(S.cur.events.some(e=>e.ch===null))return;
+  const a=snap();
+  const depr=simulate();
+  S.month++;
+  if(S.month%TERM===30){
+    if(S.des>=40){S.par+=1;S.des+=1;}else{S.par-=1.5;S.kol-=1;}
+    S.flags.yerel=S.des>=40?'Yerel seçimlerde iktidar kendi belediyelerini korudu.':'Yerel seçimlerde iktidar önemli kayıplar verdi.';
+  }
+  for(const k in RANGE)S[k]=clamp(S[k],RANGE[k][0],RANGE[k][1]);
+  const b=snap();
+  STATS.forEach(x=>S.hist[x.k].push(S[x.k]));
+  const hl=headlines(a,b,depr);
+  if(S.month%TERM===30)hl.unshift(S.flags.yerel);
+  if(S.coal.length&&S.kol<=0){clearCoal();S.kol=4;S.par=clamp(S.par-.5,0,10);hl.unshift('Koalisyon ortağı hükümetten çekildi. Meclis çoğunluğu tehlikede.');S.log.push({m:S.month,t:'Koalisyon çöktü',c:'Ortak çekildi',msg:'Uyum sıfıra indi. Meclis\'te ortaksız devam ediyorsun.'});}
+  const over=checkEnd();
+  if(over){S.over={...over,win:false};save();render();return;}
+  if(S.month%TERM===0){runElection();save();render();window.scrollTo({top:0});return;}
+  const carry=Math.min(3,Math.max(0,avail()));
+  S.pool=10+carry+(S.des>=48?1:0)-(S.par<4?1:0);
+  S.prev=a;S.lv0={...S.lv};S.confirm=null;
+  genEvents();
+  S.report={m:S.month,h:hl,carry};
+  save();render();window.scrollTo({top:0});
+}
+
+/* ---------- Bütçe, vergi, kurumlar, meclis, seçim ---------- */
+const MV={maliye:5,ic:5,dis:4,sav:4,adalet:4,egit:3,saglik:3,calisma:3,ulas:3,enerji:3,sanayi:2,tarim:2,cevre:2,ticaret:2,aile:2,genc:1,kultur:1};
+const cmp=(a,b)=>clamp(9-6*Math.abs(PART[a].x-PART[b].x),0,10);
+const tl=p=>{const v=Math.abs(p)/100*S.gdp*S.kur;return (p<0?'−':'')+(v>=1000?nf(v/1000,2)+' trilyon ₺':nf(v,0)+' milyar ₺');};
+const minName=k=>(MIN.find(m=>m[0]===k)||[])[1]||k;
+const newM=()=>({name:NAMES1[Math.floor(Math.random()*16)]+' '+NAMES2[Math.floor(Math.random()*16)],sk:Math.round(rnd(3,9)),note:'Atanan isim'});
+const govSeats=()=>S.seats[S.me]+S.coal.reduce((a,k)=>a+S.seats[k],0);
+const best=()=>PK.filter(k=>k!==S.me).sort((a,b)=>cmp(S.me,b)-cmp(S.me,a))[0];
+const MVAL=(p,k)=>MV[k]*(PART[p].want.includes(k)?1.5:1),ask=p=>3+S.seats[p]/22+(10-cmp(S.me,p))*.35;
+const loanC=()=>S.loans.reduce((a,l)=>a+l.amt*l.rate/100,0)/S.gdp*100;
+const logA=(t,c,msg)=>S.log.push({m:S.month,t,c,msg});
+function clearCoal(){Object.keys(S.own).forEach(k=>{S.M[k]=newM();});S.own={};S.coal=[];}
+function eco(){const E={},K=1.5;let dev=0,rev=0;
+  MIN.forEach(([k,,b,e])=>{const d=(S.bud[k]-b)/b;dev+=S.bud[k]-b;for(const x in e)E[x]=(E[x]||0)+e[x]*d*K;});
+  TAX.forEach(([k,,ty,R,e,ref])=>{const r=S.tax[k],base=ty===1?0:ref,l=clamp(ty===1?r/ref:(r-base)/(ref*.1),-8,8);rev+=R*((r/ref)**.85-(base/ref)**.85);for(const x in e)E[x]=(E[x]||0)+e[x]*l;});
+  return {E,dev,rev};
+}
+function seatsFor(p,o,pt,nz=1){
+  const oth=PK.filter(k=>k!==S.me&&k!==pt),w={},r=100-p-o;let ws=0;
+  oth.forEach(k=>{w[k]=PART[k].w*(1+rnd(-.12,.12)*nz);ws+=w[k];});
+  const sh={[S.me]:p,[pt]:o};oth.forEach(k=>sh[k]=r*w[k]/ws);
+  const el=PK.filter(k=>k===S.me||sh[k]>=(S.baraj||BAR)||(k===pt&&S.ally)),tot=el.reduce((a,k)=>a+sh[k],0),se={};
+  PK.forEach(k=>se[k]=el.includes(k)?Math.round(600*sh[k]/tot):0);se[S.me]+=600-PK.reduce((a,k)=>a+se[k],0);
+  return {sh,se};
+}
+function initGov(){
+  clearCoal();const pt=best();S.seats=seatsFor(38,14,pt,0).se;S.coal=[pt];S.kol=clamp(cmp(S.me,pt),4,7);
+  PART[pt].want.slice(0,2).forEach(k=>{S.own[k]=pt;S.M[k]={...newM(),sk:Math.round(rnd(4,8)),note:PART[pt].n+' kontenjanı'};});
+}
+function bud(k,d){const b=MB[k],st=Math.max(.05,Math.round(b*10)/100),v=Math.round((S.bud[k]+d*st)*100)/100;if(v<b*.4-1e-9||v>b*2+1e-9)return;S.bud[k]=v;save();render();}
+function propose(id,lobi){
+  const l=LAWS.find(x=>x[0]===id),c=l[2]+(lobi?2:0);
+  if(c>avail()||S.laws[id]||S.month<(S.lawT[id]||0))return;
+  const rows=PK.map(k=>{const s=S.seats[k];let f;
+    if(k===S.me)f=clamp(.9+rnd(-.08,.05),.75,1);
+    else if(S.coal.includes(k))f=clamp(.45+S.kol/22+rnd(-.1,.1)+(l[4]-.5)*.3,.3,1);
+    else f=clamp(l[4]*.4+(lobi?.2:0)+cmp(S.me,k)/50-.08+rnd(-.1,.1),0,.95);
+    const y=Math.round(s*f);return [k,y,s-y];});
+  const yes=rows.reduce((a,r)=>a+r[1],0),ok=yes>=l[3];
+  S.cur.spent+=c;S.lawT[id]=S.month+3;
+  if(ok){applyFx(l[6]);S.laws[id]=S.month;if(id==='baraj')S.baraj=5;}else applyFx({des:-.3,par:-.3});
+  S.vote={n:l[1],d:l[5],rows,yes,need:l[3],ok};
+  logA(l[1],ok?'Kabul edildi':'Reddedildi',`Oylama: ${yes} kabul, ${600-yes} ret (gerekli ${l[3]}).`);save();render();
+}
+function dropP(k){Object.keys(S.own).filter(m=>S.own[m]===k).forEach(m=>{S.M[m]=newM();delete S.own[m];});S.coal=S.coal.filter(x=>x!==k);S.kol=clamp(S.kol-1,0,10);logA('Koalisyon',PART[k].n+' hükümetten ayrıldı','Bakanlıkları geri aldın.');save();render();}
+function offer(){
+  const n=S.neg,p=n.p,y=n.off.reduce((a,k)=>a+MVAL(p,k),0),x=ask(p);
+  if(cmp(S.me,p)<2.5){n.msg=`${PART[p].n} seninle ideolojik olarak ortaklık kurmayı reddediyor.`;return render();}
+  if(y<x){const m=PART[p].want.find(k=>!n.off.includes(k)&&!S.own[k]);n.msg=`Teklif yetersiz. ${PART[p].n} en az ${nf(x,1)} puanlık bakanlık istiyor, sen ${nf(y,1)} puan sundun.${m?' Özellikle '+minName(m)+' Bakanlığına bakıyorlar.':''}`;return render();}
+  if(!S.el){if(avail()<2){n.msg='Bu görüşme 2 SS ister.';return render();}S.cur.spent+=2;}
+  S.coal.push(p);n.off.forEach(k=>{S.own[k]=p;S.M[k]={...newM(),sk:Math.round(rnd(4,8)),note:PART[p].n+' kontenjanı'};});
+  S.kol=S.coal.length>1?(S.kol+cmp(S.me,p))/2:cmp(S.me,p);S.par=clamp(S.par-.35*n.off.length,0,10);
+  logA('Koalisyon',PART[p].n+' hükümete katıldı',`${n.off.length} bakanlık verildi: ${n.off.map(minName).join(', ')}.`);S.neg=null;save();render();
+}
+function doAlly(){if(S.ally||avail()<3)return;S.ally=true;S.cur.spent+=3;S.kol=clamp(S.kol+1,0,10);logA('Seçim ittifakı','İttifak kuruldu','Ortak listeler ve baraj avantajı sağlandı.');save();render();}
+function makeProm(id){const v=VAAT.find(x=>x[0]===id);if(S.prom.includes(id)||S.prom.length>=4||v[2]()||avail()<1)return;S.prom.push(id);S.cur.spent+=1;S.des=clamp(S.des+.8,0,100);logA('Vaat verdin',v[1],'Seçimde tutmazsan oy kaybedersin.');save();render();}
+const promRes=()=>S.prom.map(id=>{const v=VAAT.find(x=>x[0]===id);return [v[1],v[2]()];});
+function runElection(){
+  const pt=S.coal[0]||best(),p=vote(),o=clamp(8+S.kol+(S.ally?2:0),4,20),{sh,se}=seatsFor(p,o,pt),pr=promRes();
+  if(PK.some(k=>k!==S.me&&se[k]>se[S.me])){const top=PK.reduce((a,k)=>se[k]>se[a]?k:a);S.over={t:'İktidar Kaybı',x:`Seçimde %${nf(p,1)} oy aldın ve ${se[S.me]} sandalye kazandın. ${PART[top].n} ${se[top]} sandalyeyle önde bitirdi ve iktidara geliyor.`,win:false,p};return;}
+  clearCoal();S.seats=se;S.el={p,sh,se,pr};
+}
+function finishEl(){
+  const e=S.el;
+  logA(`${S.term}. dönem seçimi`,`%${nf(e.p,1)} oy`,`${e.se[S.me]} sandalye. Hükümet: ${govSeats()} sandalye (${govSeats()>=301?'çoğunluk':'azınlık'}).`);
+  S.ally=false;S.prom=[];S.kamp=0;S.term++;S.des=clamp(S.des+2,0,100);
+  S.pool=10;S.prev=snap();S.lv0={...S.lv};S.el=null;genEvents();
+  S.report={m:S.month,h:[`${S.term}. dönem başladı. Hükümetin Meclis'te ${govSeats()>=301?'çoğunluğu var':'çoğunluğu yok, yasalar için muhalefetle pazarlık gerekecek'}.`],carry:0};
+  save();render();window.scrollTo({top:0});
+}
+const row=(n,h,v,a,chg)=>`<div class="lever"><span class="n">${n}</span><span class="h">${h}</span><div class="step"><button ${a} data-d="-1" aria-label="${n} azalt">−</button><output class="${chg?'chg':''}">${v}</output><button ${a} data-d="1" aria-label="${n} artır">+</button></div></div>`;
+const sbtn=(attr,txt,dis)=>`<button class="btn sm" style="width:auto;min-width:88px" ${attr} ${dis?'disabled':''}>${txt}</button>`;
+function butce(){
+  const X=eco(),ta=4.6+X.dev-X.rev+(X.E.acik||0)+.06*(S.lv.faiz>65?65+(S.lv.faiz-65)*.1:S.lv.faiz-45)-.15*(S.buy-2.8)+loanC(),tot=MIN.reduce((a,m)=>a+S.bud[m[0]],0);
+  return `<h2>Bakanlık Bütçeleri</h2><div class="panel"><div class="dl">GSYH ≈ ${nf(S.gdp*S.kur/1000,1)} trilyon ₺ (${nf(S.gdp,0)} mlr $)</div><div class="dl">Toplam harcama GSYH %${nf(tot,1)} ≈ ${tl(tot)}</div><div class="dl">Bütçe açığı hedefi GSYH %${nf(ta,1)} ≈ ${tl(ta)}</div><div class="note">17 bakanlığın bütçesini sen belirlersin. Artış hizmeti güçlendirir ve açığı büyütür. Değişiklikler ay sonunda işler. Kurum bütçeleri Kurumlar sekmesinde.</div></div><div class="panel">${MIN.filter(m=>!m[4]).map(([k,n,b])=>row(n,`≈ ${tl(S.bud[k])} · taban %${nf(b,2)}`,'%'+nf(S.bud[k],2),`data-bud="${k}"`,Math.abs(S.bud[k]-b)>.001)).join('')}</div>`;
+}
+const fxText=fx=>Object.entries(fx).map(([k,v])=>{const s=STATS.find(x=>x.k===k);return s?`${s.l} ${v>0?'+':'−'}${nf(Math.abs(v),1)}`:'';}).filter(Boolean).join(', ');
+const LOAN={eurobond:['Eurobond (piyasa)',9,5,{bat:.05},'Piyasa faizi yüksek, şartsız.',30],imf:['IMF / Dünya Bankası',4,10,{des:-1.5,bat:.4,par:-.3},'Düşük faiz, uzun vade. Program şartları halk desteğini zorlar.',15],golf:['Körfez ikili kredisi',6,3,{dog:.4,bol:.2},'Kısa vade, siyasi bağ getirir.',20],cin:['Çin kalkınma kredisi',5.5,7,{dog:.5,bat:-.4},'Uzun vade. Doğu ile bağ güçlenir, Batı soğur.',20]};
+const ui=(k,d)=>S.ui&&S.ui[k]!==undefined?S.ui[k]:d;
+const sld=(id,mn,mx,st,v)=>`<input class="rng" type="range" min="${mn}" max="${mx}" step="${st}" value="${v}" data-ui="${id}" aria-label="${id}">`;
+function taxs(k,d){const t=TAX.find(x=>x[0]===k),st=Math.max(.1,Math.round(t[5])/10);S.tax[k]=clamp(Math.round((S.tax[k]+d*st)*10)/10,0,100);save();render();}
+function setFaiz(v){const old=S.lv.faiz,r=LVR.faiz;v=clamp(Math.round(v*2)/2,r[0],r[1]);S.lv.faiz=v;const after=levCost();S.lv.faiz=old;if(after>levCost()&&avail()<1){render();return;}S.lv.faiz=v;save();render();}
+function act(w){
+  const gt=S.gdp*S.kur,cl=k=>(S.cool[k]||0)>S.month,rz=ui('rez',5),ss=w==='af'||(w==='rez'&&Math.abs(rz)>10)?2:1;let fx,msg;
+  if(ss>avail())return;
+  if(w==='rez'){if(!rz||S.rez+rz<1)return;fx={rez:rz,kur:rz*.3,enf:rz*.03};msg=`Merkez Bankası ${Math.abs(rz)} mlr $ rezerv ${rz<0?'sattı':'topladı'}.`;}
+  else if(w==='borrow'){const L=LOAN[ui('src','eurobond')],amt=Math.min(ui('amt',8),L[5]);fx={rez:amt,borc:amt/S.gdp*100,...L[3]};S.gdp+=.5*amt;S.loans.push({s:ui('src','eurobond'),amt,rate:L[1],end:S.month+L[2]*12});msg=`${L[0]}: ${amt} mlr $ borç alındı (%${L[1]} faiz, ${L[2]} yıl vade).`;}
+  else if(w==='repay'){const amt=ui('rep',6);if(S.rez-amt<1)return;fx={rez:-amt,borc:-amt/S.gdp*100};S.gdp-=.3*amt;let rem=amt;S.loans.sort((a,b)=>b.rate-a.rate).forEach(l=>{const d=Math.min(l.amt,rem);l.amt-=d;rem-=d;});S.loans=S.loans.filter(l=>l.amt>.01);msg=`${amt} mlr $ dış borç ödendi.`;}
+  else if(w==='ice'){const amt=ui('ice',300),X=amt/gt*100;fx={acik:-.4*X,enf:.15*X,buy:-.06*X};S.gdp+=.3*amt/S.kur;msg=`${nf(amt,0)} milyar ₺ iç borçlanma ihalesi yapıldı.`;}
+  else if(w==='kre'){const x=ui('kre',0);if(!x)return;fx={buy:.12*x,enf:.15*x,cari:.2*x,rez:-.1*x,des:.05*x};S.gdp*=1+.004*x;msg=`Kredi hacmi GSYH'nin %${nf(Math.abs(x),1)}'i kadar ${x>0?'genişletildi':'daraltıldı'}.`;}
+  else if(w==='af'){if(cl('af'))return;const p=ui('af',20),c=p/100*2.5;fx={acik:c,des:p*.02,huz:p*.005};S.cool.af=S.month+24;msg=`Prim affı %${p} oranında çıkarıldı. Devlete maliyeti ≈ ${tl(c)}.`;}
+  else if(w==='ikr'){if(cl('ikr'))return;const v=ui('ikr',3000),c=v*S.pens/1000/gt*100;fx={acik:c,des:Math.min(3,v/3000),huz:.2};S.cool.ikr=S.month+6;msg=`Emekliye ${nf(v,0)} ₺ bayram ikramiyesi verildi. Maliyet ≈ ${tl(c)}.`;}
+  else return;
+  applyFx(fx);S.cur.spent+=ss;S.imsg=msg;logA('Devlet kurumları',msg,'İşlem uygulandı.');save();render();
+}
+function wageScreen(){
+  const w=S.wage,n=Math.round(S.minw*(1+w.G/100));
+  return `<div class="wrap"><div class="end"><div class="muted" style="font-family:var(--mono);font-size:12px">Asgari Ücret Tespit Komisyonu · ${dateLabel(S.month)}</div><h1>Asgari Ücret</h1><p>Komisyon üç tarafla toplanır: hükümet, işveren (TİSK) ve işçi (Türk-İş) temsilcileri. Net asgari ücret şu an ${nf(S.minw,0)} ₺. Yıllık enflasyon %${nf(S.enf,1)}.</p><div class="dl">İşçi tarafı: %${w.W} zam istiyor</div><div class="dl">İşveren tarafı: %${w.E} zam öneriyor</div><div class="dl" style="margin-top:10px">Hükümetin teklifi: %${w.G} zam · yeni asgari ücret ≈ ${nf(n,0)} ₺</div><input class="rng" type="range" min="0" max="150" step="1" value="${w.G}" data-wage="1" aria-label="Hükümetin zam teklifi"><div class="note">Teklifin iki tarafı da tatmin ederse uzlaşma olur. Yalnızca bir taraf kabul ederse hükümet o tarafla oy çokluğuyla karar verir, diğer taraf tepki gösterir. İkisi de kabul etmezse hükümet kararnameyle belirler.</div><button class="btn" data-wgo="1" style="margin-top:12px">Komisyona sun</button></div></div>`;
+}
+function wageGo(){
+  const w=S.wage,G=w.G,eo=G<=w.E*1.6,wo=G>=w.W*.65;let t,fx;
+  if(eo&&wo){t='Taraflar uzlaştı.';fx={des:1,huz:.5};}
+  else if(eo){t='İşveren ve hükümet oy çokluğuyla karar verdi, işçi temsilcileri salondan ayrıldı.';fx={des:-1.5,huz:-.8};if(Math.random()<.5)S.sched.push({due:S.month+1,id:'l_greve'});}
+  else if(wo){t='İşçi ve hükümet oy çokluğuyla karar verdi, işveren temsilcileri itiraz etti.';fx={des:1.5,huz:.4,buy:-.2,isz:.2};}
+  else{t='Uzlaşma olmadı, hükümet kararnameyle belirledi.';fx={des:-1,huz:-.6};}
+  applyFx({...fx,enf:.04*G,acik:.015*G});applyFx({des:clamp((G-S.enf)*.05,-2,2)});S.minw=Math.round(S.minw*(1+G/100));
+  logA('Asgari ücret',`%${G} zam`,`${t} Yeni net asgari ücret ${nf(S.minw,0)} ₺.`);
+  if(S.report)S.report.h.unshift(`Asgari ücret %${G} zamla ${nf(S.minw,0)} ₺ oldu. ${t}`);
+  S.wage=null;save();render();
+}
+function vergi(){
+  const X=eco();
+  const trow=t=>{const [k,n,ty,R,,ref]=t,r=S.tax[k],base=ty===1?0:ref,dl=R*((r/ref)**.85-(base/ref)**.85);
+    return `<div class="lever"><span class="n">${n}</span><span class="h">Gelir ≈ ${tl(R*(r/ref)**.85)}${ty===1?' · yeni vergi':' · mevcut oran %'+nf(ref,1)} · değişim ${dl>=0?'+':''}${tl(dl)}</span><div class="step"><button data-taxs="${k}" data-d="-1" aria-label="${n} azalt">−</button><output class="${r!==base?'chg':''}">%${nf(r,1)}</output><button data-taxs="${k}" data-d="1" aria-label="${n} artır">+</button></div><input class="rng" type="range" min="0" max="100" step="0.1" value="${r}" data-taxr="${k}" aria-label="${n} oranı"></div>`;};
+  return `<h2>Vergiler</h2><div class="panel"><div class="dl">Değişikliklerin yıllık gelir etkisi: ${X.rev>=0?'+':''}${tl(X.rev)} (GSYH %${nf(X.rev,2)})</div><div class="note">Her verginin oranını %0 ile %100 arasında belirlersin. Oran artınca gelir artar ama azalan verimle. Halk desteği, enflasyon ve büyüme de etkilenir.</div></div><div class="panel">${TAX.filter(t=>t[2]===2).map(trow).join('')}</div><h2>Yeni ve Ek Vergiler</h2><div class="panel">${TAX.filter(t=>t[2]===1).map(trow).join('')}<div class="note">Yeni vergiler %0'da kapalıdır. Oranı artırdıkça devreye girer.</div></div>`;
+}
+function kurum(){
+  const a=avail(),gt=S.gdp*S.kur,cl=k=>Math.max(0,(S.cool[k]||0)-S.month),src=ui('src','eurobond'),L=LOAN[src],amt=Math.min(ui('amt',8),L[5]),rz=ui('rez',5),rep=ui('rep',6),ice=ui('ice',300),kre=ui('kre',0),af=ui('af',20),ikr=ui('ikr',3000);
+  const P=(t,b)=>`<div class="panel"><b>${t}</b>${b}</div>`,Q=(id,mn,mx,st,v,lab)=>`<div class="dl" style="margin-top:10px">${lab}</div>${sld(id,mn,mx,st,v)}`,B=(w,txt,dis)=>`<div class="chips" style="margin-top:8px"><button class="btn sm" data-act="${w}" ${dis||a<1?'disabled':''}>${txt}</button></div>`;
+  return `<h2>Devlet Kurumları</h2>${S.imsg?`<div class="report">${S.imsg}</div>`:''}
+  ${P('Genel görünüm',`<div class="dl">GSYH ≈ ${nf(gt/1000,2)} trilyon ₺ (${nf(S.gdp,0)} mlr $)</div><div class="dl">Net rezerv ${nf(S.rez,1)} mlr $ · Dolar ${nf(S.kur,2)} ₺</div><div class="dl">Dış borç stoku ≈ ${nf(S.borc*S.gdp/100,0)} mlr $ (GSYH %${nf(S.borc,1)})</div><div class="note">Bu sekmedeki işlemler bakanlık bütçelerinden bağımsızdır. Her işlem SS harcar.</div>`)}
+  ${levers()}
+  ${P('Merkez Bankası · rezerv',Q('rez',-30,30,1,rz,`Rezerv işlemi: ${rz>=0?'topla':'sat'} ${Math.abs(rz)} mlr $ ≈ ${nf(Math.abs(rz)*S.kur,0)} milyar ₺`)+B('rez',`Uygula · ${Math.abs(rz)>10?2:1} SS`,!rz||S.rez+rz<1))}
+  ${P('Hazine · dış borç alımı',`<div class="chips" style="margin-top:8px">${Object.entries(LOAN).map(([k,l])=>`<button class="btn sm ${k===src?'':'sec'}" data-uisrc="${k}">${l[0]}</button>`).join('')}</div><div class="note">${L[4]} Faiz %${L[1]}, vade ${L[2]} yıl.</div>`+Q('amt',1,L[5],1,amt,`Tutar ${amt} mlr $ · yıllık faiz ≈ ${nf(amt*L[1]/100,2)} mlr $ · GSYH ≈ +${nf(.5*amt,1)} mlr $`)+B('borrow','Borçlan · 1 SS'))}
+  ${P('Hazine · dış borç ödemesi',Q('rep',1,30,1,rep,`Ödeme ${rep} mlr $ · GSYH ≈ −${nf(.3*rep,1)} mlr $ · borç GSYH'nin %${nf(rep/S.gdp*100,2)}'i kadar azalır`)+B('repay','Öde · 1 SS',S.rez-rep<1)+(S.loans.length?`<div class="note">Aktif krediler: ${S.loans.map(l=>`${LOAN[l.s][0]} ${nf(l.amt,1)} mlr $ (%${l.rate}, ${Math.max(0,l.end-S.month)} ay)`).join(' · ')}</div>`:''))}
+  ${P('Hazine · iç borçlanma ihalesi',Q('ice',50,1500,50,ice,`İhale ${nf(ice,0)} milyar ₺ (GSYH %${nf(ice/gt*100,2)}) · GSYH ≈ +${nf(.3*ice/S.kur,1)} mlr $`)+B('ice','İhaleye çık · 1 SS'))}
+  ${P('BDDK · kredi hacmi',Q('kre',-10,10,.5,kre,`Kredi hacmi ${kre>=0?'+':''}${nf(kre,1)}% GSYH ≈ ${tl(Math.abs(kre))} ${kre>=0?'büyüme':'küçülme'}`)+B('kre','Uygula · 1 SS',!kre))}
+  ${P('SGK · prim affı ve emekliler',`<div class="dl">Asgari ücret (net) ${nf(S.minw,0)} ₺ · Emekli sayısı ≈ ${nf(S.pens,1)} milyon</div>`+Q('af',0,100,5,af,`Prim affı: borcun %${af}'ı silinir · devlete maliyeti ≈ ${tl(af/100*2.5)}`)+B('af',cl('af')?`${cl('af')} ay sonra`:'Affı çıkar · 2 SS',cl('af')||a<2||!af)+Q('ikr',0,20000,250,ikr,`Bayram ikramiyesi: ${nf(ikr,0)} ₺ × ${nf(S.pens,1)} milyon emekli = ${nf(ikr*S.pens/1000,1)} milyar ₺ (GSYH %${nf(ikr*S.pens/1000/gt*100,2)})`)+B('ikr',cl('ikr')?`${cl('ikr')} ay sonra`:'İkramiye öde · 1 SS',cl('ikr')||!ikr))}
+  <h2>Kurum Bütçeleri</h2><div class="panel">${MIN.filter(m=>m[4]).map(([k,n,b])=>row(n,`≈ ${tl(S.bud[k])} · taban %${nf(b,2)}`,'%'+nf(S.bud[k],2),`data-bud="${k}"`,Math.abs(S.bud[k]-b)>.001)).join('')}</div>`;
+}
+const pRow=(k,a)=>{const on=S.coal.includes(k);return `<div class="lever"><span class="n">${PART[k].n}</span><span class="h">${S.seats[k]} sandalye · uyum ${nf(cmp(S.me,k),1)}/10${on?' · ortak, '+Object.keys(S.own).filter(m=>S.own[m]===k).length+' bakanlık':''}</span><div class="step">${sbtn(on?`data-dropp="${k}"`:`data-neg="${k}"`,on?'Çıkar':'Görüş'+(S.el?'':' · 2 SS'),!on&&(S.seats[k]===0||(!S.el&&a<2)))}</div></div>`;};
+function meclis(){
+  const g=govSeats(),a=avail(),camp=S.month%TERM>=TERM-6,inG=k=>k===S.me||S.coal.includes(k);
+  const bar=k=>`<div class="f"><span>${PART[k].n}${inG(k)?' ✓':''}</span><div class="bar"><i style="width:${S.seats[k]/6}%;${inG(k)?'':'background:var(--muted)'}"></i></div><span class="dl">${S.seats[k]}</span></div>`;
+  return `<h2>Meclis</h2><div class="panel"><div class="fac">${PK.map(bar).join('')}</div><div class="dl">Hükümet ${g} / 600 · ${g>=301?'Çoğunluk var':'Azınlık hükümeti (301 gerekir)'}</div><div class="note">Sonraki genel seçim: ${dateLabel((Math.floor(S.month/TERM)+1)*TERM)} · Tahmini oy: %${nf(vote(),1)}${S.ally?' · Seçim ittifakı kuruldu':''}</div>${camp&&!S.ally?sbtn('data-ally="1"','Seçim ittifakı kur · 3 SS',a<3):''}</div>
+  <h2>Koalisyon</h2><div class="panel">${PK.filter(k=>k!==S.me).map(k=>pRow(k,a)).join('')}<div class="note">Ortak olmak isteyen partiyle bakanlık pazarlığı yaparsın. Uyum ${nf(S.kol,1)}/10. Uyum sıfıra inerse ortak hükümetten çekilir.</div></div>
+  <h2>Vaatler (${S.prom.length}/4)</h2><div class="panel"><div class="note" style="margin:0 0 6px">Söz verdiğin vaadi seçimde tutamazsan oy kaybedersin (−3 puan). Tutarsan +1,5 puan alırsın. Her vaat 1 SS.</div>${VAAT.map(([id,t,fn])=>{const on=S.prom.includes(id),ok=fn();return `<div class="lever"><span class="n">${t}</span><span class="h">${on?(ok?'Söz verildi · şu an sağlanıyor':'Söz verildi · henüz sağlanmadı'):(ok?'Zaten sağlanıyor':'Henüz sağlanmıyor')}</span><div class="step">${on?'<span class="st good">Verildi</span>':sbtn(`data-prom="${id}"`,'Söz ver',ok||S.prom.length>=4||a<1)}</div></div>`;}).join('')}</div>
+  <h2>Yasalar</h2><div class="panel">${LAWS.map(([id,n,c,need,,d,fx])=>{const done=S.laws[id],wait=S.month<(S.lawT[id]||0)&&!done;return `<div class="lever"><span class="n">${n}</span><span class="h">${d} <b>(Geçerse: ${fxText(fx)}.)</b> ${need} oy gerekir.${wait?' Yeniden teklif için biraz bekle.':''}</span><div class="step">${done?'<span class="st good">Yasalaştı</span>':sbtn(`data-law="${id}"`,`Teklif · ${c} SS`,wait||a<c)+sbtn(`data-law="${id}" data-lobi="1"`,`Lobi · ${c+2}`,wait||a<c+2)}</div></div>`;}).join('')}<div class="note">Lobi, muhalefet vekillerini ikna eder ve oy şansını artırır. Teklif verdiğinde Genel Kurul oylaması açılır.</div></div>`;
+}
+const pickScreen=()=>`<div class="wrap"><div class="end"><h1>Hangi Partiyi Yöneteceksin?</h1><p>Türkiye'deki gerçek siyasi partilerden birini seç. Parti liderleri ve bakanlar kurgusaldır. Oy oranları ve sandalyeler oyunun başlangıç değerleridir.</p><div class="panel">${PK.map(k=>`<div class="lever"><span class="n">${PART[k].n}</span><span class="h">${PART[k].x>.3?'Sağ':'Sol'} çizgi · rakip lider: ${PART[k].lead}</span><div class="step">${sbtn(`data-pick="${k}"`,'Seç')}</div></div>`).join('')}</div></div></div>`;
+function voteScreen(){
+  const v=S.vote;
+  return `<div class="wrap"><div class="end"><div class="muted" style="font-family:var(--mono);font-size:12px">TBMM Genel Kurulu · oylama</div><h1>${v.n}</h1><p>${v.d}</p><div class="fac" style="margin:14px 0">${v.rows.map(([k,y,n])=>`<div class="f"><span>${PART[k].n}</span><div class="bar"><i style="width:${y/((y+n)||1)*100}%"></i></div><span class="dl">${y} / ${n}</span></div>`).join('')}</div><div class="big">${v.yes} kabul · ${600-v.yes} ret</div><div class="note">Gerekli oy: ${v.need}</div><h2 style="margin-top:14px;color:var(--${v.ok?'good':'bad'})">${v.ok?'Yasalaştı':'Teklif reddedildi'}</h2><button class="btn" data-votok="1">Tamam</button></div></div>`;
+}
+function negScreen(){
+  const n=S.neg,p=n.p,y=n.off.reduce((a,k)=>a+MVAL(p,k),0),x=ask(p);
+  return `<div class="wrap"><div class="end"><div class="muted" style="font-family:var(--mono);font-size:12px">Koalisyon görüşmesi</div><h1>${PART[p].n}</h1><p>Lider ${PART[p].lead} masada. ${S.seats[p]} sandalyesi var, uyum ${nf(cmp(S.me,p),1)}/10. Ortaklık için bakanlık istiyor. Vereceğin bakanlıkları seç.</p><div class="dl">Talep ${nf(x,1)} puan · Sunduğun ${nf(y,1)} puan · ${y>=x?'Kabul eder':'Reddeder'}</div>${n.msg?`<div class="report" style="margin:10px 0">${n.msg}</div>`:''}<div class="panel" style="margin-top:12px">${MIN.filter(m=>!m[4]).map(m=>{const k=m[0],h=S.own[k],on=n.off.includes(k);return `<div class="lever"><span class="n">${m[1]}</span><span class="h">${nf(MVAL(p,k),1)} puan${PART[p].want.includes(k)?' · özellikle istiyor':''}${h?' · '+PART[h].n+' elinde':''}</span><div class="step">${sbtn(`data-nego="${k}"`,on?'Geri al':'Ver',!!h).replace('class="btn sm"',`class="btn sm ${on?'':'sec'}"`)}</div></div>`;}).join('')}</div><div class="chips"><button class="btn" data-offer="1">Teklifi sun</button><button class="btn sec" data-negx="1">Vazgeç</button></div></div></div>`;
+}
+function elScreen(){
+  const e=S.el,se=e.se,g=govSeats();
+  return `<div class="wrap"><div class="end"><div class="muted" style="font-family:var(--mono);font-size:12px">${dateLabel(S.month)} · ${S.term}. dönem genel seçimi</div><h1>Seçim Sonucu</h1><div class="big">%${nf(e.p,1)}</div><div class="note">Kampanya etkisi ${S.kamp>=0?'+':''}${nf(S.kamp,1)} puan${e.pr.length?' · Vaatler: '+e.pr.map(r=>r[1]?'+1,5':'−3').join(' '):''}</div>
+  <div class="fac" style="margin-top:14px">${PK.map(k=>`<div class="f"><span>${PART[k].n}${k===S.me?' ✓':''}</span><div class="bar"><i style="width:${se[k]/6}%"></i></div><span class="dl">%${nf(e.sh[k]||0,1)} · ${se[k]}</span></div>`).join('')}</div>
+  ${e.pr.length?`<ul>${e.pr.map(r=>`<li>${r[0]}: ${r[1]?'tuttun':'tutmadın, oy kaybettin'}</li>`).join('')}</ul>`:''}
+  <h2>Hükümeti Kur</h2><p class="muted">Çoğunluk için 301 sandalye gerekir. Ortaklarla bakanlık pazarlığı yap.</p><div class="panel">${PK.filter(k=>k!==S.me&&se[k]>0).map(k=>pRow(k,99)).join('')}</div>
+  <div class="big" style="font-size:30px;margin-bottom:12px">${g} sandalye</div><button class="btn" data-elfin="1">${g>=301?'Hükümeti kur ve devam et':'Azınlık hükümeti kur'}</button></div></div>`;
+}
+function kabine(){
+  const a=avail(),tot=S.fac.R+S.fac.G+S.fac.S,list=[['mb','Merkez Bankası Başkanı'],...MIN.filter(m=>!m[4]).map(m=>[m[0],m[1]+' Bakanı'])];
+  return `<h2>Kabine</h2><div class="panel"><div class="note" style="margin:0 0 6px">${PART[S.me].n} hükümetini yönetiyorsun. 17 bakanlık ve Merkez Bankası. Koalisyon ortağına verdiğin bakanlıkları değiştiremezsin.</div>${list.map(([k,n])=>{const m=S.M[k],h=S.own[k];return `<div class="lever"><span class="n">${n}</span><span class="h">${m.name} · yetkinlik ${m.sk}/10${h?' · '+PART[h].n+' kontenjanı':''}</span><div class="step">${sbtn(`data-fire="${k}"`,S.confirm===k?'Onayla · 3 SS':'Değiştir · 3 SS',a<3||h).replace('class="btn sm"','class="btn sm sec"')}</div></div>`;}).join('')}</div>
+  <h2>Koalisyon Ortakları</h2><div class="panel">${S.coal.length?S.coal.map(k=>`<div class="lever"><span class="n">${PART[k].n}</span><span class="h">Lider ${PART[k].lead} · ${S.seats[k]} sandalye</span></div>`).join('')+`<div class="note">Koalisyon uyumu ${nf(S.kol,1)}/10</div>`:'<span class="muted">Ortak yok. Meclis sekmesinden ortak arayabilirsin.</span>'}</div>
+  <h2>Parti İçi Hizipler</h2><div class="fac">${[['R','Reformcular'],['G','Gelenekçiler'],['S','Sadakatçiler']].map(([k,n])=>`<div class="f"><span>${n}</span><div class="bar"><i style="width:${S.fac[k]/tot*100}%"></i></div><span class="dl">%${nf(S.fac[k],0)}</span></div>`).join('')}</div>`;
+}
+
+/* ---------- Kabine ---------- */
+function fire(k){
+  if(S.confirm!==k){S.confirm=k;render();return;}
+  if(avail()<3)return;
+  const old=S.M[k].name;
+  S.M[k]={name:NAMES1[Math.floor(Math.random()*16)]+' '+NAMES2[Math.floor(Math.random()*16)],sk:Math.round(rnd(3,9)),note:'Yeni atanan isim'};
+  S.cur.spent+=3;S.confirm=null;S.par=clamp(S.par-0.3,0,10);
+  S.log.push({m:S.month,t:'Kabine değişikliği',c:`${k==='mb'?'Merkez Bankası Başkanı':minName(k)+' Bakanı'} değişti`,msg:`${old} görevden alındı. ${S.M[k].name} atandı (yetkinlik ${S.M[k].sk}/10).`});
+  save();render();
+}
+function lever(k,dir){
+  const r=LVR[k];const nv=Math.round((S.lv[k]+dir*r[2])*100)/100;
+  if(nv<r[0]||nv>r[1])return;
+  const old=S.lv[k];S.lv[k]=nv;
+  const after=levCost();S.lv[k]=old;
+  const before=levCost();
+  if(after>before&&avail()<1)return;
+  S.lv[k]=nv;save();render();
+}
+
+/* ---------- Görünüm ---------- */
+function spark(a){
+  const v=a.slice(-25);if(v.length<2)return '<svg class="sp" viewBox="0 0 100 20"></svg>';
+  const mn=Math.min(...v),mx=Math.max(...v),r=(mx-mn)||1;
+  const pts=v.map((y,i)=>[i/(v.length-1)*100,18-((y-mn)/r)*16]);
+  const l=pts[pts.length-1];
+  return `<svg class="sp" viewBox="0 0 100 20" preserveAspectRatio="none"><polyline points="${pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}"/></svg>`;
+}
+function tile(s){
+  const v=S[s.k],p=S.prev?S.prev[s.k]:v,dd=v-p;
+  const st=s.st(v);const idx=st==='good'?0:st==='warn'?1:2;
+  const dtxt=Math.abs(dd)<0.05?'':`<span class="dl ${dd>0?'up':'dn'}">${dd>0?'▲':'▼'} ${nf(Math.abs(dd),s.d)}</span>`;
+  const lab=s.lb[idx];
+  return `<div class="tile"><div class="lb"><span>${s.l}</span></div><div class="val">${nf(v,s.d)}<small>${s.u}</small></div><div class="row">${dtxt||'<span></span>'}${lab?`<span class="st ${st}">${lab}</span>`:''}</div>${spark(S.hist[s.k])}</div>`;
+}
+function fmtLev(k,v){
+  if(k==='faiz')return '%'+nf(v,1);
+  if(k==='sav')return '%'+nf(v,2);
+  const n=['−2','−1','0','+1','+2'][v+2];return n;
+}
+const LEVERS=[['faiz','Politika faizi','Yüksek faiz enflasyonu ve kuru bastırır, büyümeyi yavaşlatır.']];
+function levers(){
+  return `<div class="panel"><h2>Politika Kolları</h2>${LEVERS.map(([k,n,h])=>{
+    const chg=S.lv[k]!==S.lv0[k];
+    return `<div class="lever"><span class="n">${n}${chg?' <span class="muted">· 1 SS</span>':''}</span><span class="h">${h}</span><div class="step"><button data-lv="${k}" data-d="-1" aria-label="${n} azalt">−</button><output class="${chg?'chg':''}">${fmtLev(k,S.lv[k])}</output><button data-lv="${k}" data-d="1" aria-label="${n} artır">+</button></div><input class="rng" type="range" min="${LVR[k][0]}" max="${LVR[k][1]}" step="0.5" value="${S.lv[k]}" data-faizr="1" aria-label="${n} ayarla"></div>`;}).join('')}
+  <div class="note">Faiz %−10 ile %500 arasında ayarlanabilir. Faiz değişikliği bu ay 1 Siyasi Sermaye harcar. Eski değere dönersen iade edilir. Bütçe ve vergiler için alttaki sekmelere bak.</div></div>`;
+}
+function eventCard(e,i){
+  const d=EVB[e.id];const a=avail();const mn=Math.min(...d.c.map(x=>x.ss));
+  const done=e.ch!==null;
+  let body;
+  if(!done){
+    body=`<div class="choices">${d.c.map((c,ci)=>`<button class="choice" data-ev="${i}" data-c="${ci}" ${c.ss>a&&c.ss>mn?'disabled':''}><b>${c.l}</b><span class="d">${c.d}</span><span class="cost ${c.ss?'':'free'}">${c.ss?'SS −'+c.ss:'Bedelsiz'}</span></button>`).join('')}</div>`;
+  }else{
+    const c=d.c[e.ch];
+    body=`<div class="outcome"><div class="you">Kararın: ${c.l}</div><div>${e.msg}</div><div class="chips">${(e.fxs||[]).map(f=>`<span class="chip">${f[0]} ${f[1]>0?'+':'−'}${nf(Math.abs(f[1]),f[2])}${f[3]==='%'?' %':''}</span>`).join('')}</div></div>`;
+  }
+  return `<article class="card ${done?'done':''}"><div class="tag">${d.tag}${d.g==='later'?' · önceki kararının sonucu':''}</div><h3>${d.t}</h3><p>${T(d.x)}</p>${body}</article>`;
+}
+function masa(){
+  const r=S.report;
+  const rep=r?`<div class="report"><h3>Ay Sonu Raporu · ${dateLabel(r.m)}</h3><ul>${r.h.map(x=>`<li>${x}</li>`).join('')}</ul>${r.carry?`<div class="note">Kullanmadığın ${r.carry} Siyasi Sermaye devredildi.</div>`:''}</div>`:'';
+  const all=S.cur.events.every(e=>e.ch!==null);
+  return `${rep}<div class="stats">${STATS.map(tile).join('')}</div><div class="cols"><section><h2>Bu Ayın Gündemi</h2>${S.cur.events.map(eventCard).join('')}</section><aside>${levers()}</aside></div>`;
+}
+function gunluk(){
+  if(!S.log.length)return '<h2>Günlük</h2><p class="muted">Henüz karar yok.</p>';
+  return `<h2>Günlük</h2><div class="log">${S.log.slice().reverse().map(e=>`<div class="e"><small>${dateLabel(e.m)}</small><div><b>${e.t}</b> · ${e.c}</div><div class="muted">${e.msg}</div></div>`).join('')}</div>`;
+}
+function makeCode(){try{return btoa(unescape(encodeURIComponent(JSON.stringify(S))));}catch(e){return '';}}
+function kayit(){
+  return `<h2>Kayıt</h2><p style="max-width:62ch">Oyun bu tarayıcıda otomatik kaydedilir. Başka bir bilgisayara ya da telefona geçmek için aşağıdaki kodu kopyala, orada bu sayfayı aç, Kayıt sekmesine yapıştırıp yükle.</p>
+  <div class="panel"><b>Kayıt kodun</b> <span class="muted">(${dateLabel(S.month)})</span><textarea id="code" readonly rows="5" style="width:100%;margin:8px 0;font-family:var(--mono);font-size:11px;background:var(--bg);color:var(--ink);border:1px solid var(--line);padding:8px">${makeCode()}</textarea><button class="btn sm" data-copy="1">Kodu kopyala</button></div>
+  <div class="panel"><b>Kayıt yükle</b><textarea id="imp" rows="5" placeholder="Kodu buraya yapıştır" style="width:100%;margin:8px 0;font-family:var(--mono);font-size:11px;background:var(--bg);color:var(--ink);border:1px solid var(--line);padding:8px"></textarea><button class="btn sm" data-import="1">Yükle</button> <span id="kmsg" class="muted">${S.kmsg||''}</span></div>`;
+}
+function endScreen(){
+  const o=S.over;
+  return `<div class="end"><div class="muted" style="font-family:var(--mono);font-size:12px">${dateLabel(S.month)} · ${S.term}. dönem</div><h1>${o.t}</h1><p>${o.x}</p>${o.p?`<div class="big">%${nf(o.p,1)}</div><div class="note">Kampanya etkisi: ${S.kamp>=0?'+':''}${nf(S.kamp||0,1)} puan</div>`:''}<div class="stats" style="margin-top:18px">${['enf','buy','isz','rez','des','huz'].map(k=>tile(STATS.find(s=>s.k===k))).join('')}</div><button class="btn" data-new="1">Yeni oyun başlat</button></div>`;
+}
+function diger(){return gunluk()+'<div class="panel" style="margin-top:14px"><button class="btn sec sm" data-new="1">'+(S.confirmNew?'Emin misin? Tekrar bas':'Yeni oyun')+'</button></div>'+kayit();}
+const V={masa,butce,vergi,kurum,meclis,kabine,diger};
+const GR=[['masa','Masa',['masa']],['eko','Ekonomi',['butce','vergi']],['sia','Siyaset',['meclis','kabine']],['dev','Devlet',['kurum']],['diger','Diğer',['diger']]],SUBN={masa:'Masa',butce:'Bütçe',vergi:'Vergi',kurum:'Kurum',meclis:'Meclis',kabine:'Kabine',diger:'Diğer'};
+const grp=()=>GR.find(g=>g[2].includes(V[S.tab]?S.tab:'masa'));
+const subbar=()=>{const g=grp();return g[2].length<2?'':'<div class="subtabs">'+g[2].map(k=>'<button class="bn2" aria-selected="'+(k===S.tab)+'" data-tab="'+k+'">'+SUBN[k]+'</button>').join('')+'</div>';};
+function render(){
+  const app=document.getElementById('app');
+  if(S.over){app.innerHTML=`<div class="wrap">${endScreen()}</div>`;return;}
+  if(S.pick){app.innerHTML=pickScreen();return;}
+  if(S.vote){app.innerHTML=voteScreen();return;}
+  if(S.neg){app.innerHTML=negScreen();return;}
+  if(S.el){app.innerHTML=elScreen();return;}
+  if(S.wage){app.innerHTML=wageScreen();return;}
+  const a=avail();
+  const all=S.cur.events.every(e=>e.ch!==null);
+  const pips=Array.from({length:Math.max(S.pool,10)},(_,i)=>`<i class="pip ${i<a?'':'off'}"></i>`).join('');
+  const left=S.cur.events.filter(e=>e.ch===null).length;
+  app.innerHTML=`<header class="top"><div class="top-in"><div class="brand">Karar Masası<small>${dateLabel(S.month)} · ${S.term}. DÖNEM · SEÇİME ${TERM-S.month%TERM} AY</small></div>
+  <div class="ss"><b>${a}</b><span>Siyasi Sermaye</span><div class="pips">${pips}</div></div></div></header>
+  <div class="wrap"><main>${subbar()}${(V[S.tab]||masa)()}</main></div>
+  ${S.tab==='masa'||!V[S.tab]?`<div class="endbar"><div class="endbar-in"><span class="msg">${all?'Tüm kararlar verildi.':`${left} karar bekliyor.`}</span><button class="btn" data-end="1" ${all?'':'disabled'}>Ayı Bitir · ${dateLabel(S.month+1)}</button></div></div>`:''}
+  <nav class="bnav" role="tablist">${GR.map(([id,n,ks])=>`<button class="bn" role="tab" aria-selected="${grp()[0]===id}" data-tab="${ks.includes(S.tab)?S.tab:ks[0]}">${n}</button>`).join('')}</nav>`;
+}
+document.addEventListener('click',ev=>{
+  const t=ev.target.closest('button');if(!t)return;
+  if(t.dataset.ev!==undefined)return decide(+t.dataset.ev,+t.dataset.c);
+  if(t.dataset.lv)return lever(t.dataset.lv,+t.dataset.d);
+  if(t.dataset.bud)return bud(t.dataset.bud,+t.dataset.d);
+  if(t.dataset.taxs)return taxs(t.dataset.taxs,+t.dataset.d);
+  if(t.dataset.act)return act(t.dataset.act);
+  if(t.dataset.uisrc){S.ui.src=t.dataset.uisrc;S.ui.amt=Math.min(ui('amt',8),LOAN[S.ui.src][5]);save();return render();}
+  if(t.dataset.wgo)return wageGo();
+  if(t.dataset.law)return propose(t.dataset.law,!!t.dataset.lobi);
+  if(t.dataset.pick){S.me=t.dataset.pick;S.pick=false;initGov();save();return render();}
+  if(t.dataset.neg){S.neg={p:t.dataset.neg,off:[],msg:''};return render();}
+  if(t.dataset.nego){const o=S.neg.off,k=t.dataset.nego,i=o.indexOf(k);if(i<0)o.push(k);else o.splice(i,1);S.neg.msg='';return render();}
+  if(t.dataset.offer)return offer();
+  if(t.dataset.negx){S.neg=null;return render();}
+  if(t.dataset.votok){S.vote=null;save();return render();}
+  if(t.dataset.dropp)return dropP(t.dataset.dropp);
+  if(t.dataset.prom)return makeProm(t.dataset.prom);
+  if(t.dataset.ally)return doAlly();
+  if(t.dataset.elfin)return finishEl();
+  if(t.dataset.tab){S.tab=t.dataset.tab;S.confirm=null;save();return render();}
+  if(t.dataset.fire)return fire(t.dataset.fire);
+  if(t.dataset.end)return endTurn();
+  if(t.dataset.copy){
+    const ta=document.getElementById('code');
+    const done=()=>{t.textContent='Kopyalandı';};
+    const fb=()=>{ta.focus();ta.select();t.textContent='Kodu seçtim, kopyala';};
+    try{navigator.clipboard.writeText(ta.value).then(done,fb);}catch(e){fb();}
+    return;
+  }
+  if(t.dataset.import){
+    const v=(document.getElementById('imp').value||'').trim();
+    try{
+      const o=JSON.parse(decodeURIComponent(escape(atob(v))));
+      if(!o||typeof o.month!=='number'||!o.M||typeof o.enf!=='number')throw 0;
+      S=o;ensure();S.tab='masa';S.kmsg='';save();render();
+    }catch(e){S.kmsg='Kod okunamadı. Tamamını kopyaladığından emin ol.';document.getElementById('kmsg').textContent=S.kmsg;}
+    return;
+  }
+  if(t.dataset.new){
+    if(S.over||S.confirmNew){S.confirmNew=false;newGame();return render();}
+    S.confirmNew=true;render();setTimeout(()=>{if(S){S.confirmNew=false;render();}},4000);return;
+  }
+});
+document.addEventListener('input',ev=>{
+  const t=ev.target;if(!t.classList||!t.classList.contains('rng'))return;const v=+t.value;
+  if(t.dataset.faizr){t.closest('.lever').querySelector('output').textContent='%'+nf(v,1);return;}
+  if(t.dataset.ui)S.ui[t.dataset.ui]=v;else if(t.dataset.taxr)S.tax[t.dataset.taxr]=v;else if(t.dataset.wage)S.wage.G=v;else return;
+  const root=t.closest('main,.wrap'),d=document.createElement('div');d.innerHTML=S.wage?wageScreen():(V[S.tab]||masa)();
+  if(S.wage){const o=root.querySelectorAll('.dl'),w=d.querySelectorAll('.dl');o.forEach((e,j)=>{if(w[j])e.innerHTML=w[j].innerHTML;});return;}
+  const i=[...root.querySelectorAll('.rng')].indexOf(t),n=d.querySelectorAll('.rng')[i];if(!n)return;
+  const Lv=t.closest('.lever');
+  if(Lv){const N=n.closest('.lever');Lv.querySelector('.h').innerHTML=N.querySelector('.h').innerHTML;Lv.querySelector('output').replaceWith(N.querySelector('output'));}
+  else t.previousElementSibling.innerHTML=n.previousElementSibling.innerHTML;
+});
+document.addEventListener('change',ev=>{
+  const t=ev.target;if(!t.classList||!t.classList.contains('rng'))return;const v=+t.value;
+  if(t.dataset.faizr)return setFaiz(v);
+  if(t.dataset.ui)S.ui[t.dataset.ui]=v;else if(t.dataset.taxr)S.tax[t.dataset.taxr]=clamp(Math.round(v*10)/10,0,100);else if(t.dataset.wage)S.wage.G=v;else return;
+  save();render();
+});
+if(!load())newGame();
+render();
+</script>
+
+<script>if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});</script>
+</head></html>
