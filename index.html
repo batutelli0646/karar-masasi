@@ -44,6 +44,11 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background
 .subtabs{display:flex;gap:6px;margin:14px 0 4px}.bn2{flex:1;height:40px;background:var(--surface);border:1px solid var(--line);border-radius:2px;font-weight:600;font-size:13px;color:var(--muted)}.bn2[aria-selected="true"]{color:var(--accent-ink);background:var(--accent);border-color:var(--accent)}
 .bn[aria-selected="true"]{color:var(--accent);border-top-color:var(--accent)}
 main{padding-block:18px}
+.msq{max-width:520px;margin:-6px auto 0}.sq{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:6px}
+.sqt{aspect-ratio:1;background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--muted);padding:6px;min-width:0;display:flex;flex-direction:column;justify-content:space-between;text-align:left;overflow:hidden}
+.sqt.st4{aspect-ratio:1/.88}.sqt.good{border-top-color:var(--good)}.sqt.warn{border-top-color:var(--warn)}.sqt.bad{border-top-color:var(--bad)}.sqt.ev{border-top-color:var(--accent);cursor:pointer}.sqt.ev.done{opacity:.6}
+.sqt .l{font-size:10px;color:var(--muted);line-height:1.15}.sqt .v{font-size:17px;font-weight:600;line-height:1}.sqt .v small{font-size:9px;color:var(--muted);margin-left:1px}.sqt .t{font-size:10.5px;font-weight:600;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;word-break:break-word}.sqt .d{font-size:9px;line-height:1.1}
+.sheet{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center}.sheet-in{background:var(--bg);width:100%;max-width:560px;max-height:88vh;overflow:auto;padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));border-radius:8px 8px 0 0}
 .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:8px;margin-bottom:18px}
 .tile{background:var(--surface);border:1px solid var(--line);padding:10px 12px;min-width:0}
 .tile .lb{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);display:flex;justify-content:space-between;gap:6px}
@@ -446,7 +451,7 @@ function endTurn(){
   if(S.month%TERM===0){runElection();save();render();window.scrollTo({top:0});return;}
   const carry=Math.min(3,Math.max(0,avail()));
   S.pool=10+carry+(S.des>=48?1:0)-(S.par<4?1:0);
-  S.prev=a;S.lv0={...S.lv};S.confirm=null;
+  S.prev=a;S.lv0={...S.lv};S.confirm=null;S.evo=null;
   genEvents();
   S.report={m:S.month,h:hl,carry};
   save();render();window.scrollTo({top:0});
@@ -656,11 +661,11 @@ function fmtLev(k,v){
   const n=['−2','−1','0','+1','+2'][v+2];return n;
 }
 const LEVERS=[['faiz','Politika faizi','Yüksek faiz enflasyonu ve kuru bastırır, büyümeyi yavaşlatır.']];
-function levers(){
-  return `<div class="panel"><h2>Politika Kolları</h2>${LEVERS.map(([k,n,h])=>{
+function levers(c){
+  return `<div class="panel">${c?'':'<h2>Politika Kolları</h2>'}${LEVERS.map(([k,n,h])=>{
     const chg=S.lv[k]!==S.lv0[k];
-    return `<div class="lever"><span class="n">${n}${chg?' <span class="muted">· 1 SS</span>':''}</span><span class="h">${h}</span><div class="step"><button data-lv="${k}" data-d="-1" aria-label="${n} azalt">−</button><output class="${chg?'chg':''}">${fmtLev(k,S.lv[k])}</output><button data-lv="${k}" data-d="1" aria-label="${n} artır">+</button></div><input class="rng" type="range" min="${LVR[k][0]}" max="${LVR[k][1]}" step="0.5" value="${S.lv[k]}" data-faizr="1" aria-label="${n} ayarla"></div>`;}).join('')}
-  <div class="note">Faiz %−10 ile %500 arasında ayarlanabilir. Faiz değişikliği bu ay 1 Siyasi Sermaye harcar. Eski değere dönersen iade edilir. Bütçe ve vergiler için alttaki sekmelere bak.</div></div>`;
+    return `<div class="lever"><span class="n">${n}${chg?' <span class="muted">· 1 SS</span>':''}</span>${c?'':`<span class="h">${h}</span>`}<div class="step"><button data-lv="${k}" data-d="-1" aria-label="${n} azalt">−</button><output class="${chg?'chg':''}">${fmtLev(k,S.lv[k])}</output><button data-lv="${k}" data-d="1" aria-label="${n} artır">+</button></div>${c?'':`<input class="rng" type="range" min="${LVR[k][0]}" max="${LVR[k][1]}" step="0.5" value="${S.lv[k]}" data-faizr="1" aria-label="${n} ayarla">`}</div>`;}).join('')}
+  ${c?'':`<div class="note">Faiz %−10 ile %500 arasında ayarlanabilir. Faiz değişikliği bu ay 1 Siyasi Sermaye harcar. Eski değere dönersen iade edilir. Bütçe ve vergiler için alttaki sekmelere bak.</div>`}</div>`;
 }
 function eventCard(e,i){
   const d=EVB[e.id];const a=avail();const mn=Math.min(...d.c.map(x=>x.ss));
@@ -674,11 +679,17 @@ function eventCard(e,i){
   }
   return `<article class="card ${done?'done':''}"><div class="tag">${d.tag}${d.g==='later'?' · önceki kararının sonucu':''}</div><h3>${d.t}</h3><p>${T(d.x)}</p>${body}</article>`;
 }
+const SH={enf:'Enflasyon',buy:'Büyüme',isz:'İşsizlik',acik:'Açık/GSYH',borc:'Dış borç',cari:'Cari açık',rez:'Rezerv',kur:'Dolar',des:'Destek',par:'Parti',kol:'Koalisyon',ord:'Ordu',huz:'Huzur',bat:'Batı',dog:'Doğu',bol:'Bölge'};
+const tile2=s=>{const v=S[s.k],p=S.prev?S.prev[s.k]:v,dd=v-p;return `<div class="sqt st4 ${s.st(v)}"><span class="l">${SH[s.k]}</span><span class="v">${nf(v,s.d)}<small>${s.u==='mlr $'?'$':s.u}</small></span><span class="d dl ${dd>0?'up':'dn'}">${Math.abs(dd)<0.05?'&nbsp;':(dd>0?'▲ ':'▼ ')+nf(Math.abs(dd),s.d)}</span></div>`;};
+const sheet=()=>{const o=S.evo;if(o===null||o===undefined)return '';let b;
+  if(o==='r'){const r=S.report;if(!r)return '';b=`<div class="report"><h3>Ay Sonu Raporu · ${dateLabel(r.m)}</h3><ul>${r.h.map(x=>`<li>${x}</li>`).join('')}</ul>${r.carry?`<div class="note">Kullanmadığın ${r.carry} Siyasi Sermaye devredildi.</div>`:''}</div>`;}
+  else if(S.cur.events[o])b=eventCard(S.cur.events[o],o);else return '';
+  return `<div class="sheet"><div class="sheet-in">${b}<button class="btn sec" data-evx="1" style="width:100%">Kapat</button></div></div>`;};
 function masa(){
-  const r=S.report;
-  const rep=r?`<div class="report"><h3>Ay Sonu Raporu · ${dateLabel(r.m)}</h3><ul>${r.h.map(x=>`<li>${x}</li>`).join('')}</ul>${r.carry?`<div class="note">Kullanmadığın ${r.carry} Siyasi Sermaye devredildi.</div>`:''}</div>`:'';
-  const all=S.cur.events.every(e=>e.ch!==null);
-  return `${rep}<div class="stats">${STATS.map(tile).join('')}</div><div class="cols"><section><h2>Bu Ayın Gündemi</h2>${S.cur.events.map(eventCard).join('')}</section><aside>${levers()}</aside></div>`;
+  const r=S.report,E=S.cur.events;
+  const evT=E.map((e,i)=>{const d=EVB[e.id],dn=e.ch!==null;return `<button class="sqt ev ${dn?'done':''}" data-evo="${i}"><span class="l">${d.tag.split(' · ')[0]}${dn?' ✓':''}</span><span class="t">${d.t}</span><span class="d dl">${dn?'Verildi':'Bekliyor'}</span></button>`;}).join('');
+  const rp=r?`<button class="sqt ev" data-evo="r"><span class="l">Rapor</span><span class="t">Ay sonu raporu</span><span class="d dl">${dateLabel(r.m)}</span></button>`:'';
+  return `<div class="msq"><div class="sq">${STATS.map(tile2).join('')}</div><div class="sq">${evT}${rp}</div>${levers(1)}</div>${sheet()}`;
 }
 function gunluk(){
   if(!S.log.length)return '<h2>Günlük</h2><p class="muted">Henüz karar yok.</p>';
@@ -718,7 +729,10 @@ function render(){
   <nav class="bnav" role="tablist">${GR.map(([id,n,ks])=>`<button class="bn" role="tab" aria-selected="${grp()[0]===id}" data-tab="${ks.includes(S.tab)?S.tab:ks[0]}">${n}</button>`).join('')}</nav>`;
 }
 document.addEventListener('click',ev=>{
+  if(ev.target.classList&&ev.target.classList.contains('sheet')){S.evo=null;return render();}
   const t=ev.target.closest('button');if(!t)return;
+  if(t.dataset.evo!==undefined){S.evo=t.dataset.evo==='r'?'r':+t.dataset.evo;return render();}
+  if(t.dataset.evx!==undefined){S.evo=null;return render();}
   if(t.dataset.ev!==undefined)return decide(+t.dataset.ev,+t.dataset.c);
   if(t.dataset.lv)return lever(t.dataset.lv,+t.dataset.d);
   if(t.dataset.bud)return bud(t.dataset.bud,+t.dataset.d);
