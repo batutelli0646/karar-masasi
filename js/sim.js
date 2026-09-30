@@ -43,7 +43,7 @@ function headlines(a,b,depr){
   if(!h.length)h.push('Piyasalar sakin, siyasi gündem yoğun.');
   return h.slice(0,4);
 }
-function vote(){return clamp(S.des*0.92+(S.huz-5)*0.6+(S.par-5)*0.5+(S.kamp||0)+promRes().reduce((a,r)=>a+(r[1]?1.5:-3),0),8,62);}
+function vote(){return clamp(S.des*0.92+(S.huz-5)*0.6+(S.par-5)*0.5+(S.kamp||0)+priV()+promRes().reduce((a,r)=>a+(r[1]?1.5:-3),0),8,62);}
 function checkEnd(){
   if(S.des<12)return {t:'Hükümet Düştü',x:'Halk desteği çöktü. Güvensizlik önergesi kabul edildi ve hükümet istifa etti.'};
   if(S.par<=1)return {t:'Parti Seni Devirdi',x:'Parti içi isyan sonuç verdi. Olağanüstü kurultayda liderlikten alındın.'};
@@ -63,17 +63,17 @@ function endTurn(){
   for(const k in RANGE)S[k]=clamp(S[k],RANGE[k][0],RANGE[k][1]);
   const b=snap();
   STATS.forEach(x=>S.hist[x.k].push(S[x.k]));
-  const hl=headlines(a,b,depr);hl.push(...checkAch());hl.push('PPK toplantısı: Merkez Bankası %'+mbRec()+' faiz öneriyor.');
+  const hl=headlines(a,b,depr);hl.push(...checkAch(),...yeniUp());hl.push('PPK toplantısı: Merkez Bankası %'+mbRec()+' faiz öneriyor.');
   if(S.month%TERM===30)hl.unshift(S.flags.yerel);
   if(S.coal.length&&S.kol<=0){clearCoal();S.kol=4;S.par=clamp(S.par-.5,0,10);hl.unshift('Koalisyon ortağı hükümetten çekildi. Meclis çoğunluğu tehlikede.');S.log.push({m:S.month,t:'Koalisyon çöktü',c:'Ortak çekildi',msg:'Uyum sıfıra indi. Meclis\'te ortaksız devam ediyorsun.'});}
   const over=checkEnd();
   if(over){S.over={...over,win:false};save();render();return;}
   if(S.month%TERM===0){runElection();save();render();window.scrollTo({top:0});return;}
   const carry=Math.min(6,Math.max(0,avail()));
-  S.pool=base()+carry+(S.des>=50?2:0)+(S.prom.length&&promRes().every(r=>r[1])?1:0)-(S.par<4?1:0);
+  S.pool=base()+carry+(S.des>=50?2:0)+(S.prom.length&&promRes().every(r=>r[1])?1:0)-(S.par<4?1:0)-S.prg.length;
   S.prev=a;S.lv0={...S.lv};S.confirm=null;S.evo=null;
   genEvents();
-  S.report={m:S.month,h:hl,carry};
+  S.report={m:S.month,h:hl,carry,d:gzD(a,b)};
   save();render();window.scrollTo({top:0});
 }
 
@@ -151,7 +151,7 @@ const row=(n,h,v,a,chg)=>`<div class="lever"><span class="n">${n}</span><span cl
 const sbtn=(attr,txt,dis)=>`<button class="btn sm" style="width:auto;min-width:88px" ${attr} ${dis?'disabled':''}>${txt}</button>`;
 function butce(){
   const X=eco(),ta=4.6+X.dev-X.rev+(X.E.acik||0)+.06*(S.lv.faiz>65?65+(S.lv.faiz-65)*.1:S.lv.faiz-45)-.15*(S.buy-2.8)+loanC(),tot=MIN.reduce((a,m)=>a+S.bud[m[0]],0);
-  return `<h2>Bakanlık Bütçeleri</h2><div class="panel"><div class="dl">GSYH ≈ ${nf(S.gdp*S.kur/1000,1)} trilyon ₺ (${nf(S.gdp,0)} mlr $)</div><div class="dl">Toplam harcama GSYH %${nf(tot,1)} ≈ ${tl(tot)}</div><div class="dl">Bütçe açığı hedefi GSYH %${nf(ta,1)} ≈ ${tl(ta)}</div><div class="note">17 bakanlığın bütçesini sen belirlersin. Artış hizmeti güçlendirir ve açığı büyütür. Değişiklikler ay sonunda işler. Kurum bütçeleri Kurumlar sekmesinde.</div></div><div class="panel">${MIN.filter(m=>!m[4]).map(([k,n,b])=>row(n,`≈ ${tl(S.bud[k])} · taban %${nf(b,2)}`,'%'+nf(S.bud[k],2),`data-bud="${k}"`,Math.abs(S.bud[k]-b)>.001)).join('')}</div>`;
+  return `${tahminP()}${refahP()}<h2>Bakanlık Bütçeleri</h2><div class="panel"><div class="dl">GSYH ≈ ${nf(S.gdp*S.kur/1000,1)} trilyon ₺ (${nf(S.gdp,0)} mlr $)</div><div class="dl">Toplam harcama GSYH %${nf(tot,1)} ≈ ${tl(tot)}</div><div class="dl">Bütçe açığı hedefi GSYH %${nf(ta,1)} ≈ ${tl(ta)}</div><div class="note">17 bakanlığın bütçesini sen belirlersin. Artış hizmeti güçlendirir ve açığı büyütür. Değişiklikler ay sonunda işler. Kurum bütçeleri Kurumlar sekmesinde.</div></div><div class="panel">${MIN.filter(m=>!m[4]).map(([k,n,b])=>row(n,`≈ ${tl(S.bud[k])} · taban %${nf(b,2)}`,'%'+nf(S.bud[k],2),`data-bud="${k}"`,Math.abs(S.bud[k]-b)>.001)).join('')}</div>`;
 }
 const fxText=fx=>Object.entries(fx).map(([k,v])=>{const s=STATS.find(x=>x.k===k);return s?`${s.l} ${v>0?'+':'−'}${nf(Math.abs(v),1)}`:'';}).filter(Boolean).join(', ');
 const LOAN={eurobond:['Eurobond (piyasa)',9,5,{bat:.05},'Piyasa faizi yüksek, şartsız.',30],imf:['IMF / Dünya Bankası',4,10,{des:-1.5,bat:.4,par:-.3},'Düşük faiz, uzun vade. Program şartları halk desteğini zorlar.',15],golf:['Körfez ikili kredisi',6,3,{dog:.4,bol:.2},'Kısa vade, siyasi bağ getirir.',20],cin:['Çin kalkınma kredisi',5.5,7,{dog:.5,bat:-.4},'Uzun vade. Doğu ile bağ güçlenir, Batı soğur.',20]};
@@ -191,14 +191,14 @@ function vergi(){
   const X=eco();
   const trow=t=>{const [k,n,ty,R,,ref]=t,r=S.tax[k],base=ty===1?0:ref,dl=R*((r/ref)**.85-(base/ref)**.85);
     return `<div class="lever"><span class="n">${n}</span><span class="h">Gelir ≈ ${tl(R*(r/ref)**.85)}${ty===1?' · yeni vergi':' · mevcut oran %'+nf(ref,1)} · değişim ${dl>=0?'+':''}${tl(dl)}</span><div class="step"><button data-taxs="${k}" data-d="-1" aria-label="${n} azalt">−</button><output class="${r!==base?'chg':''}">%${nf(r,1)}</output><button data-taxs="${k}" data-d="1" aria-label="${n} artır">+</button></div><input class="rng" type="range" min="0" max="100" step="0.1" value="${r}" data-taxr="${k}" aria-label="${n} oranı"></div>`;};
-  return `<h2>Vergiler</h2><div class="panel"><div class="dl">Değişikliklerin yıllık gelir etkisi: ${X.rev>=0?'+':''}${tl(X.rev)} (GSYH %${nf(X.rev,2)})</div><div class="note">Her verginin oranını %0 ile %100 arasında belirlersin. Oran artınca gelir artar ama azalan verimle. Halk desteği, enflasyon ve büyüme de etkilenir.</div></div><div class="panel">${TAX.filter(t=>t[2]===2).map(trow).join('')}</div><h2>Yeni ve Ek Vergiler</h2><div class="panel">${TAX.filter(t=>t[2]===1).map(trow).join('')}<div class="note">Yeni vergiler %0'da kapalıdır. Oranı artırdıkça devreye girer.</div></div>`;
+  return `${tahminP()}<h2>Vergiler</h2><div class="panel"><div class="dl">Değişikliklerin yıllık gelir etkisi: ${X.rev>=0?'+':''}${tl(X.rev)} (GSYH %${nf(X.rev,2)})</div><div class="note">Her verginin oranını %0 ile %100 arasında belirlersin. Oran artınca gelir artar ama azalan verimle. Halk desteği, enflasyon ve büyüme de etkilenir.</div></div><div class="panel">${TAX.filter(t=>t[2]===2).map(trow).join('')}</div><h2>Yeni ve Ek Vergiler</h2><div class="panel">${TAX.filter(t=>t[2]===1).map(trow).join('')}<div class="note">Yeni vergiler %0'da kapalıdır. Oranı artırdıkça devreye girer.</div></div>`;
 }
 function kurum(){
   const a=avail(),fr=!S.cur.kf,cs=n=>fr?'bedelsiz':n+' SS',gt=S.gdp*S.kur,cl=k=>Math.max(0,(S.cool[k]||0)-S.month),src=ui('src','eurobond'),L=LOAN[src],amt=Math.min(ui('amt',8),L[5]),rz=ui('rez',5),rep=ui('rep',6),ice=ui('ice',300),kre=ui('kre',0),af=ui('af',20),ikr=ui('ikr',3000);
   const P=(t,b)=>`<div class="panel"><b>${t}</b>${b}</div>`,Q=(id,mn,mx,st,v,lab)=>`<div class="dl" style="margin-top:10px">${lab}</div>${sld(id,mn,mx,st,v)}`,B=(w,txt,dis)=>`<div class="chips" style="margin-top:8px"><button class="btn sm" data-act="${w}" ${dis||(a<1&&!fr)?'disabled':''}>${txt}</button></div>`;
-  return `<h2>Devlet Kurumları</h2>${S.imsg?`<div class="report">${S.imsg}</div>`:''}
+  return `${tahminP()}<h2>Devlet Kurumları</h2>${S.imsg?`<div class="report">${S.imsg}</div>`:''}
   ${P('Genel görünüm',`<div class="dl">GSYH ≈ ${nf(gt/1000,2)} trilyon ₺ (${nf(S.gdp,0)} mlr $)</div><div class="dl">Net rezerv ${nf(S.rez,1)} mlr $ · Dolar ${nf(S.kur,2)} ₺</div><div class="dl">Dış borç stoku ≈ ${nf(S.borc*S.gdp/100,0)} mlr $ (GSYH %${nf(S.borc,1)})</div><div class="note">Bu sekmedeki işlemler bakanlık bütçelerinden bağımsızdır. Ayda bir işlem bedelsiz (${fr?'hakkın var':'bu ay kullandın'}), diğerleri SS harcar.</div>`)}
-  ${mbP()}
+  ${mbP()}${pgP()}
   ${levers()}
   ${P('Merkez Bankası · rezerv',Q('rez',-30,30,1,rz,`Rezerv işlemi: ${rz>=0?'topla':'sat'} ${Math.abs(rz)} mlr $ ≈ ${nf(Math.abs(rz)*S.kur,0)} milyar ₺`)+B('rez',`Uygula · ${cs(Math.abs(rz)>10?2:1)}`,!rz||S.rez+rz<1))}
   ${P('Hazine · dış borç alımı',`<div class="chips" style="margin-top:8px">${Object.entries(LOAN).map(([k,l])=>`<button class="btn sm ${k===src?'':'sec'}" data-uisrc="${k}">${l[0]}</button>`).join('')}</div><div class="note">${L[4]} Faiz %${L[1]}, vade ${L[2]} yıl.</div>`+Q('amt',1,L[5],1,amt,`Tutar ${amt} mlr $ · yıllık faiz ≈ ${nf(amt*L[1]/100,2)} mlr $ · GSYH ≈ +${nf(.5*amt,1)} mlr $`)+B('borrow','Borçlan · '+cs(1)))}
@@ -236,7 +236,7 @@ function elScreen(){
 }
 function kabine(){
   const a=avail(),tot=S.fac.R+S.fac.G+S.fac.S,list=[['mb','Merkez Bankası Başkanı'],...MIN.filter(m=>!m[4]).map(m=>[m[0],m[1]+' Bakanı'])];
-  return `${S.cand?candP():''}<h2>Kabine</h2><div class="panel"><div class="note" style="margin:0 0 6px">${PART[S.me].n} hükümetini yönetiyorsun. 17 bakanlık ve Merkez Bankası. Koalisyon ortağına verdiğin bakanlıkları değiştiremezsin.</div>${list.map(([k,n])=>{const m=S.M[k],h=S.own[k];return `<div class="lever"><span class="n">${n}</span><span class="h">${m.name} · yetkinlik ${m.sk}/10${h?' · '+PART[h].n+' kontenjanı':''}</span><div class="step">${sbtn(`data-fire="${k}"`,S.confirm===k?'Onayla · 2 SS':'Değiştir · 2 SS',a<2||h).replace('class="btn sm"','class="btn sm sec"')}</div></div>`;}).join('')}</div>
+  return `${S.cand?candP():''}<h2>Kabine</h2><div class="panel"><div class="note" style="margin:0 0 6px">${PART[S.me].n} hükümetini yönetiyorsun. 17 bakanlık ve Merkez Bankası. Koalisyon ortağına verdiğin bakanlıkları değiştiremezsin.</div>${list.map(([k,n])=>{const m=S.M[k],h=S.own[k];return `<div class="lever"><span class="n">${n}</span><span class="h">${m.name} · yetkinlik ${m.sk}/10 · güven ${nf(m.gv===undefined?40+m.sk*5:m.gv,0)}${(m.gv===undefined?99:m.gv)<35?' · <b style="color:var(--bad)">Riskli</b>':''}${h?' · '+PART[h].n+' kontenjanı':''}</span><div class="step">${sbtn(`data-fire="${k}"`,S.confirm===k?'Onayla · 2 SS':'Değiştir · 2 SS',a<2||h).replace('class="btn sm"','class="btn sm sec"')}</div></div>`;}).join('')}</div>
   <h2>Koalisyon Ortakları</h2><div class="panel">${S.coal.length?S.coal.map(k=>`<div class="lever"><span class="n">${PART[k].n}</span><span class="h">Lider ${PART[k].lead} · ${S.seats[k]} sandalye</span></div>`).join('')+`<div class="note">Koalisyon uyumu ${nf(S.kol,1)}/10</div>`:'<span class="muted">Ortak yok. Meclis sekmesinden ortak arayabilirsin.</span>'}</div>
   <h2>Parti İçi Hizipler</h2><div class="fac">${[['R','Reformcular'],['G','Gelenekçiler'],['S','Sadakatçiler']].map(([k,n])=>`<div class="f"><span>${n}</span><div class="bar"><i style="width:${S.fac[k]/tot*100}%"></i></div><span class="dl">%${nf(S.fac[k],0)}</span></div>`).join('')}</div>`;
 }

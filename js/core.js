@@ -65,7 +65,7 @@ function load(){try{const r=localStorage.getItem(KEY);if(r){S=JSON.parse(r);ensu
 function ensure(){
   S.kamp=S.kamp||0;S.bud=S.bud||{};S.tax=S.tax||{};S.laws=S.laws||{};S.lawT=S.lawT||{};S.prom=S.prom||[];S.term=S.term||1;S.own=S.own||{};S.gdp=S.gdp||1350;
   MIN.forEach(m=>{if(S.bud[m[0]]===undefined)S.bud[m[0]]=m[2];if(!m[4]&&!S.M[m[0]])S.M[m[0]]=newM();});
-  S.dif=S.dif===undefined?1:S.dif;S.sc=S.sc||0;S.ach=S.ach||{};S.done=S.done||{};S.sec=S.sec||{tur:50,tar:50,san:50,ene:50};if(S.mun===undefined)S.mun=10;S.h0=S.h0||0;S.cl=S.cl||[];S.dr=S.dr||{};if(S.gv===undefined)S.gv=50;if(S.hd===undefined)S.hd=Math.round(S.enf*.6);S.tr=S.tr||{};S.tr.x=S.tr.x||22.8;S.tr.m=S.tr.m||30.4;S.tr.pe=S.tr.pe||70;S.tar=S.tar||0;S.yl=S.yl||0;S.fta=S.fta||{};S.rg=S.rg||{};S.ri=S.ri||{};S.nd=S.nd||0;S.nk=S.nk||0;if(!S.pl){S.pl=[];poll();}
+  S.dif=S.dif===undefined?1:S.dif;S.sc=S.sc||0;S.ach=S.ach||{};S.done=S.done||{};S.sec=S.sec||{tur:50,tar:50,san:50,ene:50};if(S.mun===undefined)S.mun=10;S.h0=S.h0||0;S.cl=S.cl||[];S.dr=S.dr||{};if(S.gv===undefined)S.gv=50;if(S.hd===undefined)S.hd=Math.round(S.enf*.6);S.tr=S.tr||{};S.tr.x=S.tr.x||22.8;S.tr.m=S.tr.m||30.4;S.tr.pe=S.tr.pe||70;S.tar=S.tar||0;S.yl=S.yl||0;S.fta=S.fta||{};S.rg=S.rg||{};S.ri=S.ri||{};S.pri=S.pri||[];S.prg=S.prg||[];S.cpi=S.cpi||100;S.nd=S.nd||0;S.nk=S.nk||0;if(!S.pl){S.pl=[];poll();}
   S.ui=S.ui||{};S.cool=S.cool||{};S.loans=S.loans||[];S.pens=S.pens||17.2;S.minw=S.minw||28075;if(S.wage===undefined)S.wage=null;
   if(!S.taxv){const o=S.tax;S.tax={};TAX.forEach(t=>{const v=o[t[0]]||0;S.tax[t[0]]=t[2]===1?(v>0?t[5]:0):t[5]*(1+.1*v);});S.taxv=1;}
   TAX.forEach(t=>{if(S.tax[t[0]]===undefined)S.tax[t[0]]=t[2]===1?0:t[5];});

@@ -50,7 +50,7 @@ const chartSheet=k=>{
 };
 const sheet=()=>{const o=S.evo;if(o===null||o===undefined)return '';let b;
   if(typeof o==='string'&&o[0]==='s')b=chartSheet(o.slice(2));
-  else if(o==='r'){const r=S.report;if(!r)return '';b=`<div class="report"><h3>Ay Sonu Raporu · ${dateLabel(r.m)}</h3><ul>${r.h.map(x=>`<li>${x}</li>`).join('')}</ul>${r.carry?`<div class="note">Kullanmadığın ${r.carry} Siyasi Sermaye devredildi.</div>`:''}</div>`;}
+  else if(o==='r'){const r=S.report;if(!r)return '';b=gazete(r)||`<div class="report"><h3>Ay Sonu Raporu · ${dateLabel(r.m)}</h3><ul>${r.h.map(x=>`<li>${x}</li>`).join('')}</ul>${r.carry?`<div class="note">Kullanmadığın ${r.carry} Siyasi Sermaye devredildi.</div>`:''}</div>`;}
   else if(S.cur.events[o])b=eventCard(S.cur.events[o],o);else return '';
   return `<div class="sheet"><div class="sheet-in">${b}<button class="btn sec" data-evx="1" style="width:100%">Kapat</button></div></div>`;};
 function karar(){
@@ -85,6 +85,7 @@ function render(){
   const app=document.getElementById('app');
   if(S.over){app.innerHTML=`<div class="wrap">${endScreen()}</div>`;return;}
   if(S.pick){app.innerHTML=pickScreen();return;}
+  if(S.prip){app.innerHTML=priScreen();return;}
   if(S.tut){app.innerHTML=tutScreen();return;}
   if(S.vote){app.innerHTML=voteScreen();return;}
   if(S.neg){app.innerHTML=negScreen();return;}
@@ -147,6 +148,7 @@ document.addEventListener('click',ev=>{
   if(t.dataset.rgm)return rgAct(+t.dataset.rgm,1);
   if(t.dataset.th){th(t.dataset.th==='auto'?'':t.dataset.th);return render();}
   if(t.dataset.fx){ls('km-fx',fxs()?'0':'1');hap(30,500);return render();}
+  if(yeniClick(t))return;
   if(t.dataset.tab){S.tab=t.dataset.tab;S.confirm=null;save();return render();}
   if(t.dataset.fire)return fire(t.dataset.fire);
   if(t.dataset.end){hap([30,50,30],392);return endTurn();}
