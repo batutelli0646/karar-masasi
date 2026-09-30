@@ -63,7 +63,7 @@ function endTurn(){
   for(const k in RANGE)S[k]=clamp(S[k],RANGE[k][0],RANGE[k][1]);
   const b=snap();
   STATS.forEach(x=>S.hist[x.k].push(S[x.k]));
-  const hl=headlines(a,b,depr);hl.push(...checkAch(),...yeniUp(),...toplumUp(),...dunyaUp());hl.push('PPK toplantısı: Merkez Bankası %'+mbRec()+' faiz öneriyor.');
+  const hl=headlines(a,b,depr);hl.push(...checkAch(),...yeniUp(),...toplumUp(),...dunyaUp(),...piyasaUp(),...ileriUp());hl.push('PPK toplantısı: Merkez Bankası %'+mbRec()+' faiz öneriyor.');
   if(S.month%TERM===30)hl.unshift(S.flags.yerel);
   if(S.coal.length&&S.kol<=0){clearCoal();S.kol=4;S.par=clamp(S.par-.5,0,10);hl.unshift('Koalisyon ortağı hükümetten çekildi. Meclis çoğunluğu tehlikede.');S.log.push({m:S.month,t:'Koalisyon çöktü',c:'Ortak çekildi',msg:'Uyum sıfıra indi. Meclis\'te ortaksız devam ediyorsun.'});}
   const over=checkEnd();
@@ -140,10 +140,10 @@ function runElection(){
   clearCoal();S.seats=se;S.el={p,sh,se,pr};
 }
 function finishEl(){
-  const e=S.el;
+  const e=S.el;karneKaydet();
   logA(`${S.term}. dönem seçimi`,`%${nf(e.p,1)} oy`,`${e.se[S.me]} sandalye. Hükümet: ${govSeats()} sandalye (${govSeats()>=301?'çoğunluk':'azınlık'}).`);
   S.ally=false;S.prom=[];S.kamp=0;S.term++;S.des=clamp(S.des+2,0,100);const D=DON[Math.min(S.term,3)];if(D){applyFx(D.fx);S.sched.push({due:S.month,id:D.ev});}
-  S.pool=base();S.prev=snap();S.lv0={...S.lv};S.el=null;genEvents();
+  S.pool=base()+karneBonus();S.prev=snap();S.lv0={...S.lv};S.el=null;genEvents();
   S.report={m:S.month,h:[(D?D.t+'. '+D.x+' ':'')+`${S.term}. dönem başladı. Hükümetin Meclis'te ${govSeats()>=301?'çoğunluğu var':'çoğunluğu yok, yasalar için muhalefetle pazarlık gerekecek'}.`],carry:0};
   save();render();window.scrollTo({top:0});
 }
@@ -229,7 +229,7 @@ function negScreen(){
 function elScreen(){
   const e=S.el,se=e.se,g=govSeats();
   return `<div class="wrap"><div class="end"><div class="muted" style="font-family:var(--mono);font-size:12px">${dateLabel(S.month)} · ${S.term}. dönem genel seçimi</div><h1>Seçim Sonucu</h1><div class="big">%${nf(e.p,1)}</div><div class="note">Kampanya etkisi ${S.kamp>=0?'+':''}${nf(S.kamp,1)} puan${e.pr.length?' · Vaatler: '+e.pr.map(r=>r[1]?'+1,5':'−3').join(' '):''}</div>
-  ${ozet(e)}<div class="fac" style="margin-top:14px">${PK.map(k=>`<div class="f"><span>${PART[k].n}${k===S.me?' ✓':''}</span><div class="bar"><i style="width:${se[k]/6}%"></i></div><span class="dl">%${nf(e.sh[k]||0,1)} · ${se[k]}</span></div>`).join('')}</div>
+  ${ozet(e)}${krnEl()}<div class="fac" style="margin-top:14px">${PK.map(k=>`<div class="f"><span>${PART[k].n}${k===S.me?' ✓':''}</span><div class="bar"><i style="width:${se[k]/6}%"></i></div><span class="dl">%${nf(e.sh[k]||0,1)} · ${se[k]}</span></div>`).join('')}</div>
   ${e.pr.length?`<ul>${e.pr.map(r=>`<li>${r[0]}: ${r[1]?'tuttun':'tutmadın, oy kaybettin'}</li>`).join('')}</ul>`:''}
   <h2>Hükümeti Kur</h2><p class="muted">Çoğunluk için 301 sandalye gerekir. Ortaklarla bakanlık pazarlığı yap.</p><div class="panel">${PK.filter(k=>k!==S.me&&se[k]>0).map(k=>pRow(k,99)).join('')}</div>
   <div class="big" style="font-size:30px;margin-bottom:12px">${g} sandalye</div><button class="btn" data-elfin="1">${g>=301?'Hükümeti kur ve devam et':'Azınlık hükümeti kur'}</button></div></div>`;

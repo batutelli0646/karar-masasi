@@ -34,7 +34,7 @@ function startGame(k){S.me=k;S.pick=false;initGov();S.pool=base();S.h0=0;
   if(S.sc===1)Object.assign(S,{enf:78,kur:64,rez:6,des:32,buy:.5,acik:8,borc:60,isz:12});
   if(S.sc===2){S.month=54;S.des=44;S.h0=54;}
   S.hd=Math.round(S.enf*.6);S.gv=50;STATS.forEach(s=>S.hist[s.k]=[S[s.k]]);S.prev=snap();S.mun={AKP:12,CHP:14}[k]??2;S.pl=[];poll();S.pri=[];S.prip=1;S.prg=[];S.cpi=100;
-  dunyaEnsure();toplumEnsure(true);if(!ls('km-tut'))S.tut=1;save();render();}
+  dunyaEnsure();toplumEnsure(true);piyasaEnsure();ileriEnsure();if(!ls('km-tut'))S.tut=1;save();render();}
 /* anketler, belediyeler, sektörler */
 function poll(){const p=S.pl[S.pl.length-1],me=vote(),o={},ks=PK.filter(k=>k!==S.me);let z=0;ks.forEach(k=>{o[k]=(p?p[k]:PART[k].w)*(1+rnd(-.04,.04));z+=o[k];});ks.forEach(k=>o[k]=o[k]/z*(100-me));o[S.me]=me;S.pl.push(o);}
 const PCOL=['#28597F','#B02A30','#A96B0C','#1E7A4B','#7A4FA0','#56666E'];

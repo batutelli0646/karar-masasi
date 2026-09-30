@@ -59,7 +59,7 @@ function toplumEnsure(force){S.nuf=S.nuf||86.1;if(S.ref===undefined)S.ref=3.6;if
 function sfx(){const F={},add=(o,m=1)=>{for(const k in o)F[k]=(F[k]||0)+o[k]*m;};
   if(!S.gr)return F;
   PL.forEach(p=>{if(S.pol[p[0]])add(p[4]);});add(GFX[S.goc]);S.krz.forEach(k=>add(KR.find(x=>x[0]===k.id)[4],k.sev));
-  const g=gDev(),h=hDev();add({des:g*.008+h*.004,huz:g*.004+h*.003});if(typeof dsfx==='function')add(dsfx());return F;}
+  const g=gDev(),h=hDev();add({des:g*.008+h*.004,huz:g*.004+h*.003});if(typeof dsfx==='function')add(dsfx());add(psfx());add(isfx());return F;}
 function toplumUp(){const h=[];toplumEnsure();
   const dr=GD[S.goc]-(S.pol.donus?.03:0)+(S.krz.some(k=>k.id==='gocd')?.12:0);S.ref=Math.max(1,S.ref+dr);S.nuf+=S.nuf*.0025/12+dr;
   let bi=null,bd=0;GRP.forEach(g=>{const id=g[0],o=S.gr[id];S.gp[id]=o;S.gr[id]=o+(gT(g)-o)*.3;S.gb[id]=(S.gb[id]||0)*.85;const d=S.gr[id]-o;if(Math.abs(d)>Math.abs(bd)){bd=d;bi=g;}});
