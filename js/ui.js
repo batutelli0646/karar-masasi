@@ -22,15 +22,15 @@ const LEVERS=[['faiz','Politika faizi','Yüksek faiz enflasyonu ve kuru bastır�
 function levers(c){
   return `<div class="panel">${c?'':'<h2>Politika Kolları</h2>'}${LEVERS.map(([k,n,h])=>{
     const chg=S.lv[k]!==S.lv0[k];
-    return `<div class="lever"><span class="n">${n}${chg?' <span class="muted">· 1 SS</span>':''}</span>${c?'':`<span class="h">${h}</span>`}<div class="step"><button data-lv="${k}" data-d="-1" aria-label="${n} azalt">−</button><output class="${chg?'chg':''}">${fmtLev(k,S.lv[k])}</output><button data-lv="${k}" data-d="1" aria-label="${n} artır">+</button></div>${c?'':`<input class="rng" type="range" min="${LVR[k][0]}" max="${LVR[k][1]}" step="0.5" value="${S.lv[k]}" data-faizr="1" aria-label="${n} ayarla">`}</div>`;}).join('')}
-  ${c?'':`<div class="note">Faiz %−10 ile %500 arasında ayarlanabilir. Faiz değişikliği bu ay 1 Siyasi Sermaye harcar. Eski değere dönersen iade edilir. Bütçe ve vergiler için alttaki sekmelere bak.</div>`}</div>`;
+    return `<div class="lever"><span class="n">${n}</span>${c?'':`<span class="h">${h}</span>`}<div class="step"><button data-lv="${k}" data-d="-1" aria-label="${n} azalt">−</button><output class="${chg?'chg':''}">${fmtLev(k,S.lv[k])}</output><button data-lv="${k}" data-d="1" aria-label="${n} artır">+</button></div>${c?'':`<input class="rng" type="range" min="${LVR[k][0]}" max="${LVR[k][1]}" step="0.5" value="${S.lv[k]}" data-faizr="1" aria-label="${n} ayarla">`}</div>`;}).join('')}
+  ${c?'':`<div class="note">Faiz %−10 ile %500 arasında ayarlanabilir. Bütçe ve vergiler için alttaki sekmelere bak.</div>`}</div>`;
 }
 function eventCard(e,i){
   const d=EVB[e.id];const a=avail();const mn=Math.min(...d.c.map(x=>x.ss));
   const done=e.ch!==null;
   let body;
   if(!done){
-    body=`<div class="choices">${d.c.map((c,ci)=>`<button class="choice" data-ev="${i}" data-c="${ci}" ${c.ss>a&&c.ss>mn?'disabled':''}><b>${c.l}</b><span class="d">${c.d}</span>${fxArr(c)}<span class="cost ${c.ss?'':'free'}">${c.ss?'SS −'+c.ss:'Bedelsiz'}</span></button>`).join('')}</div>`;
+    body=`<div class="choices">${d.c.map((c,ci)=>`<button class="choice" data-ev="${i}" data-c="${ci}"><b>${c.l}</b><span class="d">${c.d}</span>${fxArr(c)}</button>`).join('')}</div>`;
   }else{
     const c=d.c[e.ch];
     body=`<div class="outcome"><div class="you">Kararın: ${c.l}</div><div>${e.msg}</div><div class="chips">${(e.fxs||[]).map(f=>`<span class="chip">${f[0]} ${f[1]>0?'+':'−'}${nf(Math.abs(f[1]),f[2])}${f[3]==='%'?' %':''}</span>`).join('')}</div></div>`;
@@ -77,8 +77,8 @@ function endScreen(){
   return `<div class="end"><div class="muted" style="font-family:var(--mono);font-size:12px">${dateLabel(S.month)} · ${S.term}. dönem</div><h1>${o.t}</h1><p>${o.x}</p>${o.p?`<div class="big">%${nf(o.p,1)}</div><div class="note">Kampanya etkisi: ${S.kamp>=0?'+':''}${nf(S.kamp||0,1)} puan</div>`:''}<div class="stats" style="margin-top:18px">${['enf','buy','isz','rez','des','huz'].map(k=>tile(STATS.find(s=>s.k===k))).join('')}</div>${karne()}<button class="btn" data-new="1" style="margin-top:14px">Yeni oyun başlat</button></div>`;
 }
 function diger(){return ayar()+ayar2()+ist()+basarim()+slots()+gunluk()+'<div class="panel" style="margin-top:14px"><button class="btn sec sm" data-new="1">'+(S.confirmNew?'Emin misin? Tekrar bas':'Yeni oyun')+'</button></div>'+kayit();}
-const V={masa,karar,harita,kampanya,ticaret,butce,vergi,sektor,kurum,dis,meclis,kabine,diger,toplum,hizmet,nufus,politika,ulke,orgut,askeri,piyasa,ssan,lobi,buro,donem};
-const GR=[['masa','Masa',['masa','karar','harita']],['eko','Ekonomi',['butce','vergi','piyasa','sektor','ticaret']],['top','Toplum',['toplum','hizmet','nufus','politika','lobi']],['sia','Siyaset',['meclis','kabine','buro','donem','kampanya']],['dev','Devlet',['kurum','dis','ulke','orgut','askeri','ssan']],['diger','Diğer',['diger']]],SUBN={masa:'Göstergeler',karar:'Kararlar',harita:'Harita',butce:'Bütçe',vergi:'Vergi',kurum:'Kurum',sektor:'Sektörler',ticaret:'Dış ticaret',dis:'Anlaşma',toplum:'Gruplar',hizmet:'Hizmet',nufus:'Nüfus',politika:'Politika',orgut:'Örgütler',askeri:'Ordu',piyasa:'Piyasa',ssan:'Sanayii',lobi:'Lobiler',buro:'Bürokrasi',donem:'Karne',ulke:'Ülkeler',meclis:'Meclis',kabine:'Kabine',kampanya:'Kampanya',diger:'Diğer'};
+const V={masa,karar,harita,ticaret,butce,vergi,sektor,kurum,dis,meclis,kabine,diger,toplum,hizmet,nufus,politika,ulke,orgut,askeri,piyasa,ssan,lobi,buro,donem};
+const GR=[['masa','Masa',['masa','karar','harita']],['eko','Ekonomi',['butce','vergi','piyasa','sektor','ticaret']],['top','Toplum',['toplum','hizmet','nufus','politika','lobi']],['sia','Siyaset',['meclis','kabine','buro','donem']],['dev','Devlet',['kurum','dis','ulke','orgut','askeri','ssan']],['diger','Diğer',['diger']]],SUBN={masa:'Göstergeler',karar:'Kararlar',harita:'Harita',butce:'Bütçe',vergi:'Vergi',kurum:'Kurum',sektor:'Sektörler',ticaret:'Dış ticaret',dis:'Anlaşma',toplum:'Gruplar',hizmet:'Hizmet',nufus:'Nüfus',politika:'Politika',orgut:'Örgütler',askeri:'Ordu',piyasa:'Piyasa',ssan:'Sanayii',lobi:'Lobiler',buro:'Bürokrasi',donem:'Karne',ulke:'Ülkeler',meclis:'Meclis',kabine:'Kabine',kampanya:'Kampanya',diger:'Diğer'};
 const grp=()=>GR.find(g=>g[2].includes(V[S.tab]?S.tab:'masa'));
 const subbar=()=>{const g=grp();return g[2].length<2?'':'<div class="subtabs">'+g[2].map(k=>'<button class="bn2" aria-selected="'+(k===S.tab)+'" data-tab="'+k+'">'+SUBN[k]+rz(k)+'</button>').join('')+'</div>';};
 function render(){
@@ -93,10 +93,9 @@ function render(){
   if(S.wage){app.innerHTML=wageScreen();return;}
   const a=avail();
   const all=S.cur.events.every(e=>e.ch!==null);
-  const pips=Array.from({length:Math.max(S.pool,10)},(_,i)=>`<i class="pip ${i<a?'':'off'}"></i>`).join('');
   const left=S.cur.events.filter(e=>e.ch===null).length;
   app.innerHTML=`<header class="top"><div class="top-in"><div class="brand">Karar Masası<small>${dateLabel(S.month)} · ${S.term}. DÖNEM · SEÇİME ${TERM-S.month%TERM} AY</small></div>
-  <div class="ss"><b>${a}</b><span>Siyasi Sermaye</span><div class="pips">${pips}</div><button class="ico" data-ara="1" aria-label="Ara">⌕</button></div></div></header>
+  <button class="ico" data-ara="1" aria-label="Ara">⌕</button></div></header>
   <div class="wrap"><main>${subbar()}${(V[S.tab]||masa)()}</main></div>
   ${S.tab==='masa'||S.tab==='karar'||!V[S.tab]?`<div class="endbar"><div class="endbar-in"><span class="msg">${all?'Tüm kararlar verildi.':`${left} karar bekliyor.`}</span><button class="btn" data-end="1" ${all?'':'disabled'}>Ayı Bitir · ${dateLabel(S.month+1)}</button></div></div>`:''}
   ${araSheet()}<nav class="bnav" role="tablist">${GR.map(([id,n,ks])=>`<button class="bn" role="tab" aria-selected="${grp()[0]===id}" data-tab="${ks.includes(S.tab)?S.tab:ks[0]}">${n}${rz(ks)}</button>`).join('')}</nav>`;
@@ -143,7 +142,6 @@ document.addEventListener('click',ev=>{
   if(t.dataset.tar)return tact('tar',t.dataset.tar);
   if(t.dataset.yl)return tact('yl');
   if(t.dataset.fta)return tact('fta',t.dataset.fta);
-  if(t.dataset.ka)return kact(t.dataset.ka);
   if(t.dataset.rgi)return rgAct(+t.dataset.rgi,0);
   if(t.dataset.rgm)return rgAct(+t.dataset.rgm,1);
   if(t.dataset.th){th(t.dataset.th==='auto'?'':t.dataset.th);return render();}

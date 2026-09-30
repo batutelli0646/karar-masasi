@@ -7,6 +7,7 @@ const LB=[['sen','Sendikalar',()=>(S.gr.ucret-50)*1.3+(S.gr.kamu-50)*.4-(S.isz-9
  ['vak','Vakıf ve cemaatler',()=>(S.gr.muhaf-50)*1.2+(S.gr.milli-50)*.3+(S.des-41)*.3,{huz:-.2,des:-.15},'desteğini çekme sinyali verdi',{huz:.1}]];
 const LBP={sen:60,isv:70,oda:40,stk:35,vak:50};
 function ileriEnsure(){if(!S.lb){S.lb={};LB.forEach(l=>S.lb[l[0]]={t:0,pw:LBP[l[0]],cd:{},ey:0});}
+  LB.forEach(l=>{const o=S.lb[l[0]];if(!o.lg)o.lg=[];if(!o.sj)o.sj=[0,0,0,0];});
   if(!S.bu)S.bu={kap:55,yz:45,ly:0,cd:{}};if(!S.kr)S.kr={n:0,s:0,ark:[],bn:0};
   for(const k in S.M){const m=S.M[k];if(m.yz===undefined)m.yz=clamp(rnd(15,50)-(m.sk-5)*3,0,100);}}
 function isfx(){const F={};if(!S.lb||!S.bu||!S.gr||!S.pz)return F;const add=(o,m)=>{for(const k in o)F[k]=(F[k]||0)+o[k]*m;},b=S.bu;
@@ -19,18 +20,19 @@ const gr=v=>v>=85?'A':v>=70?'B':v>=55?'C':v>=40?'D':'F',grc=v=>v>=70?'good':v>=5
 function karneKaydet(){const k=S.kr;if(!k.n)return;const a=k.s/k.n;k.ark.push({t:S.term,avg:a,end:krSc()});k.bn=a>=85?2:a>=70?1:0;k.s=0;k.n=0;}
 const karneBonus=()=>{const b=S.kr.bn;S.kr.bn=0;return b;};
 function ileriUp(){const h=[];ileriEnsure();const b=S.bu;
-  LB.forEach(l=>{const o=S.lb[l[0]];o.t=clamp(o.t+(clamp(l[2](),-100,100)-o.t)*.12+rnd(-3,3),-100,100);o.pw=clamp(o.pw+(o.t<-40?.3:-.1),10,90);
-    if(o.ey>0)o.ey--;else if(o.t<-35&&Math.random()<.15){o.ey=2;h.push(`${l[1]} ${l[4]}.`);}});
+  LB.forEach(l=>{const o=S.lb[l[0]];o.t=clamp(o.t+(clamp(l[2]()+lbD(l[0]),-100,100)-o.t)*.12+rnd(-3,3),-100,100);o.sj=o.sj.map(v=>clamp(v*.9+rnd(-3,3),-15,15));o.pw=clamp(o.pw+(o.t<-40?.3:-.1),10,90);
+    if(o.ey>0)o.ey--;else if(o.t<-35&&Math.random()<.15){o.ey=2;o.lg.unshift([S.month,'Eylem: '+l[4]]);o.lg.splice(5);h.push(`${l[1]} ${l[4]}.`);}});
   const ks=Object.keys(S.M),av=ks.reduce((a,k)=>a+S.M[k].yz,0)/ks.length,sk=ks.reduce((a,k)=>a+S.M[k].sk,0)/ks.length;
   ks.forEach(k=>{const m=S.M[k];m.yz=clamp(m.yz+rnd(-1,2)*(m.gv<40?1.5:1)+(b.yz-45)*.01-b.ly*.3,0,100);
     if(m.yz>75&&Math.random()<.25){h.push(`${m.name} hakkında yolsuzluk iddiaları gündemde, bakan görevden alındı.`);applyFx({des:-1.2,par:-.3,bat:-.15});if(!S.own[k])S.M[k]={...cd(),gv:50,yz:30};else m.yz=40;}});
   b.yz=clamp(b.yz+(av-b.yz)*.1,0,100);b.kap=clamp(b.kap+(40+sk*3+rb('egit')*10+b.ly*4-b.kap)*.04,0,100);
   S.kr.s+=krSc();S.kr.n++;return h;}
-function ileriClick(t){const d=t.dataset,b=S.bu;if(!d.lb&&!d.bz&&!d.bi)return false;ileriEnsure();
+function ileriClick(t){const d=t.dataset,b=S.bu;if(!d.lb&&!d.bz&&!d.bi&&!d.lbs)return false;ileriEnsure();if(d.lbs){S.lbs=d.lbs;render();return true;}
   const use=(o,k,n,c)=>{if(avail()<n||(o.cd[k]||0)>S.month)return false;S.cur.spent+=n;o.cd[k]=S.month+c;return true;};
   if(d.lb){const [id,a]=d.lb.split(':'),o=S.lb[id],l=LB.find(x=>x[0]===id);
-    if(a==='m'&&use(o,'m',1,3)){o.t=clamp(o.t+14,-100,100);logA('Lobiler',l[1],'Masaya oturuldu, tutum +14.');}
-    else if(a==='y'&&use(o,'y',2,12)){o.pw=clamp(o.pw-10,10,90);o.t=clamp(o.t-12,-100,100);applyFx({huz:-.3});logA('Lobiler',l[1],'Yasal düzenlemeyle etki alanı daraltıldı.');}else return true;}
+    if(a==='m'&&use(o,'m',0,3)){o.t=clamp(o.t+14,-100,100);lbLg(o,'Masaya oturuldu');logA('Lobiler',l[1],'Masaya oturuldu, tutum +14.');}
+    else if(a==='o'&&use(o,'o',0,6)){const x=LO[id];applyFx(x[1]);o.t=clamp(o.t+18,-100,100);lbLg(o,'Ödün: '+x[0]);logA('Lobiler',l[1],x[0]+' uygulandı, tutum +18.');}
+    else if(a==='y'&&use(o,'y',0,12)){o.pw=clamp(o.pw-10,10,90);o.t=clamp(o.t-12,-100,100);applyFx({huz:-.3});lbLg(o,'Yasal düzenleme: etki alanı daraltıldı');logA('Lobiler',l[1],'Yasal düzenlemeyle etki alanı daraltıldı.');}else return true;}
   else if(d.bz==='ly'&&b.ly<3&&use(b,'ly',2,6)){b.ly++;S.gr.kamu=clamp(S.gr.kamu-4,0,100);logA('Bürokrasi','Liyakat düzenlemesi','Atamalar sınav ve kurallara bağlandı.');}
   else if(d.bz==='kd'&&b.ly>-2&&use(b,'kd',1,3)){b.ly--;b.yz=clamp(b.yz+3,0,100);S.gr.kamu=clamp(S.gr.kamu+3,0,100);applyFx({par:.4});logA('Bürokrasi','Kadrolaşma','Yakın isimler üst kademelere atandı.');}
   else if(d.bi){const k=d.bi,m=S.M[k];if(!m||S.own[k])return true;m.cd=m.cd||{};if(!use(m,'cv',1,4))return true;m.rv=S.month;
@@ -39,17 +41,14 @@ function ileriClick(t){const d=t.dataset,b=S.bu;if(!d.lb&&!d.bz&&!d.bi)return fa
   else return true;
   hap(20,520);save();render();return true;}
 const cdl=(o,k)=>(o.cd[k]||0)>S.month?(o.cd[k]-S.month)+' ay':null;
-function lobi(){const a=avail();return `<h2>Lobiler ve örgütler</h2><div class="panel">${LB.map(l=>{const o=S.lb[l[0]],c=o.t>=25?'good':o.t>-25?'warn':'bad';
-  return `<div class="lever"><span class="n">${l[1]} <span class="st ${c}">${o.t>=25?'Yakın':o.t>-25?'Mesafeli':'Karşı'}</span> <span class="dl muted">· ${nf(o.t,0)}</span></span><span class="h">Etki gücü ${nf(o.pw,0)}/100${o.ey>0?' · <b style="color:var(--bad)">Eylemde, '+o.ey+' ay</b>':''}</span><div class="step">${sbtn(`data-lb="${l[0]}:m"`,cdl(o,'m')||'Masaya otur · 1 SS',a<1||cdl(o,'m'))}${sbtn(`data-lb="${l[0]}:y"`,cdl(o,'y')||'Düzenleme · 2 SS',a<2||cdl(o,'y'))}</div>${gbar((o.t+100)/2,c)}</div>`;}).join('')}
-  <div class="note">Tutum; ilgili toplumsal gruplardan, işsizlikten, reel asgari ücretten, faizden, yolsuzluk algısından ve itibardan oluşur. Tutum −35'in altına inince eylem (grev, yatırım erteleme, kampanya) başlar; etkisi gücüyle orantılıdır. Düzenleme gücü 10 azaltır ama tutumu düşürür, huzuru bozar.</div></div>`;}
 function buro(){const b=S.bu,a=avail(),ks=Object.keys(S.M).filter(k=>!S.own[k]).map(k=>[k,S.M[k]]).sort((x,y)=>y[1].yz-x[1].yz).slice(0,5);
   return `<h2>Bürokrasi</h2><div class="panel">${kv('Devlet kapasitesi',nf(b.kap,0)+'/100')}${gbar(b.kap,b.kap>=55?'good':b.kap>=40?'warn':'bad')}${kv('Yolsuzluk algısı',nf(b.yz,0)+'/100')}${gbar(b.yz,b.yz<40?'good':b.yz<60?'warn':'bad')}${kv('Liyakat düzeyi',(b.ly>0?'+':'')+b.ly)}
   <div class="note">Kapasite; bakan yetkinliği, eğitim bütçesi ve liyakatle artar, büyümeyi ve desteği yukarı çeker. Yolsuzluk algısı desteği, itibarı, riski ve kredi notunu bozar. Gizli yolsuzluk puanı yüksek bakanlar skandala yol açabilir.</div>
-  <div class="lever"><span class="n">Liyakat düzenlemesi</span><span class="h">Kapasite hedefi +4, yolsuzluk baskısı azalır; kamu çalışanları tepkili. En fazla +3.</span><div class="step">${sbtn('data-bz="ly"',cdl(b,'ly')||'2 SS',a<2||cdl(b,'ly')||b.ly>=3)}</div></div>
-  <div class="lever"><span class="n">Kadrolaşma</span><span class="h">Parti içi birlik +0,4; yolsuzluk algısı +3, kapasite düşer.</span><div class="step">${sbtn('data-bz="kd"',cdl(b,'kd')||'1 SS',a<1||cdl(b,'kd')||b.ly<=-2)}</div></div></div>
-  <div class="panel"><b>Bakan denetimi</b>${ks.map(([k,m])=>{const r=m.rv!==undefined&&S.month-m.rv<12;return `<div class="lever"><span class="n">${m.name}</span><span class="h">${ROLES[k]?ROLES[k][0]:(MIN.find(x=>x[0]===k)||[0,k])[1]+' Bakanı'} · ${r?'son denetimde risk '+nf(m.yz,0):'denetlenmedi'}</span><div class="step">${sbtn(`data-bi="${k}"`,m.cd&&cdl(m,'cv')||'Soruştur · 1 SS',a<1||(m.cd&&cdl(m,'cv')))}</div></div>`;}).join('')}<div class="note">Liste gizli riskin en yüksek olduğu beş ismi gösterir. Soruşturma riski bulur (60 üstü: görevden alma), temizse riski 6 azaltır ve parti içinde hafif huzursuzluk yaratır.</div></div>`;}
+  <div class="lever"><span class="n">Liyakat düzenlemesi</span><span class="h">Kapasite hedefi +4, yolsuzluk baskısı azalır; kamu çalışanları tepkili. En fazla +3.</span><div class="step">${sbtn('data-bz="ly"',cdl(b,'ly')||'Yap',a<2||cdl(b,'ly')||b.ly>=3)}</div></div>
+  <div class="lever"><span class="n">Kadrolaşma</span><span class="h">Parti içi birlik +0,4; yolsuzluk algısı +3, kapasite düşer.</span><div class="step">${sbtn('data-bz="kd"',cdl(b,'kd')||'Yap',a<1||cdl(b,'kd')||b.ly<=-2)}</div></div></div>
+  <div class="panel"><b>Bakan denetimi</b>${ks.map(([k,m])=>{const r=m.rv!==undefined&&S.month-m.rv<12;return `<div class="lever"><span class="n">${m.name}</span><span class="h">${ROLES[k]?ROLES[k][0]:(MIN.find(x=>x[0]===k)||[0,k])[1]+' Bakanı'} · ${r?'son denetimde risk '+nf(m.yz,0):'denetlenmedi'}</span><div class="step">${sbtn(`data-bi="${k}"`,m.cd&&cdl(m,'cv')||'Soruştur',a<1||(m.cd&&cdl(m,'cv')))}</div></div>`;}).join('')}<div class="note">Liste gizli riskin en yüksek olduğu beş ismi gösterir. Soruşturma riski bulur (60 üstü: görevden alma), temizse riski 6 azaltır ve parti içinde hafif huzursuzluk yaratır.</div></div>`;}
 function donem(){const it=krn(),sc=krSc(),k=S.kr,av=k.n?k.s/k.n:sc,best=k.ark.reduce((m,x)=>Math.max(m,x.avg),0);
-  return `<h2>Dönem karnesi</h2><div class="panel"><div class="big" style="font-size:40px">${gr(sc)} <small class="dl">${nf(sc,0)}/100</small></div>${it.map(x=>kv(x[0],`<span class="st ${grc(x[1])}">${gr(x[1])}</span> ${nf(x[1],0)}`)+gbar(x[1],grc(x[1]))).join('')}${kv(S.term+'. dönem ortalaması',nf(av,0)+' ('+gr(av)+')')}${k.bn?kv('Bir sonraki dönem ödülü','+'+k.bn+' SS'):''}
-  <div class="note">Karne; ekonomi, toplum, dış ilişkiler, güvenlik, yönetim ve verdiğin sözlerden hesaplanır. Dönem ortalaması 70'i geçerse sonraki dönem +1, 85'i geçerse +2 Siyasi Sermaye kazanırsın.</div></div>
-  ${k.ark.length?`<div class="panel"><b>Arşiv</b>${k.ark.map(x=>kv(x.t+'. dönem',nf(x.avg,0)+' ('+gr(x.avg)+')')).join('')}${kv('En iyi dosya',nf(best,0))}</div>`:''}`;}
-const krnEl=()=>{const it=krn(),sc=krSc();return `<div class="panel" style="text-align:left"><b>Dönem karnesi: ${gr(sc)}</b> <span class="dl muted">${nf(sc,0)}/100</span>${it.map(x=>kv(x[0],`<span class="st ${grc(x[1])}">${gr(x[1])}</span>`)).join('')}<div class="note">Dönem ortalaması 70 üstüyse sonraki dönem +1 SS, 85 üstüyse +2 SS.</div></div>`;};
+  return `<h2>Dönem karnesi</h2><div class="panel"><div class="big" style="font-size:40px">${gr(sc)} <small class="dl">${nf(sc,0)}/100</small></div>${it.map(x=>kv(x[0],`<span class="st ${grc(x[1])}">${gr(x[1])}</span> ${nf(x[1],0)}`)+gbar(x[1],grc(x[1]))).join('')}${kv(S.term+'. dönem ortalaması',nf(av,0)+' ('+gr(av)+')')}${k.bn?kv('Sonraki dönem ödülü','Destek +'+k.bn*1.5):''}
+  <div class="note">Karne; ekonomi, toplum, dış ilişkiler, güvenlik, yönetim ve verdiğin sözlerden hesaplanır. Dönem ortalaması 70'i geçerse sonraki dönemin başında halk desteği +1,5, 85'i geçerse +3 puan artar.</div></div>
+  ${priP()}${anket()}${k.ark.length?`<div class="panel"><b>Arşiv</b>${k.ark.map(x=>kv(x.t+'. dönem',nf(x.avg,0)+' ('+gr(x.avg)+')')).join('')}${kv('En iyi dosya',nf(best,0))}</div>`:''}`;}
+const krnEl=()=>{const it=krn(),sc=krSc();return `<div class="panel" style="text-align:left"><b>Dönem karnesi: ${gr(sc)}</b> <span class="dl muted">${nf(sc,0)}/100</span>${it.map(x=>kv(x[0],`<span class="st ${grc(x[1])}">${gr(x[1])}</span>`)).join('')}<div class="note">Dönem ortalaması 70 üstüyse sonraki dönemin başında halk desteği +1,5, 85 üstüyse +3 puan artar.</div></div>`;};

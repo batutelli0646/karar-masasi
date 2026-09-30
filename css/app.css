@@ -130,3 +130,5 @@ h2{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.07e
 .ars{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}.ar{font-style:normal;font-size:10.5px;padding:1px 6px;border-radius:2px;border:1px solid var(--line);color:var(--muted)}.ar.good{color:var(--good);border-color:var(--good)}.ar.bad{color:var(--bad);border-color:var(--bad)}
 :root[data-fs="0.92"]{zoom:.92}:root[data-fs="1.12"]{zoom:1.12}:root[data-fs="1.25"]{zoom:1.25}
 :root[data-font="sys"]{--display:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--mono:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+.top-in{flex-wrap:nowrap;gap:10px}.top-in .brand{min-width:0}.ico{flex:none;margin-left:auto}
+.brand small{font-size:10px;letter-spacing:.03em;white-space:nowrap}

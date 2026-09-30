@@ -69,8 +69,7 @@ function endTurn(){
   const over=checkEnd();
   if(over){S.over={...over,win:false};save();render();return;}
   if(S.month%TERM===0){runElection();save();render();window.scrollTo({top:0});return;}
-  const carry=Math.min(6,Math.max(0,avail()));
-  S.pool=base()+carry+(S.des>=50?2:0)+(S.prom.length&&promRes().every(r=>r[1])?1:0)-(S.par<4?1:0)-S.prg.length;
+  const carry=0;
   S.prev=a;S.lv0={...S.lv};S.confirm=null;S.evo=null;
   genEvents();
   S.report={m:S.month,h:hl,carry,d:gzD(a,b)};
@@ -118,7 +117,7 @@ function propose(id,lobi){
   const yes=rows.reduce((a,r)=>a+r[1],0),ok=yes>=l[3];
   S.cur.spent+=c;S.lawT[id]=S.month+3;
   if(ok){applyFx(l[6]);S.laws[id]=S.month;if(id==='baraj')S.baraj=5;S.cur.spent=Math.max(0,S.cur.spent-1);}else applyFx({des:-.3,par:-.3});
-  hap(ok?[20,30,20]:60,ok?660:220);S.vote={n:l[1],d:l[5]+(ok?' Yasalaştığı için 1 SS iade edildi.':''),rows,yes,need:l[3],ok};
+  hap(ok?[20,30,20]:60,ok?660:220);S.vote={n:l[1],d:l[5],rows,yes,need:l[3],ok};
   logA(l[1],ok?'Kabul edildi':'Reddedildi',`Oylama: ${yes} kabul, ${600-yes} ret (gerekli ${l[3]}).`);save();render();
 }
 function dropP(k){Object.keys(S.own).filter(m=>S.own[m]===k).forEach(m=>{S.M[m]=newM();delete S.own[m];});S.coal=S.coal.filter(x=>x!==k);S.kol=clamp(S.kol-1,0,10);logA('Koalisyon',PART[k].n+' hükümetten ayrıldı','Bakanlıkları geri aldın.');save();render();}
@@ -126,7 +125,7 @@ function offer(){
   const n=S.neg,p=n.p,y=n.off.reduce((a,k)=>a+MVAL(p,k),0),x=ask(p);
   if(cmp(S.me,p)<2.5){n.msg=`${PART[p].n} seninle ideolojik olarak ortaklık kurmayı reddediyor.`;return render();}
   if(y<x){const m=PART[p].want.find(k=>!n.off.includes(k)&&!S.own[k]);n.msg=`Teklif yetersiz. ${PART[p].n} en az ${nf(x,1)} puanlık bakanlık istiyor, sen ${nf(y,1)} puan sundun.${m?' Özellikle '+minName(m)+' Bakanlığına bakıyorlar.':''}`;return render();}
-  if(!S.el){if(avail()<2){n.msg='Bu görüşme 2 SS ister.';return render();}S.cur.spent+=2;}
+  
   S.coal.push(p);n.off.forEach(k=>{S.own[k]=p;S.M[k]={...newM(),sk:Math.round(rnd(4,8)),note:PART[p].n+' kontenjanı'};});
   S.kol=S.coal.length>1?(S.kol+cmp(S.me,p))/2:cmp(S.me,p);S.par=clamp(S.par-.35*n.off.length,0,10);
   logA('Koalisyon',PART[p].n+' hükümete katıldı',`${n.off.length} bakanlık verildi: ${n.off.map(minName).join(', ')}.`);S.neg=null;save();render();
@@ -143,7 +142,7 @@ function finishEl(){
   const e=S.el;karneKaydet();
   logA(`${S.term}. dönem seçimi`,`%${nf(e.p,1)} oy`,`${e.se[S.me]} sandalye. Hükümet: ${govSeats()} sandalye (${govSeats()>=301?'çoğunluk':'azınlık'}).`);
   S.ally=false;S.prom=[];S.kamp=0;S.term++;S.des=clamp(S.des+2,0,100);const D=DON[Math.min(S.term,3)];if(D){applyFx(D.fx);S.sched.push({due:S.month,id:D.ev});}
-  S.pool=base()+karneBonus();S.prev=snap();S.lv0={...S.lv};S.el=null;genEvents();
+  applyFx({des:karneBonus()*1.5});S.prev=snap();S.lv0={...S.lv};S.el=null;genEvents();
   S.report={m:S.month,h:[(D?D.t+'. '+D.x+' ':'')+`${S.term}. dönem başladı. Hükümetin Meclis'te ${govSeats()>=301?'çoğunluğu var':'çoğunluğu yok, yasalar için muhalefetle pazarlık gerekecek'}.`],carry:0};
   save();render();window.scrollTo({top:0});
 }
@@ -160,8 +159,8 @@ const sld=(id,mn,mx,st,v)=>`<input class="rng" type="range" min="${mn}" max="${m
 function taxs(k,d){const t=TAX.find(x=>x[0]===k),st=Math.max(.1,Math.round(t[5])/10);S.tax[k]=clamp(Math.round((S.tax[k]+d*st)*10)/10,0,100);save();render();}
 function setFaiz(v){const old=S.lv.faiz,r=LVR.faiz;v=clamp(Math.round(v*2)/2,r[0],r[1]);S.lv.faiz=v;const after=levCost();S.lv.faiz=old;if(after>levCost()&&avail()<1){render();return;}S.lv.faiz=v;save();render();}
 function act(w){
-  const gt=S.gdp*S.kur,cl=k=>(S.cool[k]||0)>S.month,rz=ui('rez',5),fr=!S.cur.kf,ss=fr?0:(w==='af'||(w==='rez'&&Math.abs(rz)>10)?2:1);let fx,msg;
-  if(ss>avail())return;
+  const gt=S.gdp*S.kur,cl=k=>(S.cool[k]||0)>S.month,rz=ui('rez',5),fr=(S.cur.kf||0)<3,ss=0;let fx,msg;
+  if(!fr)return;
   if(w==='rez'){if(!rz||S.rez+rz<1)return;fx={rez:rz,kur:rz*.3,enf:rz*.03};msg=`Merkez Bankası ${Math.abs(rz)} mlr $ rezerv ${rz<0?'sattı':'topladı'}.`;}
   else if(w==='borrow'){const L=LOAN[ui('src','eurobond')],amt=Math.min(ui('amt',8),L[5]);fx={rez:amt,borc:amt/S.gdp*100,...L[3]};S.gdp+=.5*amt;S.loans.push({s:ui('src','eurobond'),amt,rate:L[1],end:S.month+L[2]*12});msg=`${L[0]}: ${amt} mlr $ borç alındı (%${L[1]} faiz, ${L[2]} yıl vade).`;}
   else if(w==='repay'){const amt=ui('rep',6);if(S.rez-amt<1)return;fx={rez:-amt,borc:-amt/S.gdp*100};S.gdp-=.3*amt;let rem=amt;S.loans.sort((a,b)=>b.rate-a.rate).forEach(l=>{const d=Math.min(l.amt,rem);l.amt-=d;rem-=d;});S.loans=S.loans.filter(l=>l.amt>.01);msg=`${amt} mlr $ dış borç ödendi.`;}
@@ -170,7 +169,7 @@ function act(w){
   else if(w==='af'){if(cl('af'))return;const p=ui('af',20),c=p/100*2.5;fx={acik:c,des:p*.02,huz:p*.005};S.cool.af=S.month+24;msg=`Prim affı %${p} oranında çıkarıldı. Devlete maliyeti ≈ ${tl(c)}.`;}
   else if(w==='ikr'){if(cl('ikr'))return;const v=ui('ikr',3000),c=v*S.pens/1000/gt*100;fx={acik:c,des:Math.min(3,v/3000),huz:.2};S.cool.ikr=S.month+6;msg=`Emekliye ${nf(v,0)} ₺ bayram ikramiyesi verildi. Maliyet ≈ ${tl(c)}.`;}
   else return;
-  applyFx(fx);S.cur.spent+=ss;if(fr)S.cur.kf=1;S.imsg=msg;logA('Devlet kurumları',msg,'İşlem uygulandı.');save();render();
+  applyFx(fx);S.cur.kf=(S.cur.kf||0)+1;S.imsg=msg;logA('Devlet kurumları',msg,'İşlem uygulandı.');save();render();
 }
 function wageScreen(){
   const w=S.wage,n=Math.round(S.minw*(1+w.G/100));
@@ -194,28 +193,28 @@ function vergi(){
   return `${tahminP()}<h2>Vergiler</h2><div class="panel"><div class="dl">Değişikliklerin yıllık gelir etkisi: ${X.rev>=0?'+':''}${tl(X.rev)} (GSYH %${nf(X.rev,2)})</div><div class="note">Her verginin oranını %0 ile %100 arasında belirlersin. Oran artınca gelir artar ama azalan verimle. Halk desteği, enflasyon ve büyüme de etkilenir.</div></div><div class="panel">${TAX.filter(t=>t[2]===2).map(trow).join('')}</div><h2>Yeni ve Ek Vergiler</h2><div class="panel">${TAX.filter(t=>t[2]===1).map(trow).join('')}<div class="note">Yeni vergiler %0'da kapalıdır. Oranı artırdıkça devreye girer.</div></div>`;
 }
 function kurum(){
-  const a=avail(),fr=!S.cur.kf,cs=n=>fr?'bedelsiz':n+' SS',gt=S.gdp*S.kur,cl=k=>Math.max(0,(S.cool[k]||0)-S.month),src=ui('src','eurobond'),L=LOAN[src],amt=Math.min(ui('amt',8),L[5]),rz=ui('rez',5),rep=ui('rep',6),ice=ui('ice',300),kre=ui('kre',0),af=ui('af',20),ikr=ui('ikr',3000);
+  const a=avail(),fr=(S.cur.kf||0)<3,gt=S.gdp*S.kur,cl=k=>Math.max(0,(S.cool[k]||0)-S.month),src=ui('src','eurobond'),L=LOAN[src],amt=Math.min(ui('amt',8),L[5]),rz=ui('rez',5),rep=ui('rep',6),ice=ui('ice',300),kre=ui('kre',0),af=ui('af',20),ikr=ui('ikr',3000);
   const P=(t,b)=>`<div class="panel"><b>${t}</b>${b}</div>`,Q=(id,mn,mx,st,v,lab)=>`<div class="dl" style="margin-top:10px">${lab}</div>${sld(id,mn,mx,st,v)}`,B=(w,txt,dis)=>`<div class="chips" style="margin-top:8px"><button class="btn sm" data-act="${w}" ${dis||(a<1&&!fr)?'disabled':''}>${txt}</button></div>`;
   return `${tahminP()}<h2>Devlet Kurumları</h2>${S.imsg?`<div class="report">${S.imsg}</div>`:''}
-  ${P('Genel görünüm',`<div class="dl">GSYH ≈ ${nf(gt/1000,2)} trilyon ₺ (${nf(S.gdp,0)} mlr $)</div><div class="dl">Net rezerv ${nf(S.rez,1)} mlr $ · Dolar ${nf(S.kur,2)} ₺</div><div class="dl">Dış borç stoku ≈ ${nf(S.borc*S.gdp/100,0)} mlr $ (GSYH %${nf(S.borc,1)})</div><div class="note">Bu sekmedeki işlemler bakanlık bütçelerinden bağımsızdır. Ayda bir işlem bedelsiz (${fr?'hakkın var':'bu ay kullandın'}), diğerleri SS harcar.</div>`)}
+  ${P('Genel görünüm',`<div class="dl">GSYH ≈ ${nf(gt/1000,2)} trilyon ₺ (${nf(S.gdp,0)} mlr $)</div><div class="dl">Net rezerv ${nf(S.rez,1)} mlr $ · Dolar ${nf(S.kur,2)} ₺</div><div class="dl">Dış borç stoku ≈ ${nf(S.borc*S.gdp/100,0)} mlr $ (GSYH %${nf(S.borc,1)})</div><div class="note">Bu sekmedeki işlemler bakanlık bütçelerinden bağımsızdır. Ayda en fazla 3 işlem yapabilirsin (${3-(S.cur.kf||0)} hakkın kaldı).</div>`)}
   ${mbP()}${pgP()}
   ${levers()}
-  ${P('Merkez Bankası · rezerv',Q('rez',-30,30,1,rz,`Rezerv işlemi: ${rz>=0?'topla':'sat'} ${Math.abs(rz)} mlr $ ≈ ${nf(Math.abs(rz)*S.kur,0)} milyar ₺`)+B('rez',`Uygula · ${cs(Math.abs(rz)>10?2:1)}`,!rz||S.rez+rz<1))}
-  ${P('Hazine · dış borç alımı',`<div class="chips" style="margin-top:8px">${Object.entries(LOAN).map(([k,l])=>`<button class="btn sm ${k===src?'':'sec'}" data-uisrc="${k}">${l[0]}</button>`).join('')}</div><div class="note">${L[4]} Faiz %${L[1]}, vade ${L[2]} yıl.</div>`+Q('amt',1,L[5],1,amt,`Tutar ${amt} mlr $ · yıllık faiz ≈ ${nf(amt*L[1]/100,2)} mlr $ · GSYH ≈ +${nf(.5*amt,1)} mlr $`)+B('borrow','Borçlan · '+cs(1)))}
-  ${P('Hazine · dış borç ödemesi',Q('rep',1,30,1,rep,`Ödeme ${rep} mlr $ · GSYH ≈ −${nf(.3*rep,1)} mlr $ · borç GSYH'nin %${nf(rep/S.gdp*100,2)}'i kadar azalır`)+B('repay','Öde · '+cs(1),S.rez-rep<1)+(S.loans.length?`<div class="note">Aktif krediler: ${S.loans.map(l=>`${LOAN[l.s][0]} ${nf(l.amt,1)} mlr $ (%${l.rate}, ${Math.max(0,l.end-S.month)} ay)`).join(' · ')}</div>`:''))}
-  ${P('Hazine · iç borçlanma ihalesi',Q('ice',50,1500,50,ice,`İhale ${nf(ice,0)} milyar ₺ (GSYH %${nf(ice/gt*100,2)}) · GSYH ≈ +${nf(.3*ice/S.kur,1)} mlr $`)+B('ice','İhaleye çık · '+cs(1)))}
-  ${P('BDDK · kredi hacmi',Q('kre',-10,10,.5,kre,`Kredi hacmi ${kre>=0?'+':''}${nf(kre,1)}% GSYH ≈ ${tl(Math.abs(kre))} ${kre>=0?'büyüme':'küçülme'}`)+B('kre','Uygula · '+cs(1),!kre))}
-  ${P('SGK · prim affı ve emekliler',`<div class="dl">Asgari ücret (net) ${nf(S.minw,0)} ₺ · Emekli sayısı ≈ ${nf(S.pens,1)} milyon</div>`+Q('af',0,100,5,af,`Prim affı: borcun %${af}'ı silinir · devlete maliyeti ≈ ${tl(af/100*2.5)}`)+B('af',cl('af')?`${cl('af')} ay sonra`:'Affı çıkar · '+cs(2),cl('af')||(a<2&&!fr)||!af)+Q('ikr',0,20000,250,ikr,`Bayram ikramiyesi: ${nf(ikr,0)} ₺ × ${nf(S.pens,1)} milyon emekli = ${nf(ikr*S.pens/1000,1)} milyar ₺ (GSYH %${nf(ikr*S.pens/1000/gt*100,2)})`)+B('ikr',cl('ikr')?`${cl('ikr')} ay sonra`:'İkramiye öde · '+cs(1),cl('ikr')||!ikr))}
+  ${P('Merkez Bankası · rezerv',Q('rez',-30,30,1,rz,`Rezerv işlemi: ${rz>=0?'topla':'sat'} ${Math.abs(rz)} mlr $ ≈ ${nf(Math.abs(rz)*S.kur,0)} milyar ₺`)+B('rez',`Uygula`,!rz||S.rez+rz<1))}
+  ${P('Hazine · dış borç alımı',`<div class="chips" style="margin-top:8px">${Object.entries(LOAN).map(([k,l])=>`<button class="btn sm ${k===src?'':'sec'}" data-uisrc="${k}">${l[0]}</button>`).join('')}</div><div class="note">${L[4]} Faiz %${L[1]}, vade ${L[2]} yıl.</div>`+Q('amt',1,L[5],1,amt,`Tutar ${amt} mlr $ · yıllık faiz ≈ ${nf(amt*L[1]/100,2)} mlr $ · GSYH ≈ +${nf(.5*amt,1)} mlr $`)+B('borrow','Borçlan'))}
+  ${P('Hazine · dış borç ödemesi',Q('rep',1,30,1,rep,`Ödeme ${rep} mlr $ · GSYH ≈ −${nf(.3*rep,1)} mlr $ · borç GSYH'nin %${nf(rep/S.gdp*100,2)}'i kadar azalır`)+B('repay','Öde',S.rez-rep<1)+(S.loans.length?`<div class="note">Aktif krediler: ${S.loans.map(l=>`${LOAN[l.s][0]} ${nf(l.amt,1)} mlr $ (%${l.rate}, ${Math.max(0,l.end-S.month)} ay)`).join(' · ')}</div>`:''))}
+  ${P('Hazine · iç borçlanma ihalesi',Q('ice',50,1500,50,ice,`İhale ${nf(ice,0)} milyar ₺ (GSYH %${nf(ice/gt*100,2)}) · GSYH ≈ +${nf(.3*ice/S.kur,1)} mlr $`)+B('ice','İhaleye çık'))}
+  ${P('BDDK · kredi hacmi',Q('kre',-10,10,.5,kre,`Kredi hacmi ${kre>=0?'+':''}${nf(kre,1)}% GSYH ≈ ${tl(Math.abs(kre))} ${kre>=0?'büyüme':'küçülme'}`)+B('kre','Uygula',!kre))}
+  ${P('SGK · prim affı ve emekliler',`<div class="dl">Asgari ücret (net) ${nf(S.minw,0)} ₺ · Emekli sayısı ≈ ${nf(S.pens,1)} milyon</div>`+Q('af',0,100,5,af,`Prim affı: borcun %${af}'ı silinir · devlete maliyeti ≈ ${tl(af/100*2.5)}`)+B('af',cl('af')?`${cl('af')} ay sonra`:'Affı çıkar',cl('af')||(a<2&&!fr)||!af)+Q('ikr',0,20000,250,ikr,`Bayram ikramiyesi: ${nf(ikr,0)} ₺ × ${nf(S.pens,1)} milyon emekli = ${nf(ikr*S.pens/1000,1)} milyar ₺ (GSYH %${nf(ikr*S.pens/1000/gt*100,2)})`)+B('ikr',cl('ikr')?`${cl('ikr')} ay sonra`:'İkramiye öde',cl('ikr')||!ikr))}
   <h2>Kurum Bütçeleri</h2><div class="panel">${MIN.filter(m=>m[4]).map(([k,n,b])=>row(n,`≈ ${tl(S.bud[k])} · taban %${nf(b,2)}`,'%'+nf(S.bud[k],2),`data-bud="${k}"`,Math.abs(S.bud[k]-b)>.001)).join('')}</div>`;
 }
-const pRow=(k,a)=>{const on=S.coal.includes(k);return `<div class="lever"><span class="n">${PART[k].n}</span><span class="h">${S.seats[k]} sandalye · uyum ${nf(cmp(S.me,k),1)}/10${on?' · ortak, '+Object.keys(S.own).filter(m=>S.own[m]===k).length+' bakanlık':''}</span><div class="step">${sbtn(on?`data-dropp="${k}"`:`data-neg="${k}"`,on?'Çıkar':'Görüş'+(S.el?'':' · 2 SS'),!on&&(S.seats[k]===0||(!S.el&&a<2)))}</div></div>`;};
+const pRow=(k,a)=>{const on=S.coal.includes(k);return `<div class="lever"><span class="n">${PART[k].n}</span><span class="h">${S.seats[k]} sandalye · uyum ${nf(cmp(S.me,k),1)}/10${on?' · ortak, '+Object.keys(S.own).filter(m=>S.own[m]===k).length+' bakanlık':''}</span><div class="step">${sbtn(on?`data-dropp="${k}"`:`data-neg="${k}"`,on?'Çıkar':'Görüş'+(S.el?'':''),!on&&(S.seats[k]===0||(!S.el&&a<2)))}</div></div>`;};
 function meclis(){
   const g=govSeats(),a=avail(),camp=S.month%TERM>=TERM-6,inG=k=>k===S.me||S.coal.includes(k);
   const bar=k=>`<div class="f"><span>${PART[k].n}${inG(k)?' ✓':''}</span><div class="bar"><i style="width:${S.seats[k]/6}%;${inG(k)?'':'background:var(--muted)'}"></i></div><span class="dl">${S.seats[k]}</span></div>`;
-  return `<h2>Meclis</h2><div class="panel"><div class="fac">${PK.map(bar).join('')}</div><div class="dl">Hükümet ${g} / 600 · ${g>=301?'Çoğunluk var':'Azınlık hükümeti (301 gerekir)'}</div><div class="note">Sonraki genel seçim: ${dateLabel((Math.floor(S.month/TERM)+1)*TERM)} · Tahmini oy: %${nf(vote(),1)}${S.ally?' · Seçim ittifakı kuruldu':''}</div>${camp&&!S.ally?sbtn('data-ally="1"','Seçim ittifakı kur · 3 SS',a<3):''}</div>
+  return `<h2>Meclis</h2><div class="panel"><div class="fac">${PK.map(bar).join('')}</div><div class="dl">Hükümet ${g} / 600 · ${g>=301?'Çoğunluk var':'Azınlık hükümeti (301 gerekir)'}</div><div class="note">Sonraki genel seçim: ${dateLabel((Math.floor(S.month/TERM)+1)*TERM)} · Tahmini oy: %${nf(vote(),1)}${S.ally?' · Seçim ittifakı kuruldu':''}</div>${camp&&!S.ally?sbtn('data-ally="1"','Seçim ittifakı kur',a<3):''}</div>
   ${anket()}${belediye()}<h2>Koalisyon</h2><div class="panel">${PK.filter(k=>k!==S.me).map(k=>pRow(k,a)).join('')}<div class="note">Ortak olmak isteyen partiyle bakanlık pazarlığı yaparsın. Uyum ${nf(S.kol,1)}/10. Uyum sıfıra inerse ortak hükümetten çekilir.</div></div>
-  <h2>Vaatler (${S.prom.length}/4)</h2><div class="panel"><div class="note" style="margin:0 0 6px">Söz verdiğin vaadi seçimde tutamazsan oy kaybedersin (−3 puan). Tutarsan +1,5 puan alırsın. Her vaat 1 SS.</div>${VAAT.map(([id,t,fn])=>{const on=S.prom.includes(id),ok=fn();return `<div class="lever"><span class="n">${t}</span><span class="h">${on?(ok?'Söz verildi · şu an sağlanıyor':'Söz verildi · henüz sağlanmadı'):(ok?'Zaten sağlanıyor':'Henüz sağlanmıyor')}</span><div class="step">${on?'<span class="st good">Verildi</span>':sbtn(`data-prom="${id}"`,'Söz ver',ok||S.prom.length>=4||a<1)}</div></div>`;}).join('')}</div>
-  ${draftP()}<h2>Yasalar</h2><div class="panel">${LAWS.map(([id,n,c,need,,d,fx])=>{const done=S.laws[id],wait=S.month<(S.lawT[id]||0)&&!done;return `<div class="lever"><span class="n">${n}</span><span class="h">${d} <b>(Geçerse: ${fxText(fx)}.)</b> ${need} oy gerekir.${wait?' Yeniden teklif için biraz bekle.':''}</span><div class="step">${done?'<span class="st good">Yasalaştı</span>':sbtn(`data-law="${id}"`,`Teklif · ${c} SS`,wait||a<c)+sbtn(`data-law="${id}" data-lobi="1"`,`Lobi · ${c+2}`,wait||a<c+2)}</div></div>`;}).join('')}<div class="note">Lobi, muhalefet vekillerini ikna eder ve oy şansını artırır. Teklif verdiğinde Genel Kurul oylaması açılır.</div></div>`;
+  <h2>Vaatler (${S.prom.length}/4)</h2><div class="panel"><div class="note" style="margin:0 0 6px">Söz verdiğin vaadi seçimde tutamazsan oy kaybedersin (−3 puan). Tutarsan +1,5 puan alırsın.</div>${VAAT.map(([id,t,fn])=>{const on=S.prom.includes(id),ok=fn();return `<div class="lever"><span class="n">${t}</span><span class="h">${on?(ok?'Söz verildi · şu an sağlanıyor':'Söz verildi · henüz sağlanmadı'):(ok?'Zaten sağlanıyor':'Henüz sağlanmıyor')}</span><div class="step">${on?'<span class="st good">Verildi</span>':sbtn(`data-prom="${id}"`,'Söz ver',ok||S.prom.length>=4||a<1)}</div></div>`;}).join('')}</div>
+  ${draftP()}<h2>Yasalar</h2><div class="panel">${LAWS.map(([id,n,c,need,,d,fx])=>{const done=S.laws[id],wait=S.month<(S.lawT[id]||0)&&!done;return `<div class="lever"><span class="n">${n}</span><span class="h">${d} <b>(Geçerse: ${fxText(fx)}.)</b> ${need} oy gerekir.${wait?' Yeniden teklif için biraz bekle.':''}</span><div class="step">${done?'<span class="st good">Yasalaştı</span>':sbtn(`data-law="${id}"`,`Teklif`,wait||a<c)+sbtn(`data-law="${id}" data-lobi="1"`,`Lobi · ${c+2}`,wait||a<c+2)}</div></div>`;}).join('')}<div class="note">Lobi, muhalefet vekillerini ikna eder ve oy şansını artırır. Teklif verdiğinde Genel Kurul oylaması açılır.</div></div>`;
 }
 const pickScreen=()=>`<div class="wrap"><div class="end"><h1>Hangi Partiyi Yöneteceksin?</h1><p>Türkiye'deki gerçek siyasi partilerden birini seç. Parti liderleri ve bakanlar kurgusaldır. Oy oranları ve sandalyeler oyunun başlangıç değerleridir.</p><div class="dl" style="margin:10px 0 4px">Zorluk</div><div class="chips">${['Kolay','Normal','Zor'].map((n,i)=>`<button class="btn sm ${S.dif===i?'':'sec'}" data-dif="${i}">${n}</button>`).join('')}</div><div class="dl" style="margin:10px 0 4px">Senaryo</div><div class="chips" style="margin-bottom:12px">${['Standart','Kriz ortasında','Seçim öncesi'].map((n,i)=>`<button class="btn sm ${S.sc===i?'':'sec'}" data-sc="${i}">${n}</button>`).join('')}</div><div class="panel">${PK.map(k=>`<div class="lever"><span class="n">${PART[k].n}</span><span class="h">${PART[k].x>.3?'Sağ':'Sol'} çizgi · rakip lider: ${PART[k].lead}</span><div class="step">${sbtn(`data-pick="${k}"`,'Seç')}</div></div>`).join('')}</div></div></div>`;
 function voteScreen(){
@@ -236,7 +235,7 @@ function elScreen(){
 }
 function kabine(){
   const a=avail(),tot=S.fac.R+S.fac.G+S.fac.S,list=[['mb','Merkez Bankası Başkanı'],...MIN.filter(m=>!m[4]).map(m=>[m[0],m[1]+' Bakanı'])];
-  return `${S.cand?candP():''}<h2>Kabine</h2><div class="panel"><div class="note" style="margin:0 0 6px">${PART[S.me].n} hükümetini yönetiyorsun. 17 bakanlık ve Merkez Bankası. Koalisyon ortağına verdiğin bakanlıkları değiştiremezsin.</div>${list.map(([k,n])=>{const m=S.M[k],h=S.own[k];return `<div class="lever"><span class="n">${n}</span><span class="h">${m.name} · yetkinlik ${m.sk}/10 · güven ${nf(m.gv===undefined?40+m.sk*5:m.gv,0)}${(m.gv===undefined?99:m.gv)<35?' · <b style="color:var(--bad)">Riskli</b>':''}${h?' · '+PART[h].n+' kontenjanı':''}</span><div class="step">${sbtn(`data-fire="${k}"`,S.confirm===k?'Onayla · 2 SS':'Değiştir · 2 SS',a<2||h).replace('class="btn sm"','class="btn sm sec"')}</div></div>`;}).join('')}</div>
+  return `${S.cand?candP():''}<h2>Kabine</h2><div class="panel"><div class="note" style="margin:0 0 6px">${PART[S.me].n} hükümetini yönetiyorsun. 17 bakanlık ve Merkez Bankası. Koalisyon ortağına verdiğin bakanlıkları değiştiremezsin.</div>${list.map(([k,n])=>{const m=S.M[k],h=S.own[k];return `<div class="lever"><span class="n">${n}</span><span class="h">${m.name} · yetkinlik ${m.sk}/10 · güven ${nf(m.gv===undefined?40+m.sk*5:m.gv,0)}${(m.gv===undefined?99:m.gv)<35?' · <b style="color:var(--bad)">Riskli</b>':''}${h?' · '+PART[h].n+' kontenjanı':''}</span><div class="step">${sbtn(`data-fire="${k}"`,S.confirm===k?'Onayla':'Değiştir',a<2||h||(S.cool['f'+k]||0)>S.month).replace('class="btn sm"','class="btn sm sec"')}</div></div>`;}).join('')}</div>
   <h2>Koalisyon Ortakları</h2><div class="panel">${S.coal.length?S.coal.map(k=>`<div class="lever"><span class="n">${PART[k].n}</span><span class="h">Lider ${PART[k].lead} · ${S.seats[k]} sandalye</span></div>`).join('')+`<div class="note">Koalisyon uyumu ${nf(S.kol,1)}/10</div>`:'<span class="muted">Ortak yok. Meclis sekmesinden ortak arayabilirsin.</span>'}</div>
   <h2>Parti İçi Hizipler</h2><div class="fac">${[['R','Reformcular'],['G','Gelenekçiler'],['S','Sadakatçiler']].map(([k,n])=>`<div class="f"><span>${n}</span><div class="bar"><i style="width:${S.fac[k]/tot*100}%"></i></div><span class="dl">%${nf(S.fac[k],0)}</span></div>`).join('')}</div>`;
 }
