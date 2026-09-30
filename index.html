@@ -172,7 +172,7 @@ const PK=['AKP','CHP','MHP','IYI','DEM','YRP'];
 /* Gerçek partiler; liderler kurgusaldır. x: ideolojik eksen (−1 sol, +1 sağ), w: taban oy ağırlığı, want: istediği bakanlıklar */
 const PART={AKP:{n:'AK Parti',x:.6,w:35,lead:'Kerem Aslanoğlu',want:['maliye','ic','dis','sav','ulas']},CHP:{n:'CHP',x:-.4,w:25,lead:'Deniz Yaltırık',want:['adalet','egit','saglik','calisma','cevre']},MHP:{n:'MHP',x:.8,w:10,lead:'Hakan Bozkurt',want:['ic','sav','dis','adalet','tarim']},IYI:{n:'İYİ Parti',x:.5,w:9,lead:'Nermin Karaca',want:['dis','sav','egit','sanayi','ic']},DEM:{n:'DEM Parti',x:-.7,w:9,lead:'Cemal Erdem',want:['kultur','egit','aile','cevre','calisma']},YRP:{n:'Yeniden Refah',x:.7,w:4,lead:'Osman Tekin',want:['calisma','aile','saglik','ticaret','enerji']}};
 /* Yasa: [anahtar, ad, SS, gereken oy, muhalefetin destek eğilimi, açıklama, etki] */
-const LAWS=[['vergiref','Vergi Reformu Yasası',3,301,.3,'Vergi sistemi sadeleşir, kayıt dışı azalır.',{acik:-.6,bat:.5,des:-.8}],['emekli','Emeklilik Yaşı Yasası',3,301,.2,'Emeklilik yaşı yükselir, sosyal güvenlik yükü hafifler.',{acik:-.4,des:-1.2,huz:-.3}],['yardim','Sosyal Yardım Yasası',3,301,.7,'Dar gelirlilere düzenli nakit destek.',{des:1.5,huz:.5,acik:.4}],['kira','Kira Düzenleme Yasası',3,301,.6,'Kira artışına tavan getirir.',{des:1.5,huz:.5,buy:-.2}],['calisma','Esnek Çalışma Yasası',3,301,.2,'İşverene esneklik, sendikalara tepki.',{buy:.3,isz:-.4,des:-1,huz:-.5}],['yerli','Yerli Üretim Teşvik Yasası',3,301,.5,'İthal girdi yerine yerli üretim teşviki.',{buy:.4,cari:-1,acik:.3,bat:-.2}],['medya','Medya Düzenleme Yasası',3,301,.1,'Yayın ve internet düzenlemesi.',{des:.3,bat:-1,huz:-.4}],['af','Af Yasası',3,301,.3,'Bazı suçlar için af çıkarır.',{des:-1,huz:-.3,kol:.3}],['askerlik','Askerlik Yasası',3,301,.6,'Askerlik süresi kısalır.',{des:1,ord:-.5}],['kadin','Kadın ve Çocuk Koruma Yasası',3,301,.8,'Şiddete karşı koruma güçlenir.',{des:1.2,bat:.6,huz:.4}],['ihale','Kamu İhale Yasası',3,301,.6,'Şeffaf ihale sistemi kurar.',{bat:.6,des:.5,par:-.3}],['yargi','Yargı Bağımsızlığı Yasası',3,301,.5,'Yargıda bağımsızlık güvencesi getirir.',{bat:1.2,des:.3,par:-.5}],['baraj','Seçim Barajı Düzenlemesi',3,301,.4,'Baraj %7\'den %5\'e iner.',{par:.3,kol:.5}],['anayasa','Yeni Anayasa',5,360,.2,'Yönetim sistemini yeniden düzenler. 360 oy gerekir.',{des:-1,par:.5,bat:-.5}]];
+const LAWS=[['vergiref','Vergi Reformu Yasası',3,301,.3,'Vergi sistemi sadeleşir, kayıt dışı azalır.',{acik:-.6,bat:.5,des:-.8}],['emekli','Emeklilik Yaşı Yasası',3,301,.2,'Emeklilik yaşı yükselir, sosyal güvenlik yükü hafifler.',{acik:-.4,des:-1.2,huz:-.3}],['yardim','Sosyal Yardım Yasası',3,301,.7,'Dar gelirlilere düzenli nakit destek.',{des:1.5,huz:.5,acik:.4}],['kira','Kira Düzenleme Yasası',3,301,.6,'Kira artışına tavan getirir.',{des:1.5,huz:.5,buy:-.2}],['calisma','Esnek Çalışma Yasası',3,301,.2,'İşverene esneklik, sendikalara tepki.',{buy:.3,isz:-.4,des:-1,huz:-.5}],['yerli','Yerli Üretim Teşvik Yasası',3,301,.5,'İthal girdi yerine yerli üretim teşviki.',{buy:.4,cari:-1,acik:.3,bat:-.2}],['medya','Medya Düzenleme Yasası',3,301,.1,'Yayın ve internet düzenlemesi.',{des:.3,bat:-1,huz:-.4}],['af','Af Yasası',3,301,.3,'Bazı suçlar için af çıkarır.',{des:-1,huz:-.3,kol:.3}],['askerlik','Askerlik Yasası',3,301,.6,'Askerlik süresi kısalır.',{des:1,ord:-.5}],['kadin','Kadın ve Çocuk Koruma Yasası',3,301,.8,'Şiddete karşı koruma güçlenir.',{des:1.2,bat:.6,huz:.4}],['ihale','Kamu İhale Yasası',3,301,.6,'Şeffaf ihale sistemi kurar.',{bat:.6,des:.5,par:-.3}],['yargi','Yargı Bağımsızlığı Yasası',3,301,.5,'Yargıda bağımsızlık güvencesi getirir.',{bat:1.2,des:.3,par:-.5}],['baraj','Seçim Barajı Düzenlemesi',3,301,.4,'Baraj %7\'den %5\'e iner.',{par:.3,kol:.5}],['kripto','Kripto Varlık Düzenlemesi',3,301,.4,'Kripto işlemlerine lisans ve vergi getirir.',{acik:-.2,bat:.3,par:.1,des:-.2}],['anayasa','Yeni Anayasa',5,360,.2,'Yönetim sistemini yeniden düzenler. 360 oy gerekir.',{des:-1,par:.5,bat:-.5}]];
 /* Vaat: [anahtar, metin, sağlandı mı?] */
 const VAAT=[['enf','Enflasyonu %25\'in altına indireceğim',()=>S.enf<25],['isz','İşsizliği %7\'nin altına çekeceğim',()=>S.isz<7],['buy','Ekonomiyi %4 büyüteceğim',()=>S.buy>=4],['acik','Bütçe açığını %3\'ün altına indireceğim',()=>S.acik<3],['kur','Doları 60 TL\'nin altında tutacağım',()=>S.kur<60],['rez','Rezervleri 50 milyar dolara çıkaracağım',()=>S.rez>=50],['huz','Toplumsal huzuru 7/10\'a çıkaracağım',()=>S.huz>=7],['vergi','Vergi yükünü azaltacağım',()=>eco().rev<0],['egit','Eğitim bütçesini %25 artıracağım',()=>S.bud.egit>=MB.egit*1.25],['saglik','Sağlık bütçesini %25 artıracağım',()=>S.bud.saglik>=MB.saglik*1.25],['sav','Savunmayı GSYH\'nin %3\'üne çıkaracağım',()=>S.bud.sav>=3],['anayasa','Yeni anayasayı çıkaracağım',()=>!!S.laws.anayasa],['kira','Kira düzenlemesini yasalaştıracağım',()=>!!S.laws.kira]];
 
@@ -200,7 +200,7 @@ function load(){try{const r=localStorage.getItem(KEY);if(r){S=JSON.parse(r);ensu
 function ensure(){
   S.kamp=S.kamp||0;S.bud=S.bud||{};S.tax=S.tax||{};S.laws=S.laws||{};S.lawT=S.lawT||{};S.prom=S.prom||[];S.term=S.term||1;S.own=S.own||{};S.gdp=S.gdp||1350;
   MIN.forEach(m=>{if(S.bud[m[0]]===undefined)S.bud[m[0]]=m[2];if(!m[4]&&!S.M[m[0]])S.M[m[0]]=newM();});
-  S.dif=S.dif===undefined?1:S.dif;S.sc=S.sc||0;S.ach=S.ach||{};S.done=S.done||{};S.sec=S.sec||{tur:50,tar:50,san:50,ene:50};if(S.mun===undefined)S.mun=10;S.h0=S.h0||0;if(!S.pl){S.pl=[];poll();}
+  S.dif=S.dif===undefined?1:S.dif;S.sc=S.sc||0;S.ach=S.ach||{};S.done=S.done||{};S.sec=S.sec||{tur:50,tar:50,san:50,ene:50};if(S.mun===undefined)S.mun=10;S.h0=S.h0||0;S.cl=S.cl||[];S.dr=S.dr||{};if(S.gv===undefined)S.gv=50;if(S.hd===undefined)S.hd=Math.round(S.enf*.6);S.tr=S.tr||{x:22,m:27};if(!S.pl){S.pl=[];poll();}
   S.ui=S.ui||{};S.cool=S.cool||{};S.loans=S.loans||[];S.pens=S.pens||17.2;S.minw=S.minw||28075;if(S.wage===undefined)S.wage=null;
   if(!S.taxv){const o=S.tax;S.tax={};TAX.forEach(t=>{const v=o[t[0]]||0;S.tax[t[0]]=t[2]===1?(v>0?t[5]:0):t[5]*(1+.1*v);});S.taxv=1;}
   TAX.forEach(t=>{if(S.tax[t[0]]===undefined)S.tax[t[0]]=t[2]===1?0:t[5];});
@@ -332,6 +332,13 @@ const EV=[
 {id:'k_deprem',g:'kriz',tag:'ACİL · Afet',t:'Büyük Deprem',x:()=>`Şiddetli bir deprem birkaç ili vurdu, enkaz altında kalanlar var. AFAD hazırlığı İçişleri ve Çevre bütçelerine bağlı. Hazırlık düzeyi %${nf(prep()*100,0)}.`,c:[ ch('Seferberlik ve OHAL',3,'Tüm kaynaklar bölgeye. Hazırlık ne kadar iyiyse o kadar etkili.',{},'',{fn:()=>Math.random()<prep()?{fx:{des:2,huz:.3,acik:1,par:.3},msg:'Arama kurtarma hızlı ilerledi. Kamuoyu devleti takdir etti.'}:{fx:{des:-4,huz:-1.5,acik:1.5,par:-.5},msg:'Müdahale gecikti. Öfke ve eleştiri arttı.'}}), ch('Yardım kampanyası ve yeniden inşa fonu',2,'Yeniden inşa maliyeti bütçeye biner.',{},'',{fn:()=>Math.random()<prep()?{fx:{des:1,acik:1.2,huz:.2},msg:'Fon hızla toplandı, inşaat başladı.'}:{fx:{des:-2,acik:1.5,huz:-.8},msg:'Yardımlar dağıtımda aksadı.'}}), ch('Mevcut kaynaklarla yönet',0,'Ucuz ama riskli.',{des:-3,huz:-1,par:-.3},'Yetersiz müdahale büyük tepki çekti.') ]},
 {id:'d_operasyon',g:'dis',tag:'Dış işleri · Güvenlik',t:'Sınır Ötesi Operasyon Önerisi',x:()=>`Genelkurmay sınır ötesinde terör hedeflerine operasyon öneriyor. ${M.sav.name} "koşullar uygun" diyor. Uluslararası tepki bekleniyor.`,c:[ ch('Operasyona onay ver',3,'Ordu ve milliyetçi kesim memnun olur, Batı tepki gösterir.',{},'',{fn:()=>Math.random()<.65?{fx:{ord:.8,des:1.5,huz:.3,bat:-.8,bol:-.4,acik:.3},msg:'Operasyon başarıyla tamamlandı. Kamuoyu destek verdi.'}:{fx:{ord:-.3,des:-1,bat:-1,bol:-.6,acik:.4},msg:'Operasyon beklenenden zor geçti. Kayıplar tartışılıyor.'}}), ch('Diplomasiyi dene',1,'Riski azaltır, sertlik yanlıları tepki gösterir.',{des:-.3,bat:.4,bol:.3,ord:-.2},'Diplomatik temaslar sürdü, operasyon ertelendi.'), ch('Ertele',0,'Şimdilik beklet.',{ord:-.2},'Öneri rafa kalktı.') ]},
 {id:'d_yaptirim',g:'dis',tag:'Dış işleri · Yaptırım',t:'Yaptırım Tehdidi',x:()=>`Bazı ülkeler savunma alımlarınız ve bir bankanız üzerinden yaptırım hazırlığında. ${M.dis.name} "önce diplomasi" diyor.`,c:[ ch('Müzakereye otur',2,'Taviz verirsin ama tehdit uzar.',{bat:.6,des:-.3,par:-.2},'Müzakere sürüyor, yaptırım ertelendi.'), ch('Sert karşılık ver',1,'Doğu ile yakınlaşırsın, Batı soğur.',{dog:.8,bat:-1,des:.6,cari:.5},'Sert bir açıklama yapıldı. Doğu ile ticaret arttı.'), ch('Bekle ve gör',0,'Karar verme.',{rez:-1.5,kur:1.5,bat:-.3},'Belirsizlik piyasayı olumsuz etkiledi.') ]},
+
+{id:'e_kripto',g:'eko',tag:'Ekonomi · Finans',t:'Kripto Borsası Çöktü',x:()=>`Büyük bir kripto borsası ödemeleri durdurdu. Yaklaşık iki milyon yerli kullanıcının parası içeride. ${M.maliye.name} "düzenleme boşluğu" uyarısı yapıyor.`,c:[ ch('Borsayı devral, mağdurları koru',3,'Bütçeye yük biner, güven artar.',{acik:.5,des:1,bat:.3},'Borsa kayyuma devredildi. Mağdur ödemeleri planlandı.'), ch('Sıkı lisans düzenlemesi getir',2,'Yasal çerçeve oluşur.',{bat:.4,des:-.3,par:.1},'Kripto varlıklar için lisans zorunluluğu geldi.'), ch('Piyasaya bırak',0,'Devlet karışmaz.',{des:-1.5,huz:-.3},'Mağdurlar sokağa döküldü, tepki büyüdü.') ]},
+{id:'e_ticaret',g:'eko',tag:'Ekonomi · Dış ticaret',t:'Gümrük Tarifeleri Artırıldı',x:()=>`Ana ihracat pazarlarından biri ürünlerimize ek gümrük tarifesi getirdi. İhracatçı dernekleri destek bekliyor.`,c:[ ch('İhracat destek paketi',2,'Bütçeye yük, ihracatçı rahatlar.',{acik:.4,cari:-.6,des:.5},'Destek paketi açıklandı. İhracatçılar nefes aldı.'), ch('Yeni pazarlar ara',1,'Zaman alır ama bağımlılığı azaltır.',{dog:.5,cari:-.2,bat:-.2},'Doğu ve Afrika pazarlarına heyetler gitti.'), ch('Karşı tarife koy',2,'Sert cevap, ticaret daralır.',{cari:.5,enf:.4,des:.4,bat:-.6},'Karşı tarife uygulandı. Gerginlik arttı.') ]},
+{id:'i_ogrenci',g:'ic',tag:'İç siyaset · Gençlik',t:'Üniversite Öğrencileri Eylemde',x:()=>`Yurt ve burs sorunları nedeniyle onlarca üniversitede oturma eylemi başladı. ${M.ic.name} "kontrol altında" diyor.`,c:[ ch('Burs ve yurt bütçesini artır',2,'Gençler yatışır, bütçeye yük biner.',{des:1,huz:.6,acik:.3},'Burslar artırıldı, eylemler sona erdi.'), ch('Rektörlerle görüş',1,'Kısmi çözüm.',{huz:.2,des:.1},'Rektörlerle toplantı yapıldı, sorunlar kısmen çözüldü.'), ch('Eylemleri yasakla',1,'Kısa vadede sessizlik, uzun vadede öfke.',{huz:-1,des:-1,bat:-.4},'Eylemler yasaklandı, gerilim yükseldi.') ]},
+{id:'i_belediye',g:'ic',tag:'İç siyaset · Yerel yönetim',t:'Büyükşehir Belediyesiyle Kriz',x:()=>`Bir büyükşehir belediye başkanıyla ödenek ve yetki tartışması sertleşti. Muhalefet "vesayet" diyor.`,c:[ ch('Ödenekleri serbest bırak',2,'Belediye rahatlar, kamuoyu olumlu bakar.',{},'',{fn:()=>{S.mun=clamp(S.mun+1,0,30);return {fx:{des:.5,par:-.2,acik:.2},msg:'Ödenekler serbest bırakıldı. Yerel yönetimle ilişkiler düzeldi.'};}}), ch('Kayyum atama girişimi',3,'Sert adım, geri tepebilir.',{},'',{fn:()=>Math.random()<.5?{fx:{des:1,par:.4,bat:-.6,huz:-.4},msg:'Kayyum kararı uygulandı. Sokaklar gerildi.'}:{fx:{des:-2,par:-.3,bat:-.8,huz:-.8},msg:'Karar geri tepti. Büyük protestolar oldu.'}}), ch('Görüşmeyi sürdür',0,'Zaman kazan.',{par:-.1},'Görüşmeler sürüyor.') ]},
+{id:'d_zirve',g:'dis',tag:'Dış işleri · Diplomasi',t:'Bölgesel Zirve Daveti',x:()=>`Komşu ülkeler bölgesel bir enerji ve güvenlik zirvesine seni davet etti. ${M.dis.name} katılımı öneriyor ama iç siyasette tartışma çıkabilir.`,c:[ ch('Katıl ve konuş',2,'İtibar kazanırsın.',{bol:.8,dog:.4,bat:.2,des:.3},'Zirvede etkili bir konuşma yaptın. Bölgesel itibar yükseldi.'), ch('Bakan gönder',1,'Düşük profil.',{bol:.3},'Bakan katıldı, sonuç bildirgesi imzalandı.'), ch('Katılma',0,'Gerilimden kaçın.',{bol:-.4,dog:-.2},'Zirveye katılım olmadı.') ]},
+{id:'d_dogalgaz',g:'dis',tag:'Dış işleri · Enerji',t:'Yeni Doğalgaz Keşfi',x:()=>`Karadeniz'de yeni bir doğalgaz sahası bulundu. Rezervin büyüklüğü tartışılıyor. Yatırımcılar ilgi gösteriyor.`,c:[ ch('Hızlı üretime geç',3,'Yatırım gerekir, cari açık azalır.',{cari:-1.2,acik:.5,des:1.2,bat:.2},'Üretim hızlandırıldı. Enerji ithalatı azalacak.'), ch('Ortaklık ara',2,'Yatırım yükünü paylaş.',{cari:-.6,bat:.3,dog:.3,des:.4},'Uluslararası ortaklık kuruldu.'), ch('Duyuruyu ertele',0,'Sessiz ilerle.',{des:.2},'Keşif temkinli açıklandı.') ]},
 ];
 const EVB=Object.fromEntries(EV.map(e=>[e.id,e]));
 
@@ -349,7 +356,7 @@ function genEvents(fixed){
     if(Math.random()<p){const k=pickFrom('kriz');if(k)ids.unshift(k);}
     if(S.month%TERM>=TERM-3){const k=pickFrom('kamp');if(k)ids.push(k);}
   }
-  if(!fixed&&S.month>=2&&(S.month-2)%12===0){const W=Math.round(S.enf*.9+rnd(5,12)),E=Math.round(S.enf*.55);S.wage={W,E,G:Math.round((W+E)/2)};}
+  if(!fixed&&S.month>=2&&(S.month-2)%12===0){S.hd=Math.max(5,Math.round(S.enf*.6));const W=Math.round(S.enf*.9+rnd(5,12)),E=Math.round(S.enf*.55);S.wage={W,E,G:Math.round((W+E)/2)};}
   const due=S.sched.filter(s=>s.due<=S.month);
   S.sched=S.sched.filter(s=>s.due>S.month);
   due.forEach(s=>ids.unshift(s.id));
@@ -392,7 +399,7 @@ function simulate(){
   const L=S.lv,s=S,mk=M,X=eco(),e=k=>X.E[k]||0;
   const real=L.faiz-s.enf,sf=x=>x>20?20+(x-20)*.1:x<-20?-20+(x+20)*.1:x,rl=sf(real);
   let depr=1.6+0.05*(s.enf-40)-0.05*(s.rez-22)-0.10*(rl+3)+rnd(-0.8,0.8)-(mk.maliye.sk-5)*0.1+(s.des<30?0.5:0)+(s.huz<4?0.4:0);
-  depr+=0.3*Math.max(0,s.acik-7);depr=clamp(depr,-0.5,9);
+  depr+=0.3*Math.max(0,s.acik-7);depr+=(50-s.gv)*.012;depr=clamp(depr,-0.5,9);
   s.kur*=1+depr/100;
   s.rez+=-0.3*Math.max(0,s.acik-7)-0.5+0.10*(rl+3)+(depr>4?-2:0)+(s.bat-5)*0.1+rnd(-0.6,0.6)+e('rez');
   s.enf+=-0.09*(rl+3)+0.5*(depr-1.6)+0.15*(s.acik-4.6)+rnd(-0.4,0.4)-(mk.mb.sk-5)*0.06+e('enf');
@@ -443,7 +450,7 @@ function checkEnd(){
 function endTurn(){
   if(S.cur.events.some(e=>e.ch===null))return;
   const a=snap();
-  const depr=simulate();secUp();poll();
+  const depr=simulate();secUp();poll();tradeUp();mbUp();
   S.month++;
   if(S.month%TERM===30){
     if(S.des>=40){S.par+=1;S.des+=1;}else{S.par-=1.5;S.kol-=1;}
@@ -452,7 +459,7 @@ function endTurn(){
   for(const k in RANGE)S[k]=clamp(S[k],RANGE[k][0],RANGE[k][1]);
   const b=snap();
   STATS.forEach(x=>S.hist[x.k].push(S[x.k]));
-  const hl=headlines(a,b,depr);hl.push(...checkAch());
+  const hl=headlines(a,b,depr);hl.push(...checkAch());hl.push('PPK toplantısı: Merkez Bankası %'+mbRec()+' faiz öneriyor.');
   if(S.month%TERM===30)hl.unshift(S.flags.yerel);
   if(S.coal.length&&S.kol<=0){clearCoal();S.kol=4;S.par=clamp(S.par-.5,0,10);hl.unshift('Koalisyon ortağı hükümetten çekildi. Meclis çoğunluğu tehlikede.');S.log.push({m:S.month,t:'Koalisyon çöktü',c:'Ortak çekildi',msg:'Uyum sıfıra indi. Meclis\'te ortaksız devam ediyorsun.'});}
   const over=checkEnd();
@@ -497,7 +504,7 @@ function initGov(){
 }
 function bud(k,d){const b=MB[k],st=Math.max(.05,Math.round(b*10)/100),v=Math.round((S.bud[k]+d*st)*100)/100;if(v<b*.4-1e-9||v>b*2+1e-9)return;S.bud[k]=v;save();render();}
 function propose(id,lobi){
-  const l=LAWS.find(x=>x[0]===id),c=l[2]+(lobi?2:0);
+  const l=LAWS.find(x=>x[0]===id)||S.cl.find(x=>x[0]===id),c=l[2]+(lobi?2:0);
   if(c>avail()||S.laws[id]||S.month<(S.lawT[id]||0))return;
   const rows=PK.map(k=>{const s=S.seats[k];let f;
     if(k===S.me)f=clamp(.9+rnd(-.08,.05),.75,1);
@@ -507,7 +514,7 @@ function propose(id,lobi){
   const yes=rows.reduce((a,r)=>a+r[1],0),ok=yes>=l[3];
   S.cur.spent+=c;S.lawT[id]=S.month+3;
   if(ok){applyFx(l[6]);S.laws[id]=S.month;if(id==='baraj')S.baraj=5;S.cur.spent=Math.max(0,S.cur.spent-1);}else applyFx({des:-.3,par:-.3});
-  S.vote={n:l[1],d:l[5]+(ok?' Yasalaştığı için 1 SS iade edildi.':''),rows,yes,need:l[3],ok};
+  hap(ok?[20,30,20]:60,ok?660:220);S.vote={n:l[1],d:l[5]+(ok?' Yasalaştığı için 1 SS iade edildi.':''),rows,yes,need:l[3],ok};
   logA(l[1],ok?'Kabul edildi':'Reddedildi',`Oylama: ${yes} kabul, ${600-yes} ret (gerekli ${l[3]}).`);save();render();
 }
 function dropP(k){Object.keys(S.own).filter(m=>S.own[m]===k).forEach(m=>{S.M[m]=newM();delete S.own[m];});S.coal=S.coal.filter(x=>x!==k);S.kol=clamp(S.kol-1,0,10);logA('Koalisyon',PART[k].n+' hükümetten ayrıldı','Bakanlıkları geri aldın.');save();render();}
@@ -587,6 +594,7 @@ function kurum(){
   const P=(t,b)=>`<div class="panel"><b>${t}</b>${b}</div>`,Q=(id,mn,mx,st,v,lab)=>`<div class="dl" style="margin-top:10px">${lab}</div>${sld(id,mn,mx,st,v)}`,B=(w,txt,dis)=>`<div class="chips" style="margin-top:8px"><button class="btn sm" data-act="${w}" ${dis||(a<1&&!fr)?'disabled':''}>${txt}</button></div>`;
   return `<h2>Devlet Kurumları</h2>${S.imsg?`<div class="report">${S.imsg}</div>`:''}
   ${P('Genel görünüm',`<div class="dl">GSYH ≈ ${nf(gt/1000,2)} trilyon ₺ (${nf(S.gdp,0)} mlr $)</div><div class="dl">Net rezerv ${nf(S.rez,1)} mlr $ · Dolar ${nf(S.kur,2)} ₺</div><div class="dl">Dış borç stoku ≈ ${nf(S.borc*S.gdp/100,0)} mlr $ (GSYH %${nf(S.borc,1)})</div><div class="note">Bu sekmedeki işlemler bakanlık bütçelerinden bağımsızdır. Ayda bir işlem bedelsiz (${fr?'hakkın var':'bu ay kullandın'}), diğerleri SS harcar.</div>`)}
+  ${mbP()}
   ${levers()}
   ${P('Merkez Bankası · rezerv',Q('rez',-30,30,1,rz,`Rezerv işlemi: ${rz>=0?'topla':'sat'} ${Math.abs(rz)} mlr $ ≈ ${nf(Math.abs(rz)*S.kur,0)} milyar ₺`)+B('rez',`Uygula · ${cs(Math.abs(rz)>10?2:1)}`,!rz||S.rez+rz<1))}
   ${P('Hazine · dış borç alımı',`<div class="chips" style="margin-top:8px">${Object.entries(LOAN).map(([k,l])=>`<button class="btn sm ${k===src?'':'sec'}" data-uisrc="${k}">${l[0]}</button>`).join('')}</div><div class="note">${L[4]} Faiz %${L[1]}, vade ${L[2]} yıl.</div>`+Q('amt',1,L[5],1,amt,`Tutar ${amt} mlr $ · yıllık faiz ≈ ${nf(amt*L[1]/100,2)} mlr $ · GSYH ≈ +${nf(.5*amt,1)} mlr $`)+B('borrow','Borçlan · '+cs(1)))}
@@ -603,7 +611,7 @@ function meclis(){
   return `<h2>Meclis</h2><div class="panel"><div class="fac">${PK.map(bar).join('')}</div><div class="dl">Hükümet ${g} / 600 · ${g>=301?'Çoğunluk var':'Azınlık hükümeti (301 gerekir)'}</div><div class="note">Sonraki genel seçim: ${dateLabel((Math.floor(S.month/TERM)+1)*TERM)} · Tahmini oy: %${nf(vote(),1)}${S.ally?' · Seçim ittifakı kuruldu':''}</div>${camp&&!S.ally?sbtn('data-ally="1"','Seçim ittifakı kur · 3 SS',a<3):''}</div>
   ${anket()}${belediye()}<h2>Koalisyon</h2><div class="panel">${PK.filter(k=>k!==S.me).map(k=>pRow(k,a)).join('')}<div class="note">Ortak olmak isteyen partiyle bakanlık pazarlığı yaparsın. Uyum ${nf(S.kol,1)}/10. Uyum sıfıra inerse ortak hükümetten çekilir.</div></div>
   <h2>Vaatler (${S.prom.length}/4)</h2><div class="panel"><div class="note" style="margin:0 0 6px">Söz verdiğin vaadi seçimde tutamazsan oy kaybedersin (−3 puan). Tutarsan +1,5 puan alırsın. Her vaat 1 SS.</div>${VAAT.map(([id,t,fn])=>{const on=S.prom.includes(id),ok=fn();return `<div class="lever"><span class="n">${t}</span><span class="h">${on?(ok?'Söz verildi · şu an sağlanıyor':'Söz verildi · henüz sağlanmadı'):(ok?'Zaten sağlanıyor':'Henüz sağlanmıyor')}</span><div class="step">${on?'<span class="st good">Verildi</span>':sbtn(`data-prom="${id}"`,'Söz ver',ok||S.prom.length>=4||a<1)}</div></div>`;}).join('')}</div>
-  <h2>Yasalar</h2><div class="panel">${LAWS.map(([id,n,c,need,,d,fx])=>{const done=S.laws[id],wait=S.month<(S.lawT[id]||0)&&!done;return `<div class="lever"><span class="n">${n}</span><span class="h">${d} <b>(Geçerse: ${fxText(fx)}.)</b> ${need} oy gerekir.${wait?' Yeniden teklif için biraz bekle.':''}</span><div class="step">${done?'<span class="st good">Yasalaştı</span>':sbtn(`data-law="${id}"`,`Teklif · ${c} SS`,wait||a<c)+sbtn(`data-law="${id}" data-lobi="1"`,`Lobi · ${c+2}`,wait||a<c+2)}</div></div>`;}).join('')}<div class="note">Lobi, muhalefet vekillerini ikna eder ve oy şansını artırır. Teklif verdiğinde Genel Kurul oylaması açılır.</div></div>`;
+  ${draftP()}<h2>Yasalar</h2><div class="panel">${LAWS.map(([id,n,c,need,,d,fx])=>{const done=S.laws[id],wait=S.month<(S.lawT[id]||0)&&!done;return `<div class="lever"><span class="n">${n}</span><span class="h">${d} <b>(Geçerse: ${fxText(fx)}.)</b> ${need} oy gerekir.${wait?' Yeniden teklif için biraz bekle.':''}</span><div class="step">${done?'<span class="st good">Yasalaştı</span>':sbtn(`data-law="${id}"`,`Teklif · ${c} SS`,wait||a<c)+sbtn(`data-law="${id}" data-lobi="1"`,`Lobi · ${c+2}`,wait||a<c+2)}</div></div>`;}).join('')}<div class="note">Lobi, muhalefet vekillerini ikna eder ve oy şansını artırır. Teklif verdiğinde Genel Kurul oylaması açılır.</div></div>`;
 }
 const pickScreen=()=>`<div class="wrap"><div class="end"><h1>Hangi Partiyi Yöneteceksin?</h1><p>Türkiye'deki gerçek siyasi partilerden birini seç. Parti liderleri ve bakanlar kurgusaldır. Oy oranları ve sandalyeler oyunun başlangıç değerleridir.</p><div class="dl" style="margin:10px 0 4px">Zorluk</div><div class="chips">${['Kolay','Normal','Zor'].map((n,i)=>`<button class="btn sm ${S.dif===i?'':'sec'}" data-dif="${i}">${n}</button>`).join('')}</div><div class="dl" style="margin:10px 0 4px">Senaryo</div><div class="chips" style="margin-bottom:12px">${['Standart','Kriz ortasında','Seçim öncesi'].map((n,i)=>`<button class="btn sm ${S.sc===i?'':'sec'}" data-sc="${i}">${n}</button>`).join('')}</div><div class="panel">${PK.map(k=>`<div class="lever"><span class="n">${PART[k].n}</span><span class="h">${PART[k].x>.3?'Sağ':'Sol'} çizgi · rakip lider: ${PART[k].lead}</span><div class="step">${sbtn(`data-pick="${k}"`,'Seç')}</div></div>`).join('')}</div></div></div>`;
 function voteScreen(){
@@ -624,7 +632,7 @@ function elScreen(){
 }
 function kabine(){
   const a=avail(),tot=S.fac.R+S.fac.G+S.fac.S,list=[['mb','Merkez Bankası Başkanı'],...MIN.filter(m=>!m[4]).map(m=>[m[0],m[1]+' Bakanı'])];
-  return `<h2>Kabine</h2><div class="panel"><div class="note" style="margin:0 0 6px">${PART[S.me].n} hükümetini yönetiyorsun. 17 bakanlık ve Merkez Bankası. Koalisyon ortağına verdiğin bakanlıkları değiştiremezsin.</div>${list.map(([k,n])=>{const m=S.M[k],h=S.own[k];return `<div class="lever"><span class="n">${n}</span><span class="h">${m.name} · yetkinlik ${m.sk}/10${h?' · '+PART[h].n+' kontenjanı':''}</span><div class="step">${sbtn(`data-fire="${k}"`,S.confirm===k?'Onayla · 3 SS':'Değiştir · 3 SS',a<3||h).replace('class="btn sm"','class="btn sm sec"')}</div></div>`;}).join('')}</div>
+  return `${S.cand?candP():''}<h2>Kabine</h2><div class="panel"><div class="note" style="margin:0 0 6px">${PART[S.me].n} hükümetini yönetiyorsun. 17 bakanlık ve Merkez Bankası. Koalisyon ortağına verdiğin bakanlıkları değiştiremezsin.</div>${list.map(([k,n])=>{const m=S.M[k],h=S.own[k];return `<div class="lever"><span class="n">${n}</span><span class="h">${m.name} · yetkinlik ${m.sk}/10${h?' · '+PART[h].n+' kontenjanı':''}</span><div class="step">${sbtn(`data-fire="${k}"`,S.confirm===k?'Onayla · 3 SS':'Değiştir · 3 SS',a<3||h).replace('class="btn sm"','class="btn sm sec"')}</div></div>`;}).join('')}</div>
   <h2>Koalisyon Ortakları</h2><div class="panel">${S.coal.length?S.coal.map(k=>`<div class="lever"><span class="n">${PART[k].n}</span><span class="h">Lider ${PART[k].lead} · ${S.seats[k]} sandalye</span></div>`).join('')+`<div class="note">Koalisyon uyumu ${nf(S.kol,1)}/10</div>`:'<span class="muted">Ortak yok. Meclis sekmesinden ortak arayabilirsin.</span>'}</div>
   <h2>Parti İçi Hizipler</h2><div class="fac">${[['R','Reformcular'],['G','Gelenekçiler'],['S','Sadakatçiler']].map(([k,n])=>`<div class="f"><span>${n}</span><div class="bar"><i style="width:${S.fac[k]/tot*100}%"></i></div><span class="dl">%${nf(S.fac[k],0)}</span></div>`).join('')}</div>`;
 }
@@ -633,6 +641,7 @@ function kabine(){
 function fire(k){
   if(S.confirm!==k){S.confirm=k;render();return;}
   if(avail()<3)return;
+  S.cand={k,l:[cd(),cd(),cd()]};S.confirm=null;save();render();return;
   const old=S.M[k].name;
   S.M[k]={name:NAMES1[Math.floor(Math.random()*16)]+' '+NAMES2[Math.floor(Math.random()*16)],sk:Math.round(rnd(3,9)),note:'Yeni atanan isim'};
   S.cur.spent+=3;S.confirm=null;S.par=clamp(S.par-0.3,0,10);
@@ -663,7 +672,7 @@ const karne=()=>{const H=S.hist,mx=k=>Math.max(...H[k]),mn=k=>Math.min(...H[k]);
 function startGame(k){S.me=k;S.pick=false;initGov();S.pool=base();S.h0=0;
   if(S.sc===1)Object.assign(S,{enf:78,kur:64,rez:6,des:32,buy:.5,acik:8,borc:60,isz:12});
   if(S.sc===2){S.month=54;S.des=44;S.h0=54;}
-  STATS.forEach(s=>S.hist[s.k]=[S[s.k]]);S.prev=snap();S.mun={AKP:12,CHP:14}[k]??2;S.pl=[];poll();
+  S.hd=Math.round(S.enf*.6);S.gv=50;STATS.forEach(s=>S.hist[s.k]=[S[s.k]]);S.prev=snap();S.mun={AKP:12,CHP:14}[k]??2;S.pl=[];poll();
   if(!ls('km-tut'))S.tut=1;save();render();}
 /* anketler, belediyeler, sektörler */
 function poll(){const p=S.pl[S.pl.length-1],me=vote(),o={},ks=PK.filter(k=>k!==S.me);let z=0;ks.forEach(k=>{o[k]=(p?p[k]:PART[k].w)*(1+rnd(-.04,.04));z+=o[k];});ks.forEach(k=>o[k]=o[k]/z*(100-me));o[S.me]=me;S.pl.push(o);}
@@ -682,8 +691,35 @@ const AL=[...DEALS,...PROJ,...PRIV],isDone=e=>S.done[e[0]]&&S.month<S.done[e[0]]
 const listPanel=(t,L,n)=>`<h2>${t}</h2><div class="panel">${L.map(e=>`<div class="lever"><span class="n">${e[1]}</span><span class="h">${e[4]} (Etkisi: ${fxText(e[3])}.)</span><div class="step">${isDone(e)?'<span class="st good">Yapıldı</span>':sbtn(`data-deal="${e[0]}"`,`Uygula · ${e[2]} SS`,avail()<e[2])}</div></div>`).join('')}${n?`<div class="note">${n}</div>`:''}</div>`;
 function dealAct(id){const e=AL.find(x=>x[0]===id);if(!e||isDone(e)||e[2]>avail())return;applyFx(e[3]);S.done[id]=S.month+(e[5]||9999);S.cur.spent+=e[2];logA('Devlet',e[1],'Uygulandı.');save();render();}
 const dis=()=>listPanel('Anlaşmalar ve ittifaklar',DEALS,'Her anlaşma bir kez yapılır.')+listPanel('Savunma projeleri',PROJ,'Projeler bir kez, tatbikat 6 ayda bir yapılır. Bütçe açığı etkisi ay ay yansır.');
-function sektor(){return `<h2>Sektörler</h2><div class="panel">${[['tur','Turizm','Kültür ve Turizm bütçesi, Batı itibarı, huzur'],['tar','Tarım','Tarım bütçesi'],['san','Sanayi','Sanayi bütçesi, büyüme, enflasyon'],['ene','Enerji','Enerji bütçesi, rezerv, Doğu itibarı']].map(([k,n,h])=>`<div style="display:grid;grid-template-columns:70px minmax(0,1fr) 34px;gap:10px;align-items:center;margin-top:10px"><span>${n}</span><div class="bar"><i style="width:${S.sec[k]}%"></i></div><span class="dl">${nf(S.sec[k],0)}</span></div><div class="note" style="margin:2px 0 0">${h}</div>`).join('')}<div class="note">Ortalama 50'nin üstündeyse büyüme artar. Turizm cari açığı azaltır, tarım enflasyonu düşürür.</div></div>${listPanel('Özelleştirme',PRIV,'Kamu varlığı sat, bütçe açığını kapat. Halk tepki gösterebilir.')}`;}
+function sektor(){return `${ticP()}<h2>Sektörler</h2><div class="panel">${[['tur','Turizm','Kültür ve Turizm bütçesi, Batı itibarı, huzur'],['tar','Tarım','Tarım bütçesi'],['san','Sanayi','Sanayi bütçesi, büyüme, enflasyon'],['ene','Enerji','Enerji bütçesi, rezerv, Doğu itibarı']].map(([k,n,h])=>`<div style="display:grid;grid-template-columns:70px minmax(0,1fr) 34px;gap:10px;align-items:center;margin-top:10px"><span>${n}</span><div class="bar"><i style="width:${S.sec[k]}%"></i></div><span class="dl">${nf(S.sec[k],0)}</span></div><div class="note" style="margin:2px 0 0">${h}</div>`).join('')}<div class="note">Ortalama 50'nin üstündeyse büyüme artar. Turizm cari açığı azaltır, tarım enflasyonu düşürür.</div></div>${listPanel('Özelleştirme',PRIV,'Kamu varlığı sat, bütçe açığını kapat. Halk tepki gösterebilir.')}`;}
 const prep=()=>clamp(.4+((S.bud.ic/MB.ic+S.bud.cevre/MB.cevre)/2-1)*.9,.1,.9);
+/* ---------- Ek özellikler 2: bakan adayı, yasa taslağı, PPK, dış ticaret, harita, tema, ses ---------- */
+const TP={tek:['Teknokrat',{kur:-.5,par:-.2}],pop:['Popülist',{des:.5,acik:.3}],sad:['Sadık',{par:.4}],ref:['Reformcu',{bat:.4,par:-.2}]};
+const cd=()=>{const tp=Object.keys(TP)[Math.floor(Math.random()*4)],m=newM();m.tp=tp;if(tp==='tek')m.sk=Math.min(10,m.sk+1);if(tp==='sad')m.sk=Math.max(2,m.sk-1);return m;};
+function appoint(i){const c=S.cand.l[i],k=S.cand.k,old=S.M[k].name;if(avail()<3)return;S.M[k]={name:c.name,sk:c.sk,note:TP[c.tp][0]};applyFx(TP[c.tp][1]);S.cur.spent+=3;S.par=clamp(S.par-.3,0,10);S.cand=null;logA('Kabine değişikliği',`${k==='mb'?'Merkez Bankası Başkanı':minName(k)+' Bakanı'} değişti`,`${old} görevden alındı. ${c.name} atandı (${TP[c.tp][0]}, yetkinlik ${c.sk}/10).`);save();render();}
+const candP=()=>`<div class="panel"><b>${S.cand.k==='mb'?'Merkez Bankası Başkanı':minName(S.cand.k)+' Bakanı'} için aday seç</b>${S.cand.l.map((c,i)=>`<div class="lever"><span class="n">${c.name}</span><span class="h">${TP[c.tp][0]} · yetkinlik ${c.sk}/10 · ${fxText(TP[c.tp][1])}</span><div class="step">${sbtn(`data-ap="${i}"`,'Ata · 3 SS',avail()<3)}</div></div>`).join('')}<div style="margin-top:8px"><button class="btn sec sm" data-apx="1">Vazgeç</button></div></div>`;
+const YT=[['mv','Vergi indirimi',{des:1.2,acik:.5,buy:.3},.7],['mya','Sosyal yardım artışı',{des:1.5,huz:.5,acik:.4},.7],['mis','Kamu istihdam programı',{isz:-.5,des:.8,acik:.5},.6],['myu','Yerli üretim desteği',{buy:.4,cari:-.8,acik:.3},.5],['men','Enerji verimliliği',{cari:-.6,buy:.2,acik:.2,bat:.3},.5],['mkr','Kira ve konut düzenlemesi',{des:1,huz:.4,buy:-.2},.6]],YL=['Hafif','Orta','Sert'];
+function draft(){const b=S.dr.b||0,lv=S.dr.l===undefined?1:S.dr.l,t=YT[b],f=[.6,1,1.5][lv],fx={};for(const k in t[2])fx[k]=Math.round(t[2][k]*f*100)/100;return [t[0]+lv+'_'+S.month,`${t[1]} (${YL[lv]})`,2+lv,301,clamp(t[3]-lv*.1,.1,.9),`Kendi taslağın: ${t[1].toLowerCase()}, ${YL[lv].toLowerCase()} kapsam.`,fx];}
+function submitDraft(){const l=draft();if(l[2]>avail())return;S.cl=S.cl.slice(-19).concat([l]);propose(l[0],false);}
+const draftP=()=>{const l=draft();return `<h2>Yasa Taslağı</h2><div class="panel"><div class="dl">Konu</div><div class="chips" style="margin:6px 0">${YT.map((t,i)=>`<button class="btn sm ${(S.dr.b||0)===i?'':'sec'}" data-drb="${i}">${t[1]}</button>`).join('')}</div><div class="dl">Kapsam</div><div class="chips" style="margin:6px 0">${YL.map((n,i)=>`<button class="btn sm ${(S.dr.l===undefined?1:S.dr.l)===i?'':'sec'}" data-drl="${i}">${n}</button>`).join('')}</div><div class="note"><b>${l[1]}</b> (Geçerse: ${fxText(l[6])}.) Kapsam arttıkça etki ve maliyet büyür, Meclis'te destek azalır.</div>${sbtn('data-dsub="1"',`Taslağı sun · ${l[2]} SS`,avail()<l[2])}</div>`;};
+/* Merkez Bankası toplantısı ve dış ticaret */
+const mbRec=()=>Math.round(S.enf+3);
+function mbUp(){S.gv=clamp(S.gv+(Math.abs(S.lv.faiz-mbRec())<=6?1:-1.2)+(S.enf<=S.hd+8?.6:-.4),0,100);}
+function tradeUp(){const t=S.tr;t.x=t.x*.8+.2*(22*(1+(S.kur-46)/46*.25+(S.sec.san-50)*.004+(S.bat-5)*.01+((S.cool.ihr||0)>S.month?.08:0))+rnd(-.8,.8));t.m=t.m*.8+.2*(27*(1+(S.buy-2.8)*.02+(S.kur-46)/46*.1+(50-S.sec.ene)*.003)+rnd(-.8,.8));S.cari=clamp(S.cari+((t.m-t.x)-5)*.1,2,90);}
+function ihr(){if((S.cool.ihr||0)>S.month||avail()<2)return;S.cool.ihr=S.month+12;S.cur.spent+=2;applyFx({acik:.3});logA('Dış ticaret','İhracat teşviki','12 ay geçerli olacak.');save();render();}
+const ticP=()=>{const t=S.tr,cl=Math.max(0,(S.cool.ihr||0)-S.month);return `<h2>Dış Ticaret</h2><div class="panel"><div class="dl">Aylık ihracat ${nf(t.x,1)} mlr $ · ithalat ${nf(t.m,1)} mlr $</div><div class="dl">Ticaret açığı ${nf(t.m-t.x,1)} mlr $ / ay</div><div class="note">Zayıf TL, güçlü sanayi ve Batı itibarı ihracatı artırır. Büyüme ve enerji ithalatı ithalatı artırır.</div>${sbtn('data-ihr="1"',cl?`Teşvik ${cl} ay geçerli`:'İhracat teşviki · 2 SS',cl||avail()<2)}</div>`;};
+const mbP=()=>`<div class="panel"><b>Merkez Bankası toplantısı (PPK)</b><div class="dl">Enflasyon hedefi: %${S.hd} · güvenilirlik ${nf(S.gv,0)}/100</div><div class="dl">PPK önerisi: faiz %${mbRec()} · senin faizin %${nf(S.lv.faiz,1)}</div><div class="note">Faizin öneriden en fazla 6 puan uzaksa güvenilirlik artar. Güvenilirlik düşerse kur baskı görür. Hedef her Aralık yenilenir.</div></div>`;
+/* bölgesel harita */
+const REG=[['Marmara','26.1,40.9 26.2,41.7 28,42 29.5,41.2 30.6,40.6 30.5,39.9 28.5,39.8 26.9,40.1 26.2,40',{des:-2,isz:-1.5,huz:.3}],['Karadeniz','29.5,41.2 31.5,41.2 35,42 38,41.1 41.5,41.5 41.5,40.4 38.5,40.3 36.5,40.4 33.5,40.5 31.5,40.4 30.6,40.6',{des:8,isz:-.5,huz:.6}],['Ege','26.2,40 26.9,40.1 28.5,39.8 30.5,39.9 30.8,38.5 30.3,37 28.5,36.6 27.2,37 26.3,38.2',{des:-8,isz:-.5,huz:.6}],['Akdeniz','30.3,37 30.8,38.5 32.5,38.3 33.8,37.8 35.5,37.4 36.5,36.6 36.2,36 34,36.2 32,36.3 30.5,36.3',{des:-3,isz:1,huz:.2}],['İç Anadolu','30.5,39.9 31.5,40.4 33.5,40.5 36.5,40.4 38.5,40.3 38.5,38.5 36.5,37.9 35.5,37.4 33.8,37.8 32.5,38.3 30.8,38.5',{des:6,isz:0,huz:.4}],['Doğu Anadolu','38.5,40.3 41.5,40.4 43.5,41 44.8,39.7 44,37.6 41.5,38 38.5,38.5',{des:0,isz:3,huz:-.3}],['Güneydoğu','36.5,37.9 38.5,38.5 41.5,38 44,37.6 42.3,37.2 38.8,36.7 36.6,36.6 35.5,37.4',{des:-2,isz:4,huz:-1.2}]];
+const IND=[['des','Halk desteği','%',1],['isz','İşsizlik','%',0],['huz','Toplumsal huzur','/10',1]];
+function harita(){const I=IND.find(x=>x[0]===(S.mi||'des')),s=PART[S.me].x>.3?1:-1,nat=S[I[0]],vals=REG.map(r=>nat+r[2][I[0]]*(I[0]==='des'?s:1)),sp=Math.max(...vals.map(v=>Math.abs(v-nat)),.01);
+  return `<h2>Bölgesel Görünüm</h2><div class="panel"><div class="chips">${IND.map(x=>`<button class="btn sm ${x[0]===I[0]?'':'sec'}" data-mi="${x[0]}">${x[1]}</button>`).join('')}</div><svg class="ch" viewBox="0 0 320 205" style="margin-top:8px">${REG.map((r,j)=>{const P=r[1].split(' ').map(p=>{const [a,b]=p.split(',');return [(a-25.5)*16,(42.5-b)*30];}),t=(vals[j]-nat)/sp*(I[3]?1:-1),cx=P.reduce((a,p)=>a+p[0],0)/P.length,cy=P.reduce((a,p)=>a+p[1],0)/P.length;return `<polygon points="${P.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" style="fill:${t>=0?'var(--good)':'var(--bad)'};fill-opacity:${(.25+.55*Math.abs(t)).toFixed(2)};stroke:var(--bg);stroke-width:2"/><text x="${cx.toFixed(0)}" y="${cy.toFixed(0)}" text-anchor="middle" style="font-size:8px;fill:var(--ink)">${r[0]}</text>`;}).join('')}</svg>${REG.map((r,j)=>`<div class="dl" style="display:flex;justify-content:space-between;padding:3px 0"><span>${r[0]}</span><span>${nf(vals[j],1)}${I[2]}</span></div>`).join('')}<div class="note">Yeşil bölgeler ülke ortalamasından (${nf(nat,1)}${I[2]}) iyi, kırmızılar kötü durumda.</div></div>`;}
+/* tema, ses ve titreşim */
+const th=v=>{try{if(v!==undefined)ls('km-th',v);const t=ls('km-th')||'';if(t)document.documentElement.setAttribute('data-theme',t);else document.documentElement.removeAttribute('data-theme');}catch(e){}};
+const fxs=()=>ls('km-fx')!=='0';
+function beep(f,d=.09){try{if(!fxs())return;const A=window.AudioContext||window.webkitAudioContext,c=beep.c||(beep.c=new A()),o=c.createOscillator(),g=c.createGain();o.frequency.value=f;g.gain.value=.05;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+d);}catch(e){}}
+const hap=(p,f)=>{try{if(fxs()){navigator.vibrate&&navigator.vibrate(p);f&&beep(f);}}catch(e){}};
+const ayar=()=>`<h2>Ayarlar</h2><div class="panel"><div class="dl">Tema</div><div class="chips" style="margin:6px 0 10px">${[['auto','Otomatik'],['light','Açık'],['dark','Koyu']].map(([v,n])=>`<button class="btn sm ${(ls('km-th')||'auto')===v?'':'sec'}" data-th="${v}">${n}</button>`).join('')}</div><div class="dl">Ses ve titreşim</div><div class="chips" style="margin-top:6px"><button class="btn sm ${fxs()?'':'sec'}" data-fx="1">${fxs()?'Açık':'Kapalı'}</button></div></div>`;
 /* ---------- Görünüm ---------- */
 function spark(a){
   const v=a.slice(-25);if(v.length<2)return '<svg class="sp" viewBox="0 0 100 20"></svg>';
@@ -762,9 +798,9 @@ function endScreen(){
   const o=S.over;
   return `<div class="end"><div class="muted" style="font-family:var(--mono);font-size:12px">${dateLabel(S.month)} · ${S.term}. dönem</div><h1>${o.t}</h1><p>${o.x}</p>${o.p?`<div class="big">%${nf(o.p,1)}</div><div class="note">Kampanya etkisi: ${S.kamp>=0?'+':''}${nf(S.kamp||0,1)} puan</div>`:''}<div class="stats" style="margin-top:18px">${['enf','buy','isz','rez','des','huz'].map(k=>tile(STATS.find(s=>s.k===k))).join('')}</div>${karne()}<button class="btn" data-new="1" style="margin-top:14px">Yeni oyun başlat</button></div>`;
 }
-function diger(){return basarim()+slots()+gunluk()+'<div class="panel" style="margin-top:14px"><button class="btn sec sm" data-new="1">'+(S.confirmNew?'Emin misin? Tekrar bas':'Yeni oyun')+'</button></div>'+kayit();}
-const V={masa,karar,butce,vergi,sektor,kurum,dis,meclis,kabine,diger};
-const GR=[['masa','Masa',['masa','karar']],['eko','Ekonomi',['butce','vergi','sektor']],['sia','Siyaset',['meclis','kabine']],['dev','Devlet',['kurum','dis']],['diger','Diğer',['diger']]],SUBN={masa:'Göstergeler',karar:'Kararlar',butce:'Bütçe',vergi:'Vergi',kurum:'Kurum',sektor:'Sektörler',dis:'Dış ilişkiler',meclis:'Meclis',kabine:'Kabine',diger:'Diğer'};
+function diger(){return ayar()+basarim()+slots()+gunluk()+'<div class="panel" style="margin-top:14px"><button class="btn sec sm" data-new="1">'+(S.confirmNew?'Emin misin? Tekrar bas':'Yeni oyun')+'</button></div>'+kayit();}
+const V={masa,karar,harita,butce,vergi,sektor,kurum,dis,meclis,kabine,diger};
+const GR=[['masa','Masa',['masa','karar','harita']],['eko','Ekonomi',['butce','vergi','sektor']],['sia','Siyaset',['meclis','kabine']],['dev','Devlet',['kurum','dis']],['diger','Diğer',['diger']]],SUBN={masa:'Göstergeler',karar:'Kararlar',harita:'Harita',butce:'Bütçe',vergi:'Vergi',kurum:'Kurum',sektor:'Sektörler',dis:'Dış ilişkiler',meclis:'Meclis',kabine:'Kabine',diger:'Diğer'};
 const grp=()=>GR.find(g=>g[2].includes(V[S.tab]?S.tab:'masa'));
 const subbar=()=>{const g=grp();return g[2].length<2?'':'<div class="subtabs">'+g[2].map(k=>'<button class="bn2" aria-selected="'+(k===S.tab)+'" data-tab="'+k+'">'+SUBN[k]+'</button>').join('')+'</div>';};
 function render(){
@@ -793,7 +829,7 @@ document.addEventListener('click',ev=>{
   if(t.dataset.hr!==undefined){S.hr=+t.dataset.hr;save();return render();}
   if(t.dataset.evo!==undefined){S.evo=t.dataset.evo==='r'?'r':+t.dataset.evo;return render();}
   if(t.dataset.evx!==undefined){S.evo=null;return render();}
-  if(t.dataset.ev!==undefined)return decide(+t.dataset.ev,+t.dataset.c);
+  if(t.dataset.ev!==undefined){hap(20,520);return decide(+t.dataset.ev,+t.dataset.c);}
   if(t.dataset.lv)return lever(t.dataset.lv,+t.dataset.d);
   if(t.dataset.bud)return bud(t.dataset.bud,+t.dataset.d);
   if(t.dataset.taxs)return taxs(t.dataset.taxs,+t.dataset.d);
@@ -817,9 +853,18 @@ document.addEventListener('click',ev=>{
   if(t.dataset.prom)return makeProm(t.dataset.prom);
   if(t.dataset.ally)return doAlly();
   if(t.dataset.elfin)return finishEl();
+  if(t.dataset.ap!==undefined)return appoint(+t.dataset.ap);
+  if(t.dataset.apx){S.cand=null;return render();}
+  if(t.dataset.drb!==undefined){S.dr.b=+t.dataset.drb;save();return render();}
+  if(t.dataset.drl!==undefined){S.dr.l=+t.dataset.drl;save();return render();}
+  if(t.dataset.dsub)return submitDraft();
+  if(t.dataset.mi){S.mi=t.dataset.mi;return render();}
+  if(t.dataset.ihr)return ihr();
+  if(t.dataset.th){th(t.dataset.th==='auto'?'':t.dataset.th);return render();}
+  if(t.dataset.fx){ls('km-fx',fxs()?'0':'1');hap(30,500);return render();}
   if(t.dataset.tab){S.tab=t.dataset.tab;S.confirm=null;save();return render();}
   if(t.dataset.fire)return fire(t.dataset.fire);
-  if(t.dataset.end)return endTurn();
+  if(t.dataset.end){hap([30,50,30],392);return endTurn();}
   if(t.dataset.copy){
     const ta=document.getElementById('code');
     const done=()=>{t.textContent='Kopyalandı';};
@@ -855,7 +900,7 @@ document.addEventListener('change',ev=>{
   save();render();
 });
 if(!load())newGame();
-render();
+th();render();
 </script>
 
 <script>if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});</script>
