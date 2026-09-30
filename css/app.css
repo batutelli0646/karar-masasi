@@ -120,3 +120,13 @@ h2{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.07e
 .subtabs{overflow-x:auto;scrollbar-width:none}.subtabs::-webkit-scrollbar{display:none}.bn2{flex:1 0 auto;padding:0 10px;white-space:nowrap}
 .step{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 .lever .step{grid-column:1/-1;grid-row:3;justify-content:flex-start;margin-top:4px}.lever .bar{grid-column:1/-1;grid-row:4}
+/* arayüz: rozet, ajanda, trend, arama, etki okları, yazı ayarları */
+.bdg{font-style:normal;display:inline-block;min-width:16px;height:16px;line-height:16px;padding:0 4px;margin-left:4px;border-radius:8px;background:var(--bad);color:#fff;font-size:10px;font-weight:700;text-align:center;vertical-align:1px}
+.ag{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:10px 0;color:var(--ink)}
+.ag:first-of-type{margin-top:8px}.ag i{width:8px;height:8px;border-radius:50%;background:var(--muted)}.ag.warn i{background:var(--warn)}.ag.bad i{background:var(--bad)}.ag small{color:var(--muted);font-size:11px}
+.trow{display:grid;grid-template-columns:minmax(0,1fr) 44px 90px;gap:8px;align-items:center;padding:4px 0;border-top:1px solid var(--line)}.trow .sp{width:90px;height:22px}
+.ss{flex:1;min-width:230px}.ico{width:40px;height:40px;border:1px solid var(--line);background:var(--surface);border-radius:2px;font-size:20px;line-height:1;color:var(--ink);margin-left:auto}
+.aq{width:100%;height:44px;margin-bottom:8px;padding:0 12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:16px;border-radius:2px}
+.ars{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}.ar{font-style:normal;font-size:10.5px;padding:1px 6px;border-radius:2px;border:1px solid var(--line);color:var(--muted)}.ar.good{color:var(--good);border-color:var(--good)}.ar.bad{color:var(--bad);border-color:var(--bad)}
+:root[data-fs="0.92"]{zoom:.92}:root[data-fs="1.12"]{zoom:1.12}:root[data-fs="1.25"]{zoom:1.25}
+:root[data-font="sys"]{--display:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--mono:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}

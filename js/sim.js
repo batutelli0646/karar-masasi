@@ -63,7 +63,7 @@ function endTurn(){
   for(const k in RANGE)S[k]=clamp(S[k],RANGE[k][0],RANGE[k][1]);
   const b=snap();
   STATS.forEach(x=>S.hist[x.k].push(S[x.k]));
-  const hl=headlines(a,b,depr);hl.push(...checkAch(),...yeniUp(),...toplumUp(),...dunyaUp(),...piyasaUp(),...ileriUp());hl.push('PPK toplantısı: Merkez Bankası %'+mbRec()+' faiz öneriyor.');
+  const hl=headlines(a,b,depr);hl.push(...checkAch(),...yeniUp(),...toplumUp(),...dunyaUp(),...piyasaUp(),...ileriUp(),...arayuzUp());hl.push('PPK toplantısı: Merkez Bankası %'+mbRec()+' faiz öneriyor.');
   if(S.month%TERM===30)hl.unshift(S.flags.yerel);
   if(S.coal.length&&S.kol<=0){clearCoal();S.kol=4;S.par=clamp(S.par-.5,0,10);hl.unshift('Koalisyon ortağı hükümetten çekildi. Meclis çoğunluğu tehlikede.');S.log.push({m:S.month,t:'Koalisyon çöktü',c:'Ortak çekildi',msg:'Uyum sıfıra indi. Meclis\'te ortaksız devam ediyorsun.'});}
   const over=checkEnd();

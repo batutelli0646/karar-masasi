@@ -30,7 +30,7 @@ function eventCard(e,i){
   const done=e.ch!==null;
   let body;
   if(!done){
-    body=`<div class="choices">${d.c.map((c,ci)=>`<button class="choice" data-ev="${i}" data-c="${ci}" ${c.ss>a&&c.ss>mn?'disabled':''}><b>${c.l}</b><span class="d">${c.d}</span><span class="cost ${c.ss?'':'free'}">${c.ss?'SS −'+c.ss:'Bedelsiz'}</span></button>`).join('')}</div>`;
+    body=`<div class="choices">${d.c.map((c,ci)=>`<button class="choice" data-ev="${i}" data-c="${ci}" ${c.ss>a&&c.ss>mn?'disabled':''}><b>${c.l}</b><span class="d">${c.d}</span>${fxArr(c)}<span class="cost ${c.ss?'':'free'}">${c.ss?'SS −'+c.ss:'Bedelsiz'}</span></button>`).join('')}</div>`;
   }else{
     const c=d.c[e.ch];
     body=`<div class="outcome"><div class="you">Kararın: ${c.l}</div><div>${e.msg}</div><div class="chips">${(e.fxs||[]).map(f=>`<span class="chip">${f[0]} ${f[1]>0?'+':'−'}${nf(Math.abs(f[1]),f[2])}${f[3]==='%'?' %':''}</span>`).join('')}</div></div>`;
@@ -60,7 +60,7 @@ function karar(){
   return `<div class="msq"><div class="sq two">${evT}${rp}</div>${levers(1)}</div>${sheet()}`;
 }
 function masa(){
-  return `<div class="msq"><div class="sq big">${STATS.map(tile2).join('')}</div>${krizP()}</div>${sheet()}`;
+  return `<div class="msq"><div class="sq big">${STATS.map(tile2).join('')}</div>${krizP()}${ajanda()}${trendP()}</div>${sheet()}`;
 }
 function gunluk(){
   if(!S.log.length)return '<h2>Günlük</h2><p class="muted">Henüz karar yok.</p>';
@@ -76,11 +76,11 @@ function endScreen(){
   const o=S.over;
   return `<div class="end"><div class="muted" style="font-family:var(--mono);font-size:12px">${dateLabel(S.month)} · ${S.term}. dönem</div><h1>${o.t}</h1><p>${o.x}</p>${o.p?`<div class="big">%${nf(o.p,1)}</div><div class="note">Kampanya etkisi: ${S.kamp>=0?'+':''}${nf(S.kamp||0,1)} puan</div>`:''}<div class="stats" style="margin-top:18px">${['enf','buy','isz','rez','des','huz'].map(k=>tile(STATS.find(s=>s.k===k))).join('')}</div>${karne()}<button class="btn" data-new="1" style="margin-top:14px">Yeni oyun başlat</button></div>`;
 }
-function diger(){return ayar()+ist()+basarim()+slots()+gunluk()+'<div class="panel" style="margin-top:14px"><button class="btn sec sm" data-new="1">'+(S.confirmNew?'Emin misin? Tekrar bas':'Yeni oyun')+'</button></div>'+kayit();}
+function diger(){return ayar()+ayar2()+ist()+basarim()+slots()+gunluk()+'<div class="panel" style="margin-top:14px"><button class="btn sec sm" data-new="1">'+(S.confirmNew?'Emin misin? Tekrar bas':'Yeni oyun')+'</button></div>'+kayit();}
 const V={masa,karar,harita,kampanya,ticaret,butce,vergi,sektor,kurum,dis,meclis,kabine,diger,toplum,hizmet,nufus,politika,ulke,orgut,askeri,piyasa,ssan,lobi,buro,donem};
-const GR=[['masa','Masa',['masa','karar','harita']],['eko','Ekonomi',['butce','vergi','piyasa','sektor','ticaret']],['top','Toplum',['toplum','hizmet','nufus','politika','lobi']],['sia','Siyaset',['meclis','kabine','buro','donem','kampanya']],['dev','Devlet',['kurum','dis','ulke','orgut','askeri','ssan']],['diger','Diğer',['diger']]],SUBN={masa:'Göstergeler',karar:'Kararlar',harita:'Harita',butce:'Bütçe',vergi:'Vergi',kurum:'Kurum',sektor:'Sektörler',ticaret:'Dış ticaret',dis:'Anlaşma',toplum:'Gruplar',hizmet:'Hizmet',nufus:'Nüfus',politika:'Politika',orgut:'Örgütler',askeri:'Ordu',piyasa:'Piyasa',ssan:'Sanayii',lobi:'Lobiler',buro:'Bürokrasi',donem:'Karne',get ulke(){return 'Ülkeler'+(S&&S.ta&&S.ta.length?' ('+S.ta.length+')':'');},meclis:'Meclis',kabine:'Kabine',kampanya:'Kampanya',diger:'Diğer'};
+const GR=[['masa','Masa',['masa','karar','harita']],['eko','Ekonomi',['butce','vergi','piyasa','sektor','ticaret']],['top','Toplum',['toplum','hizmet','nufus','politika','lobi']],['sia','Siyaset',['meclis','kabine','buro','donem','kampanya']],['dev','Devlet',['kurum','dis','ulke','orgut','askeri','ssan']],['diger','Diğer',['diger']]],SUBN={masa:'Göstergeler',karar:'Kararlar',harita:'Harita',butce:'Bütçe',vergi:'Vergi',kurum:'Kurum',sektor:'Sektörler',ticaret:'Dış ticaret',dis:'Anlaşma',toplum:'Gruplar',hizmet:'Hizmet',nufus:'Nüfus',politika:'Politika',orgut:'Örgütler',askeri:'Ordu',piyasa:'Piyasa',ssan:'Sanayii',lobi:'Lobiler',buro:'Bürokrasi',donem:'Karne',ulke:'Ülkeler',meclis:'Meclis',kabine:'Kabine',kampanya:'Kampanya',diger:'Diğer'};
 const grp=()=>GR.find(g=>g[2].includes(V[S.tab]?S.tab:'masa'));
-const subbar=()=>{const g=grp();return g[2].length<2?'':'<div class="subtabs">'+g[2].map(k=>'<button class="bn2" aria-selected="'+(k===S.tab)+'" data-tab="'+k+'">'+SUBN[k]+'</button>').join('')+'</div>';};
+const subbar=()=>{const g=grp();return g[2].length<2?'':'<div class="subtabs">'+g[2].map(k=>'<button class="bn2" aria-selected="'+(k===S.tab)+'" data-tab="'+k+'">'+SUBN[k]+rz(k)+'</button>').join('')+'</div>';};
 function render(){
   const app=document.getElementById('app');
   if(S.over){app.innerHTML=`<div class="wrap">${endScreen()}</div>`;return;}
@@ -96,14 +96,14 @@ function render(){
   const pips=Array.from({length:Math.max(S.pool,10)},(_,i)=>`<i class="pip ${i<a?'':'off'}"></i>`).join('');
   const left=S.cur.events.filter(e=>e.ch===null).length;
   app.innerHTML=`<header class="top"><div class="top-in"><div class="brand">Karar Masası<small>${dateLabel(S.month)} · ${S.term}. DÖNEM · SEÇİME ${TERM-S.month%TERM} AY</small></div>
-  <div class="ss"><b>${a}</b><span>Siyasi Sermaye</span><div class="pips">${pips}</div></div></div></header>
+  <div class="ss"><b>${a}</b><span>Siyasi Sermaye</span><div class="pips">${pips}</div><button class="ico" data-ara="1" aria-label="Ara">⌕</button></div></div></header>
   <div class="wrap"><main>${subbar()}${(V[S.tab]||masa)()}</main></div>
   ${S.tab==='masa'||S.tab==='karar'||!V[S.tab]?`<div class="endbar"><div class="endbar-in"><span class="msg">${all?'Tüm kararlar verildi.':`${left} karar bekliyor.`}</span><button class="btn" data-end="1" ${all?'':'disabled'}>Ayı Bitir · ${dateLabel(S.month+1)}</button></div></div>`:''}
-  <nav class="bnav" role="tablist">${GR.map(([id,n,ks])=>`<button class="bn" role="tab" aria-selected="${grp()[0]===id}" data-tab="${ks.includes(S.tab)?S.tab:ks[0]}">${n}</button>`).join('')}</nav>`;
+  ${araSheet()}<nav class="bnav" role="tablist">${GR.map(([id,n,ks])=>`<button class="bn" role="tab" aria-selected="${grp()[0]===id}" data-tab="${ks.includes(S.tab)?S.tab:ks[0]}">${n}${rz(ks)}</button>`).join('')}</nav>`;
 }
 document.addEventListener('click',ev=>{
   const rp=ev.target.closest&&ev.target.closest('[data-il]');if(rp){S.rgs=+rp.dataset.il;save();return render();}
-  if(ev.target.classList&&ev.target.classList.contains('sheet')){S.evo=null;return render();}
+  if(ev.target.classList&&ev.target.classList.contains('sheet')){S.evo=null;S.ara=null;return render();}
   const t=ev.target.closest('button');if(!t)return;
   if(t.dataset.st){S.evo='s:'+t.dataset.st;return render();}
   if(t.dataset.hr!==undefined){S.hr=+t.dataset.hr;save();return render();}
