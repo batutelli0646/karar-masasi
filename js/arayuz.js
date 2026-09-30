@@ -19,7 +19,7 @@ function ajanda(){const L=[],a=(t,k,c)=>L.push([t,k,c]);if(!S.pz||!S.lb||!S.og)r
   const l=TERM-S.month%TERM;if(l<=6)a(`Seçime ${l} ay kaldı`,'donem','warn');
   return `<div class="panel"><b>Bu ay dikkat</b>${L.length?L.slice(0,8).map(([t,k,c])=>`<button class="ag ${c}" data-go="${k}"><i></i><span>${t}</span><small>${SUBN[k]}</small></button>`).join(''):'<div class="dl" style="margin-top:4px">Şimdilik acil bir şey yok.</div>'}</div>`;}
 /* trendler: her ay kaydedilir */
-function arayuzUp(){arayuzEnsure0();const t=S.th,p=(k,v)=>{t[k].push(Math.round(v*100)/100);if(t[k].length>60)t[k].shift();};
+function arayuzUp(){arayuzEnsure0();suDecay();const t=S.th,p=(k,v)=>{t[k].push(Math.round(v*100)/100);if(t[k].length>60)t[k].shift();};
   p('b',S.pz.b);p('kn',S.pz.kn);p('uns',uns());p('gd',gDev());p('yz',S.bu.yz);p('kr',krSc());return [];}
 const arayuzEnsure0=()=>{if(!S.th)S.th={};['b','kn','uns','gd','yz','kr'].forEach(k=>{if(!S.th[k])S.th[k]=[];});};
 function trendP(){if(!S.th||!S.pz||!S.bu)return '';const T=S.th,R=[['Borsa endeksi','b',S.pz.b,0],['Kredi notu','kn',S.pz.kn,0],['Huzursuzluk','uns',uns(),0],['Grup memnuniyeti','gd',gDev(),1],['Yolsuzluk algısı','yz',S.bu.yz,0],['Dönem karnesi','kr',krSc(),0]];

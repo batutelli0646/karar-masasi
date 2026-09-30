@@ -75,6 +75,6 @@ function ensure(){
   dunyaEnsure();toplumEnsure();piyasaEnsure();ileriEnsure();arayuzEnsure();
 }
 const levCost=()=>Object.keys(S.lv).filter(k=>S.lv[k]!==S.lv0[k]).length;
-const avail=()=>99; /* Siyasi Sermaye kaldırıldı: eylemler bekleme süresi ve sayı sınırıyla dengelenir */
+const avail=()=>99; /* Siyasi Sermaye kaldırıldı: eylemlerde bekleme süresi yok; tekrar edince etki azalır (secenek.js) */
 const M=new Proxy({},{get:(_,k)=>S.M[k]});
 
