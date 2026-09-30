@@ -72,6 +72,7 @@ function ensure(){
   S.lv={faiz:S.lv.faiz};S.lv0={faiz:S.lv0.faiz};
   if(!S.me||(S.seats&&S.seats.A!==undefined)){S.me='AKP';S.seats=null;S.coal=[];S.own={};}
   if(!S.seats)initGov();
+  dunyaEnsure();toplumEnsure();
 }
 const levCost=()=>Object.keys(S.lv).filter(k=>S.lv[k]!==S.lv0[k]).length;
 const avail=()=>S.pool-S.cur.spent-levCost();

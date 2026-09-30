@@ -1,6 +1,6 @@
 /* ---------- Aylık simülasyon ---------- */
 function simulate(){
-  const L=S.lv,s=S,mk=M,X=eco(),e=k=>X.E[k]||0;
+  const L=S.lv,s=S,mk=M,X=eco(),F=sfx(),e=k=>(X.E[k]||0)+(F[k]||0);
   const real=L.faiz-s.enf,sf=x=>x>20?20+(x-20)*.1:x<-20?-20+(x+20)*.1:x,rl=sf(real);
   let depr=1.6+0.05*(s.enf-40)-0.05*(s.rez-22)-0.10*(rl+3)+rnd(-0.8,0.8)-(mk.maliye.sk-5)*0.1+(s.des<30?0.5:0)+(s.huz<4?0.4:0);
   depr+=0.3*Math.max(0,s.acik-7);depr+=(50-s.gv)*.012;depr=clamp(depr,-0.5,9);
@@ -9,10 +9,10 @@ function simulate(){
   s.enf+=-0.09*(rl+3)+0.5*(depr-1.6)+0.15*(s.acik-4.6)+rnd(-0.4,0.4)-(mk.mb.sk-5)*0.06+e('enf');
   const tg=2.8-0.05*(L.faiz-45)+e('buy')-0.03*(s.enf-48);
   s.buy+=(tg-s.buy)*0.25+rnd(-0.1,0.1);
-  s.isz+=0.04*(3.0-s.buy)+0.02*(9.2-s.isz)+rnd(-0.05,0.05);
+  s.isz+=0.04*(3.0-s.buy)+0.02*(9.2-s.isz)+rnd(-0.05,0.05)+e('isz');
   const ta=4.6+X.dev-X.rev+e('acik')+0.06*sf(L.faiz-45)-0.15*(s.buy-2.8)+loanC();
   s.acik+=(ta-s.acik)*0.3;
-  s.borc+=0.10*(s.acik-2.5)+0.06*depr-0.1;
+  s.borc+=0.10*(s.acik-2.5)+0.06*depr-0.1+e('borc');
   s.cari+=0.25*(s.buy-2.8)-0.1*(depr-1.6)+(34-s.cari)*0.03+rnd(-0.4,0.4)+e('cari');
   s.des+=-0.06*(s.enf-45)+0.35*(s.buy-2.5)-0.25*(s.isz-9.2)+0.1*(s.huz-5)-0.15+(41-s.des)*0.02+e('des');
   s.par+=(6-s.par)*0.05+(s.des-40)*0.01+e('par');
@@ -43,7 +43,7 @@ function headlines(a,b,depr){
   if(!h.length)h.push('Piyasalar sakin, siyasi gündem yoğun.');
   return h.slice(0,4);
 }
-function vote(){return clamp(S.des*0.92+(S.huz-5)*0.6+(S.par-5)*0.5+(S.kamp||0)+priV()+promRes().reduce((a,r)=>a+(r[1]?1.5:-3),0),8,62);}
+function vote(){return clamp(S.des*0.92+(S.huz-5)*0.6+(S.par-5)*0.5+(S.kamp||0)+priV()+gDev()*.05+promRes().reduce((a,r)=>a+(r[1]?1.5:-3),0),8,62);}
 function checkEnd(){
   if(S.des<12)return {t:'Hükümet Düştü',x:'Halk desteği çöktü. Güvensizlik önergesi kabul edildi ve hükümet istifa etti.'};
   if(S.par<=1)return {t:'Parti Seni Devirdi',x:'Parti içi isyan sonuç verdi. Olağanüstü kurultayda liderlikten alındın.'};
@@ -63,7 +63,7 @@ function endTurn(){
   for(const k in RANGE)S[k]=clamp(S[k],RANGE[k][0],RANGE[k][1]);
   const b=snap();
   STATS.forEach(x=>S.hist[x.k].push(S[x.k]));
-  const hl=headlines(a,b,depr);hl.push(...checkAch(),...yeniUp());hl.push('PPK toplantısı: Merkez Bankası %'+mbRec()+' faiz öneriyor.');
+  const hl=headlines(a,b,depr);hl.push(...checkAch(),...yeniUp(),...toplumUp(),...dunyaUp());hl.push('PPK toplantısı: Merkez Bankası %'+mbRec()+' faiz öneriyor.');
   if(S.month%TERM===30)hl.unshift(S.flags.yerel);
   if(S.coal.length&&S.kol<=0){clearCoal();S.kol=4;S.par=clamp(S.par-.5,0,10);hl.unshift('Koalisyon ortağı hükümetten çekildi. Meclis çoğunluğu tehlikede.');S.log.push({m:S.month,t:'Koalisyon çöktü',c:'Ortak çekildi',msg:'Uyum sıfıra indi. Meclis\'te ortaksız devam ediyorsun.'});}
   const over=checkEnd();
