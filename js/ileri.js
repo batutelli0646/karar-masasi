@@ -11,7 +11,7 @@ function ileriEnsure(){if(!S.lb){S.lb={};LB.forEach(l=>S.lb[l[0]]={t:0,pw:LBP[l[
   if(!S.bu)S.bu={kap:55,yz:45,ly:0,cd:{}};if(!S.kr)S.kr={n:0,s:0,ark:[],bn:0};
   for(const k in S.M){const m=S.M[k];if(m.yz===undefined)m.yz=clamp(rnd(15,50)-(m.sk-5)*3,0,100);}}
 function isfx(){const F={};if(!S.lb||!S.bu||!S.gr||!S.pz)return F;const add=(o,m)=>{for(const k in o)F[k]=(F[k]||0)+o[k]*m;},b=S.bu;
-  LB.forEach(l=>{const o=S.lb[l[0]],f=o.t/100*o.pw/100*(o.t<0?1.5:1);add({des:.25},f);add(l[5],f*2);if(o.ey>0)add(l[3],o.pw/60);});
+  LB.forEach(l=>{const o=S.lb[l[0]],f=o.t/100*o.pw/100*(o.t<0?1.5:1);add({des:.25},f);add(l[5],f*2);if(o.ey>0)add(eyFx(l,o),o.pw/60);});
   add({des:(b.kap-50)*.002-(b.yz-45)*.004,bat:-(b.yz-45)*.0015,buy:(b.kap-50)*.002},1);return F;}
 const krn=()=>{const pr=promRes().concat(S.pri.map(k=>['',PRI[k]&&PRI[k][2]()])),ul=v=>(v.reduce((a,b)=>a+b,0)/v.length);
   return [['Ekonomi',ul([lin(S.enf,80,15),lin(S.buy,-2,5),lin(S.isz,14,5),lin(S.acik,8,2)])],['Toplum',ul([lin(S.huz,2,8),lin(gDev(),-20,15),lin(uns(),70,10)])],['Dış ilişkiler',ul([lin((S.bat+S.dog+S.bol)/3,3,8),lin(S.pz.kn,25,70)])],['Güvenlik',ul([lin(S.ord,3,8),lin(gucu(),40,75)])],['Yönetim',ul([lin(S.bu.yz,80,20),lin(S.bu.kap,30,80),lin(S.par,3,8)])],['Sözler',pr.length?pr.filter(x=>x[1]).length/pr.length*100:50]];};
@@ -20,14 +20,14 @@ const gr=v=>v>=85?'A':v>=70?'B':v>=55?'C':v>=40?'D':'F',grc=v=>v>=70?'good':v>=5
 function karneKaydet(){const k=S.kr;if(!k.n)return;const a=k.s/k.n;k.ark.push({t:S.term,avg:a,end:krSc()});k.bn=a>=85?2:a>=70?1:0;k.s=0;k.n=0;}
 const karneBonus=()=>{const b=S.kr.bn;S.kr.bn=0;return b;};
 function ileriUp(){const h=[];ileriEnsure();const b=S.bu;
-  LB.forEach(l=>{const o=S.lb[l[0]];o.t=clamp(o.t+(clamp(l[2]()+lbD(l[0]),-100,100)-o.t)*.12+rnd(-3,3),-100,100);o.sj=o.sj.map(v=>clamp(v*.9+rnd(-3,3),-15,15));o.pw=clamp(o.pw+(o.t<-40?.3:-.1),10,90);
-    if(o.ey>0)o.ey--;else if(o.t<-35&&Math.random()<.15){o.ey=2;o.lg.unshift([S.month,'Eylem: '+l[4]]);o.lg.splice(5);h.push(`${l[1]} ${l[4]}.`);}});
+  LB.forEach(l=>{const o=S.lb[l[0]];o.t=clamp(o.t+(clamp(l[2]()+lbD(l[0]),-100,100)-o.t)*.12+rnd(-3,3),-100,100);o.sj=o.sj.map(v=>clamp(v*.9+rnd(-3,3),-25,25));o.pw=clamp(o.pw+(o.t<-40?.3:-.1),10,90);
+    if(o.ey>0)o.ey--;else if(o.t<-35&&Math.random()<.15){const e=eyPick(l[0],o);o.ey=e[2];o.ea=e[4];lbLg(o,'Eylem: '+e[0]);h.push(`${l[1]} ${e[1]}.`);}});
   const ks=Object.keys(S.M),av=ks.reduce((a,k)=>a+S.M[k].yz,0)/ks.length,sk=ks.reduce((a,k)=>a+S.M[k].sk,0)/ks.length;
   ks.forEach(k=>{const m=S.M[k];m.yz=clamp(m.yz+rnd(-1,2)*(m.gv<40?1.5:1)+(b.yz-45)*.01-b.ly*.3,0,100);
     if(m.yz>75&&Math.random()<.25){h.push(`${m.name} hakkında yolsuzluk iddiaları gündemde, bakan görevden alındı.`);applyFx({des:-1.2,par:-.3,bat:-.15});if(!S.own[k])S.M[k]={...cd(),gv:50,yz:30};else m.yz=40;}});
   b.yz=clamp(b.yz+(av-b.yz)*.1,0,100);b.kap=clamp(b.kap+(40+sk*3+rb('egit')*10+b.ly*4-b.kap)*.04,0,100);
-  S.kr.s+=krSc();S.kr.n++;return h;}
-function ileriClick(t){const d=t.dataset,b=S.bu;if(!d.lb&&!d.bz&&!d.bi&&!d.lbs)return false;ileriEnsure();if(d.lbs){S.lbs=d.lbs;render();return true;}
+  S.kr.s+=krSc();S.kr.n++;return h.concat(lobiUp());}
+function ileriClick(t){const d=t.dataset,b=S.bu;if(!d.lb&&!d.bz&&!d.bi&&!d.lbs)return false;ileriEnsure();if(d.lb&&/:(x\d|b|s\d)$/.test(d.lb))return lobiX(d.lb);if(d.lbs){S.lbs=d.lbs;render();return true;}
   const use=(o,k,n,c)=>{if(avail()<n||(o.cd[k]||0)>S.month)return false;S.cur.spent+=n;o.cd[k]=S.month+c;return true;};
   if(d.lb){const [id,a]=d.lb.split(':'),o=S.lb[id],l=LB.find(x=>x[0]===id);
     if(a==='m'&&use(o,'m',0,3)){o.t=clamp(o.t+14,-100,100);lbLg(o,'Masaya oturuldu');logA('Lobiler',l[1],'Masaya oturuldu, tutum +14.');}
