@@ -4,7 +4,7 @@ function simulate(){
   const real=L.faiz-s.enf,sf=x=>x>20?20+(x-20)*.1:x<-20?-20+(x+20)*.1:x,rl=sf(real);
   let depr=1.6+0.05*(s.enf-40)-0.05*(s.rez-22)-0.10*(rl+3)+rnd(-0.8,0.8)-(mk.maliye.sk-5)*0.1+(s.des<30?0.5:0)+(s.huz<4?0.4:0);
   depr+=0.3*Math.max(0,s.acik-7);depr+=(50-s.gv)*.012;depr=clamp(depr,-0.5,9);
-  s.kur*=1+depr/100;
+  s.kur*=1+depr/100;s.gdp*=1+clamp(.25*(Math.min(s.enf,60)*.9/1200-depr/100)-Math.max(0,depr-3)*.004,-.03,.008); /* reel kur: GSYH'nın dolar değeri, kur artışı fiyat artışından hızlıysa küçülür, yavaşsa büyür */
   s.rez+=-0.3*Math.max(0,s.acik-7)-0.5+0.10*(rl+3)+(depr>4?-2:0)+(s.bat-5)*0.1+rnd(-0.6,0.6)+e('rez');
   s.enf+=-0.09*(rl+3)+0.5*(depr-1.6)+0.15*(s.acik-4.6)+rnd(-0.4,0.4)-(mk.mb.sk-5)*0.06+e('enf');
   const tg=2.8-0.05*(L.faiz-45)+e('buy')-0.03*(s.enf-48);
