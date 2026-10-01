@@ -4,7 +4,7 @@ const kv=(a,b)=>`<div class="dl" style="display:flex;justify-content:space-betwe
 const NOT=[[80,'A'],[68,'BBB'],[56,'BB+'],[46,'BB'],[36,'BB-'],[28,'B+'],[20,'B'],[0,'CCC']],notL=k=>NOT.find(n=>k>=n[0])[1];
 const yzI=()=>S.bu?S.bu.yz:45;
 /* risk primi: bütçe, borç, rezerv, cari açık, siyasi istikrar ve yolsuzluk algısından */
-const rsk=()=>clamp(2+(S.acik-3)*.5+(S.borc-45)*.06+(35-S.rez)*.04+(S.cari-30)*.03+(S.par<4?1:0)+(S.huz<4?1:0)+(yzI()-45)*.03,1,14);
+const rsk=()=>clamp(2+(S.acik-3)*.5+(S.borc-38)*.06+(35-S.rez)*.04+(S.cari-30)*.03+(S.par<4?1:0)+(S.huz<4?1:0)+(yzI()-45)*.03,1,14);
 const tvf=()=>clamp(S.lv.faiz*.45+S.enf*.4+rsk()*1.2,5,150);
 function piyasaEnsure(){if(!S.pz)S.pz={b:100,kn:42,fa:0,r:0,h:[100],cd:{},oz:0,ks:0};if(!S.sy)S.sy={kap:30,ihr:0,ks:[],amb:0,cd:{}};if(!S.pz.sd)S.pz.sd=[];}
 /* sürekli etkiler (saf fonksiyon: tahmin paneli de kullanır) */
@@ -44,6 +44,6 @@ function piyasa(){const p=S.pz,k=p.kn,c=k>=56?'good':k>=36?'warn':'bad',rk=rsk()
   <div class="lever"><span class="n">Sermaye kontrolü ${p.ks?'(açık)':''}</span><span class="h">Çıkışlar %70, girişler %50 azalır. Not anında −4, hedef −8; büyüme baskılanır, Batı itibarı aylık azalır.</span><div class="step">${sbtn('data-pz="ks"',p.ks?'Kaldır':'Uygula')}</div></div></div>`;}
 function ssan(){const y=S.sy,c=y.kap>=55?'good':y.kap>=30?'warn':'bad',a=avail(),el=CT.filter(x=>S.ul[x[0]]>=55&&!y.ks.some(k=>k.id===x[0]));
   return `<h2>Savunma sanayii</h2><div class="panel">${kv('Üretim kapasitesi',nf(y.kap,0)+'/100')}${gbar(y.kap,c)}${kv('Yıllık ihracat',nf(y.ihr,1)+' mlr $')}${kv('Tamamlanan projeler',dnP()+'/'+PROJ.length)}${y.amb>0?`<div class="dl"><span class="st bad">Ambargo</span> ${y.amb} ay daha sürecek: kapasite hedefi −15, ihracat %40 düşük</div>`:''}
-  <div class="note">Kapasite; savunma bütçesi, sanayi sektörü ve tamamlanan projelerle yükselir. İhracat cari açığı azaltır. Batı itibarı 4,5'in altına düşerse veya NATO ayrıcalıkları askıdayken ambargo riski doğar.</div>
+  <div class="note">Kapasite; savunma bütçesi, sanayi sektörü ve tamamlanan projelerle yükselir. İhracat cari açığı azaltır. Batı itibarı 4,5'in altına düşerse veya NATO %2 hedefinin altındayken ya da ABD ve Almanya ile ilişkiler bozulduğunda ambargo riski doğar.</div>
   <div class="lever"><span class="n">Üretim yatırımı</span><span class="h">${SY.map(x=>x[0]+': '+x[1]).join(' ')}${sat(su('yat'))}</span><div class="step">${SY.map((x,i)=>sbtn(`data-sy="yat:${i}"`,x[0].split(' ')[0]+' '+x[0].split(' ')[1])).join('')}</div></div></div>
   <div class="panel"><b>İhracat anlaşmaları (${y.ks.length}/3)</b>${y.ks.map(k=>`<div class="dl">${CT.find(c=>c[0]===k.id)[1]}: ${k.left} ay kaldı</div>`).join('')||'<div class="dl muted">Yok</div>'}${el.map(x=>`<div class="lever"><span class="n">${x[1]}</span><span class="h">İlişki ${nf(S.ul[x[0]],0)} · 18 ay · savunma ihracatı +%12 · ilişki +4</span><div class="step">${sbtn(`data-sy="k:${x[0]}"`,'İmzala',y.ks.length>=3)}</div></div>`).join('')}<div class="note">Anlaşma için ilişki puanı 55 ve üstü olmalı. Ülkelerle ilişkiyi Ülkeler sekmesinden yönet.</div></div>`;}

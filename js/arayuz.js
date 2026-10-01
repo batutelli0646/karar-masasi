@@ -14,7 +14,7 @@ function ajanda(){const L=[],a=(t,k,c)=>L.push([t,k,c]);if(!S.pz||!S.lb||!S.og)r
   ORG.forEach(o=>{const g=S.og[o[0]];if(g.dec&&g.dec.left<=1)a(`${o[1]} oylaması bu ay`,'orgut','warn');});
   LB.forEach(l=>{const o=S.lb[l[0]];if(o.ey>0)a(`${l[1]} eylemde`,'lobi','bad');else if(o.t<-20)a(`${l[1]} mesafeli`,'lobi','warn');});
   if(S.pz.fa<-3)a('Yabancı sermaye çıkıyor','piyasa','bad');if(S.pz.kn<30)a('Kredi notu çok düşük','piyasa','bad');if(S.sy.amb>0)a('Savunma sanayii ambargoda','ssan','bad');
-  if(natoAskida())a('NATO ayrıcalıkları askıda','askeri','bad');const u=uns();if(u>60)a('Toplumsal huzursuzluk yüksek','toplum','bad');else if(u>40)a('Toplumsal huzursuzluk artıyor','toplum','warn');
+  if(natoAskida())a('NATO %2 hedefinin altındasın','askeri','bad');const u=uns();if(u>60)a('Toplumsal huzursuzluk yüksek','toplum','bad');else if(u>40)a('Toplumsal huzursuzluk artıyor','toplum','warn');
   Object.keys(S.M).forEach(k=>{if(S.M[k].gv<35)a(`${S.M[k].name} güven kaybediyor`,'kabine','warn');});
   const l=toEl();if(l<=6)a(`Seçime ${l} ay kaldı`,'donem','warn');
   return `<div class="panel"><b>Bu ay dikkat</b>${L.length?L.slice(0,8).map(([t,k,c])=>`<button class="ag ${c}" data-go="${k}"><i></i><span>${t}</span><small>${SUBN[k]}</small></button>`).join(''):'<div class="dl" style="margin-top:4px">Şimdilik acil bir şey yok.</div>'}</div>`;}

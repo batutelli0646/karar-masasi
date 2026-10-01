@@ -37,7 +37,7 @@ function eventCard(e,i){
   }
   return `<article class="card ${done?'done':''}"><div class="tag">${d.tag}${d.g==='later'?' · önceki kararının sonucu':''}</div><h3>${d.t}</h3><p>${T(d.x)}</p>${body}</article>`;
 }
-const SH={enf:'Enflasyon',buy:'Büyüme',isz:'İşsizlik',acik:'Açık/GSYH',borc:'Dış borç',cari:'Cari açık',rez:'Rezerv',kur:'Dolar',des:'Destek',par:'Parti',kol:'Koalisyon',ord:'Ordu',huz:'Huzur',bat:'Batı',dog:'Doğu',bol:'Bölge'};
+const SH={enf:'Enflasyon',buy:'Büyüme',isz:'İşsizlik',acik:'Açık/GSYH',borc:'Dış borç',cari:'Cari açık',rez:'Rezerv',kur:'Dolar',des:'Destek',par:'Parti',kol:'İttifak',ord:'Ordu',huz:'Huzur',bat:'Batı',dog:'Doğu',bol:'Bölge'};
 const tile2=s=>{const v=S[s.k],p=S.prev?S.prev[s.k]:v,dd=v-p;return `<button class="sqt st4 ${s.st(v)}" data-st="${s.k}"><span class="l">${SH[s.k]}</span><span class="v">${nf(v,s.d)}<small>${s.u==='mlr $'?'$':s.u}</small></span><span class="d dl ${dd>0?'up':'dn'}">${Math.abs(dd)<0.05?'&nbsp;':(dd>0?'▲ ':'▼ ')+nf(Math.abs(dd),s.d)}</span></button>`;};
 const chartSheet=k=>{
   const s=STATS.find(x=>x.k===k),H=S.hist[k]||[],n=S.hr===undefined?10:S.hr,a=n?H.slice(-(n+1)):H,off=H.length-a.length,v=S[k],st=s.st(v),ix=st==='good'?0:st==='warn'?1:2,dm=m=>dateLabel(m).replace(/^(.{3})\S*/,'$1');
@@ -77,7 +77,7 @@ function endScreen(){
   return `<div class="end"><div class="muted" style="font-family:var(--mono);font-size:12px">${dateLabel(S.month)} · ${S.term}. dönem</div><h1>${o.t}</h1><p>${o.x}</p>${o.p?`<div class="big">%${nf(o.p,1)}</div><div class="note">Kampanya etkisi: ${S.kamp>=0?'+':''}${nf(S.kamp||0,1)} puan</div>`:''}<div class="stats" style="margin-top:18px">${['enf','buy','isz','rez','des','huz'].map(k=>tile(STATS.find(s=>s.k===k))).join('')}</div>${karne()}<button class="btn" data-new="1" style="margin-top:14px">Yeni oyun başlat</button></div>`;
 }
 function diger(){return ayar()+ayar2()+ist()+basarim()+slots()+gunluk()+'<div class="panel" style="margin-top:14px"><button class="btn sec sm" data-new="1">'+(S.confirmNew?'Emin misin? Tekrar bas':'Yeni oyun')+'</button></div>'+kayit();}
-const V={masa:()=>masa().replace('<div class="sq big">',cmdP()+'<div class="sq big">'),karar,harita,ticaret,butce,vergi,sektor,kurum,dis,meclis,kabine:()=>kabP()+kabine(),diger:()=>zorP()+diger(),toplum,hizmet,nufus,sinif,politika,ulke:()=>ulke()+dipP(),orgut:()=>orgut()+orgX(),askeri:()=>askeri()+komP(),piyasa,ssan,lobi,buro,donem,istat};
+const V={masa:()=>masa().replace('<div class="sq big">',cmdP()+'<div class="sq big">'),karar,harita,ticaret,butce,vergi,sektor,kurum,dis,meclis:()=>meclis()+cbP(),kabine:()=>kabP()+kabine(),diger:()=>zorP()+diger(),toplum,hizmet,nufus,sinif,politika,ulke:()=>ulke()+dipP(),orgut:()=>orgut()+orgX(),askeri:()=>askeri()+komP(),piyasa,ssan,lobi,buro,donem,istat};
 const GR=[['masa','Masa',['masa','karar','harita']],['eko','Ekonomi',['butce','vergi','piyasa','sektor','ticaret']],['top','Toplum',['toplum','hizmet','nufus','sinif','politika','lobi']],['sia','Siyaset',['meclis','kabine','buro','donem']],['dev','Devlet',['kurum','dis','ulke','orgut','askeri','ssan']],['diger','Diğer',['diger','istat']]],SUBN={sinif:'Sınıflar',istat:'İstatistik',masa:'Göstergeler',karar:'Kararlar',harita:'Harita',butce:'Bütçe',vergi:'Vergi',kurum:'Kurum',sektor:'Sektörler',ticaret:'Dış ticaret',dis:'Anlaşma',toplum:'Gruplar',hizmet:'Hizmet',nufus:'Nüfus',politika:'Politika',orgut:'Örgütler',askeri:'Ordu',piyasa:'Piyasa',ssan:'Sanayii',lobi:'Lobiler',buro:'Bürokrasi',donem:'Karne',ulke:'Ülkeler',meclis:'Meclis',kabine:'Kabine',kampanya:'Kampanya',diger:'Diğer'};
 const grp=()=>GR.find(g=>g[2].includes(V[S.tab]?S.tab:'masa'));
 const subbar=()=>{const g=grp();return g[2].length<2?'':'<div class="subtabs">'+g[2].map(k=>'<button class="bn2" aria-selected="'+(k===S.tab)+'" data-tab="'+k+'">'+SUBN[k]+rz(k)+'</button>').join('')+'</div>';};
@@ -112,6 +112,8 @@ document.addEventListener('click',ev=>{
   if(t.dataset.lv)return lever(t.dataset.lv,+t.dataset.d);
   if(t.dataset.bud)return bud(t.dataset.bud,+t.dataset.d);
   if(t.dataset.taxs)return taxs(t.dataset.taxs,+t.dataset.d);
+  if(t.dataset.taxl)return taxLaw(t.dataset.taxl);
+  if(t.dataset.taxc){delete (S.tp||{})[t.dataset.taxc];save();return render();}
   if(t.dataset.act)return act(t.dataset.act);
   if(t.dataset.uisrc){S.ui.src=t.dataset.uisrc;S.ui.amt=Math.min(ui('amt',8),LOAN[S.ui.src][5]);save();return render();}
   if(t.dataset.wgo)return wageGo();
@@ -170,7 +172,7 @@ document.addEventListener('click',ev=>{
 document.addEventListener('input',ev=>{
   const t=ev.target;if(!t.classList||!t.classList.contains('rng'))return;const v=+t.value;
   if(t.dataset.faizr){t.closest('.lever').querySelector('output').textContent='%'+nf(v,1);return;}
-  if(t.dataset.ui)S.ui[t.dataset.ui]=v;else if(t.dataset.taxr)S.tax[t.dataset.taxr]=v;else if(t.dataset.wage)S.wage.G=v;else return;
+  if(t.dataset.ui)S.ui[t.dataset.ui]=v;else if(t.dataset.taxr){const b=tBand(t.dataset.taxr);S.tax[t.dataset.taxr]=clamp(v,b[0],b[1]);}else if(t.dataset.wage)S.wage.G=v;else return;
   const root=t.closest('main,.wrap'),d=document.createElement('div');d.innerHTML=S.wage?wageScreen():(V[S.tab]||masa)();
   if(S.wage){const o=root.querySelectorAll('.dl'),w=d.querySelectorAll('.dl');o.forEach((e,j)=>{if(w[j])e.innerHTML=w[j].innerHTML;});return;}
   const i=[...root.querySelectorAll('.rng')].indexOf(t),n=d.querySelectorAll('.rng')[i];if(!n)return;
@@ -181,7 +183,7 @@ document.addEventListener('input',ev=>{
 document.addEventListener('change',ev=>{
   const t=ev.target;if(!t.classList||!t.classList.contains('rng'))return;const v=+t.value;
   if(t.dataset.faizr)return setFaiz(v);
-  if(t.dataset.ui)S.ui[t.dataset.ui]=v;else if(t.dataset.taxr)S.tax[t.dataset.taxr]=clamp(Math.round(v*10)/10,0,100);else if(t.dataset.wage)S.wage.G=v;else return;
+  if(t.dataset.ui)S.ui[t.dataset.ui]=v;else if(t.dataset.taxr){const b=tBand(t.dataset.taxr);S.tax[t.dataset.taxr]=clamp(Math.round(v*10)/10,b[0],b[1]);}else if(t.dataset.wage)S.wage.G=v;else return;
   save();render();
 });
 if(!load())newGame();

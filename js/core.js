@@ -18,7 +18,7 @@ const STATS=[
  {k:'kur',l:'Dolar / TL',u:'₺',d:2,st:()=>'warn',low:1,lb:['','Değer kaybı','']},
  {k:'des',l:'Halk desteği',u:'%',d:1,st:v=>v>=45?'good':v>=32?'warn':'bad',lb:['Güçlü','Kırılgan','Kritik']},
  {k:'par',l:'Parti içi birlik',u:'/10',d:1,st:v=>v>=7?'good':v>=4?'warn':'bad',lb:['Sağlam','Gergin','Yarılma']},
- {k:'kol',l:'Koalisyon uyumu',u:'/10',d:1,st:v=>v>=7?'good':v>=4?'warn':'bad',lb:['Sağlam','Gergin','Kopuyor']},
+ {k:'kol',l:'İttifak uyumu',u:'/10',d:1,st:v=>v>=7?'good':v>=4?'warn':'bad',lb:['Sağlam','Gergin','Kopuyor']},
  {k:'ord',l:'Ordu memnuniyeti',u:'/10',d:1,st:v=>v>=7?'good':v>=4?'warn':'bad',lb:['Yüksek','Orta','Tehlike']},
  {k:'huz',l:'Toplumsal huzur',u:'/10',d:1,st:v=>v>=7?'good':v>=4?'warn':'bad',lb:['Sakin','Gergin','Patlama']},
  {k:'bat',l:'İtibar: Batı',u:'/10',d:1,st:v=>v>=7?'good':v>=4?'warn':'bad',lb:['İyi','Soğuk','Kopuk']},
@@ -29,7 +29,7 @@ const RANGE={enf:[2,300],buy:[-12,12],isz:[3,40],acik:[-2,20],borc:[10,150],cari
 const LVR={faiz:[0,150,5]};
 /* ölçüm çıpaları: başlangıç enflasyonu, politika faizi ve kur (göreli formüller buna göre) */
 const E0=31.5,F0=37,K0=46;
-const EO=20,toEl=()=>{const r=((EO-S.month)%TERM+TERM)%TERM;return r||TERM;},isElM=()=>S.month>=EO&&(S.month-EO)%TERM===0,isLocM=()=>S.month>=29&&(S.month-29)%TERM===0; /* genel seçim Haziran 2028 (ay 20), yerel seçim Mart 2029 (ay 29), sonra 5 yılda bir */
+const EO=20,toEl=()=>Math.max(1,(S.nel??EO)-S.month),isElM=()=>S.month===(S.nel??EO),isLocM=()=>S.month>=29&&(S.month-29)%TERM===0; /* genel seçim Haziran 2028 (ay 20), yerel seçim Mart 2029 (ay 29), sonra 5 yılda bir */
 const TERM=60,BAR=7;
 /* Bakanlık: [anahtar, ad, taban bütçe (GSYH %), 100% artışın aylık etkisi] */
 const MIN=[['egit','Milli Eğitim',3.2,{buy:.5,des:.3,huz:.3}],['saglik','Sağlık',2.4,{des:.5,huz:.3}],['calisma','Çalışma ve Sosyal Güvenlik',5,{des:.6,huz:.4,enf:.1}],['aile','Aile ve Sosyal Hizmetler',.9,{des:.4,huz:.5}],['sav','Milli Savunma',2.1,{ord:.14,cari:.03}],['ic','İçişleri',1.8,{huz:.6,des:.1}],['adalet','Adalet',.6,{bat:.5,des:.2,huz:.2}],['dis','Dışişleri',.2,{bat:.5,dog:.5,bol:.6}],['maliye','Hazine ve Maliye',2.5,{acik:-.4}],['tarim','Tarım ve Orman',.9,{enf:-.08,des:.2,cari:-.06}],['ulas','Ulaştırma ve Altyapı',1.8,{buy:.4,des:.2}],['enerji','Enerji ve Tabii Kaynaklar',.8,{cari:-.12,enf:-.08}],['sanayi','Sanayi ve Teknoloji',.7,{buy:.5,cari:-.1}],['ticaret','Ticaret',.2,{cari:-.1,enf:-.08}],['cevre','Çevre, Şehircilik ve İklim',1,{huz:.3,des:.3,buy:.2}],['genc','Gençlik ve Spor',.3,{des:.4,huz:.3}],['kultur','Kültür ve Turizm',.3,{cari:-.08,bat:.2}],['diyanet','Diyanet İşleri Başkanlığı',.3,{des:.1,huz:.1},1],['mit','Millî İstihbarat Teşkilatı',.1,{huz:.3,ord:.05},1],['afad','AFAD',.2,{huz:.3,des:.2},1],['ssb','Savunma Sanayii Başkanlığı',.4,{buy:.2,ord:.1,cari:-.05},1],['tubitak','TÜBİTAK',.1,{buy:.3,cari:-.05},1]];
@@ -75,7 +75,7 @@ function ensure(){
   S.lv={faiz:S.lv.faiz};S.lv0={faiz:S.lv0.faiz};
   if(!S.me||(S.seats&&S.seats.A!==undefined)){S.me='AKP';S.seats=null;S.coal=[];S.own={};}
   if(!S.seats)initGov();
-  dunyaEnsure();toplumEnsure();piyasaEnsure();ileriEnsure();genisEnsure();genis2Ensure();arayuzEnsure();
+  dunyaEnsure();toplumEnsure();piyasaEnsure();ileriEnsure();genisEnsure();genis2Ensure();partiEnsure();if(S.debt===undefined)S.debt=S.borc*S.gdp/100;arayuzEnsure();
 }
 const levCost=()=>Object.keys(S.lv).filter(k=>S.lv[k]!==S.lv0[k]).length;
 const avail=()=>99; /* Siyasi Sermaye kaldırıldı: eylemlerde bekleme süresi yok; tekrar edince etki azalır (secenek.js) */
