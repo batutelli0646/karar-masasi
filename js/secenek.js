@@ -1,8 +1,8 @@
 /* ---------- Seçenekli eylemler: bekleme süresi yok, tekrar eden eylemde etki azalır (doygunluk) ---------- */
-const su=k=>1/Math.pow(1+((S.su||{})[k]||0),2),suU=k=>{S.su=S.su||{};S.su[k]=(S.su[k]||0)+1;};
+const su=k=>(typeof XM==='number'?XM:1)/Math.pow(1+((S.su||{})[k]||0),2),suU=k=>{S.su=S.su||{};S.su[k]=(S.su[k]||0)+1;};
 const sfx2=(f,m)=>Object.fromEntries(Object.entries(f).map(([k,v])=>[k,v*m]));
 const suDecay=()=>{for(const k in (S.su||{})){S.su[k]*=.75;if(S.su[k]<.05)delete S.su[k];}};
-const sat=m=>m<.98?` Etki %${Math.round(m*100)} (tekrar ettikçe azalır).`:'';
+const sat=m0=>{const m=m0/(typeof XM==='number'?XM:1);return m<.98?` Etki %${Math.round(m*100)} (tekrar ettikçe azalır).`:'';};
 const obs=(a,id,L)=>L.map((o,i)=>sbtn(`data-${a}="${id}:${i}"`,o[0])).join('');
 /* [ad, açıklama, tutum/ilişki puanı, ek etki] */
 const GM=[['Toplantı','Temsilcilerle toplantı yaparsın.',4,{}],['Destek paketi','Kesime yönelik bütçe desteği açıklarsın.',10,{acik:.08}],['Özel söz','Kesime özel bir politika sözü verirsin; parti içinde tepki olur.',16,{acik:.15,par:-.05}]];

@@ -55,4 +55,4 @@ function e2Click(t){const d=t.dataset;
   if(d.tro!==undefined){trAct(+d.tro);return true;}
   if(d.exs!==undefined){exAct(+d.exs);return true;}
   return false;}
-const pzX=()=>`<div class="panel"><b>Piyasa araçları</b>${PZO.map((x,i)=>{const h=x[3],t=[h.kn?'not '+(h.kn>0?'+':'')+h.kn:'',h.fb?'yabancı girişi '+(h.fb>0?'+':'')+h.fb+' mlr $/ay':'',h.b?'borsa +%'+h.b:'',h.gv?'MB güvenilirliği +'+h.gv:'',fxText(x[2])].filter(Boolean).join(' · ');return opRow(x[0],x[1]+(t?' '+t+'.':''),sbtn(`data-pzo="${i}"`,'Uygula'));}).join('')}<div class="note">Aynı aracı tekrar kullanmak etkisini azaltır.${sat(1)}</div></div>`;
+let pzX=()=>`<div class="panel"><b>Piyasa araçları</b>${PZO.map((x,i)=>{const h=x[3],t=[h.kn?'not '+(h.kn>0?'+':'')+h.kn:'',h.fb?'yabancı girişi '+(h.fb>0?'+':'')+h.fb+' mlr $/ay':'',h.b?'borsa +%'+h.b:'',h.gv?'MB güvenilirliği +'+h.gv:'',fxText(x[2])].filter(Boolean).join(' · ');return opRow(x[0],x[1]+(t?' '+t+'.':''),sbtn(`data-pzo="${i}"`,'Uygula'));}).join('')}<div class="note">Aynı aracı tekrar kullanmak etkisini azaltır.${sat(1)}</div></div>`;
