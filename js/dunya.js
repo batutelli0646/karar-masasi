@@ -16,7 +16,7 @@ const ORG=[
 const CMD=[['Stratejist','Hazırlık +5, tecrübe kazanımı %25 yüksek.',{hz:5,tg:1.25}],['Disiplinci','Hazırlık +8; ordu memnuniyeti −0,03/ay.',{hz:8,ord:-.03}],['Reformcu','Tecrübe +6; yerli üretimde ilerleme.',{tc:6,cari:-.02}]],G0=59.5,TM=['Düşük','Normal','Yoğun'];
 const oSup=o=>{const l=o[4].map(k=>S.ul[k]??50);return clamp(.9*l.reduce((a,b)=>a+b,0)/l.length+5+((S.og&&S.og[o[0]]&&S.og[o[0]].sb)||0)-(o[0]==='nato'?Math.min(10,natoGap()/.3*10):0),0,100);};
 const natoGap=()=>Math.max(0,2-S.bud.sav),natoAskida=()=>natoGap()>0; /* NATO'da resmi bir 'askıya alma' yok: %2 hedefinin altında kaldıkça müttefik baskısı açıkla orantılı artar */
-const gucu=()=>{const m=S.mil,f=(CMD[m.cmd]||[0,0,{}])[2];return clamp(.55*(m.hz+(f.hz||0)+kkf().hz)+.3*(m.tc+(f.tc||0)+kkf().tc)+.15*S.sec.san,0,100);};
+const gucu=()=>{const m=S.mil,f=(CMD[m.cmd]||[0,0,{}])[2];return clamp(.55*(m.hz+(f.hz||0)+kkf().hz)+.3*(m.tc+(f.tc||0)+kkf().tc)+.15*S.sec.san+(typeof invPow==='function'?invPow():0),0,100);};
 function dunyaEnsure(){S.ul=S.ul||{};CT.forEach(c=>{if(S.ul[c[0]]===undefined)S.ul[c[0]]=c[3];});S.ub=S.ub||{};S.dl=S.dl||{};S.ta=S.ta||[];S.tn=S.tn||0;S.og=S.og||{};ORG.forEach(o=>{S.og[o[0]]=S.og[o[0]]||{dec:null,act:[]};});S.mil=S.mil||{hz:70,tc:45,tm:1,cmd:-1};}
 /* sürekli etkiler (simulate içinde) */
 function dsfx(){const F={},add=(o,m=1)=>{for(const k in o)F[k]=(F[k]||0)+o[k]*m;};if(!S.ul)return F;
