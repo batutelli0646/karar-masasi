@@ -98,7 +98,7 @@ function render(){
   <button class="ico" data-ara="1" aria-label="Ara">⌕</button></div></header>
   <div class="wrap"><main>${subbar()}${(V[S.tab]||masa)()}</main></div>
   ${S.tab==='masa'||S.tab==='karar'||!V[S.tab]?`<div class="endbar"><div class="endbar-in"><span class="msg">${all?'Tüm kararlar verildi.':`${left} karar bekliyor.`}</span><button class="btn" data-end="1" ${all?'':'disabled'}>Ayı Bitir · ${dateLabel(S.month+1)}</button></div></div>`:''}
-  ${araSheet()}<nav class="bnav" role="tablist">${GR.map(([id,n,ks])=>`<button class="bn" role="tab" aria-selected="${grp()[0]===id}" data-tab="${ks.includes(S.tab)?S.tab:ks[0]}">${n}${rz(ks)}</button>`).join('')}</nav>`;
+  ${araSheet()}<nav class="bnav" role="tablist">${GR.map(([id,n,ks])=>`<button class="bn" role="tab" aria-selected="${grp()[0]===id}" data-tab="${ks.includes(S.tab)?S.tab:ks[0]}"><span class="bi">${({masa:"⌂",eko:"◈",top:"☺",sia:"⚖",dev:"♛",diger:"≡"})[id]}</span><span>${n}</span>${rz(ks)}</button>`).join('')}</nav>`;
 }
 document.addEventListener('click',ev=>{
   const rp=ev.target.closest&&ev.target.closest('[data-il]');if(rp){S.rgs=+rp.dataset.il;save();return render();}
