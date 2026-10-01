@@ -1,7 +1,7 @@
 /* ---------- Lobiler (sendika, iş dünyası, odalar, STK, vakıflar), bürokrasi ve dönem karnesi ---------- */
 /* [id, ad, tutum hedefi, eylem etkisi (aylık, 2 ay), eylem metni, destek etkisi (tutum +100'de)] */
 const LB=[['sen','Sendikalar',()=>(S.gr.ucret-50)*1.3+(S.gr.kamu-50)*.4-(S.isz-9.2)*2+(S.minw/28075/(S.cpi/100)-1)*60,{buy:-.25,huz:-.3,des:-.4},'genel grev uyarısı yaptı',{huz:.2}],
- ['isv','İş dünyası örgütleri',()=>(S.gr.sanayi-50)*1.2+(S.gr.esnaf-50)*.4+(S.buy-2.8)*4-(S.lv.faiz-45)*.4+(S.pz.kn-42)*.5,{buy:-.3,isz:.15,des:-.2},'yatırım kararlarını erteledi',{buy:.05}],
+ ['isv','İş dünyası örgütleri',()=>(S.gr.sanayi-50)*1.2+(S.gr.esnaf-50)*.4+(S.buy-2.8)*4-(S.lv.faiz-F0)*.4+(S.pz.kn-42)*.5,{buy:-.3,isz:.15,des:-.2},'yatırım kararlarını erteledi',{buy:.05}],
  ['oda','Meslek odaları ve barolar',()=>(S.gr.kentli-50)+(S.bat-5)*3-yzI()*.6+27,{des:-.3,bat:-.1},'ortak açıklamayla hükümeti eleştirdi',{bat:.05}],
  ['stk','Sivil toplum kuruluşları',()=>(S.gr.genc-50)*.8+(S.gr.kentli-50)*.5+(S.huz-5)*2,{bat:-.15,huz:-.15,des:-.1},'kampanya başlattı',{bat:.04}],
  ['vak','Vakıf ve cemaatler',()=>(S.gr.muhaf-50)*1.2+(S.gr.milli-50)*.3+(S.des-41)*.3,{huz:-.2,des:-.15},'desteğini çekme sinyali verdi',{huz:.1}]];
@@ -20,11 +20,11 @@ const gr=v=>v>=85?'A':v>=70?'B':v>=55?'C':v>=40?'D':'F',grc=v=>v>=70?'good':v>=5
 function karneKaydet(){const k=S.kr;if(!k.n)return;const a=k.s/k.n;k.ark.push({t:S.term,avg:a,end:krSc()});k.bn=a>=85?2:a>=70?1:0;k.s=0;k.n=0;}
 const karneBonus=()=>{const b=S.kr.bn;S.kr.bn=0;return b;};
 function ileriUp(){const h=[];ileriEnsure();const b=S.bu;
-  LB.forEach(l=>{const o=S.lb[l[0]];o.t=clamp(o.t+(clamp(l[2]()+lbD(l[0]),-100,100)-o.t)*.12+rnd(-3,3),-100,100);o.sj=o.sj.map(v=>clamp(v*.9+rnd(-3,3),-25,25));o.pw=clamp(o.pw+(o.t<-40?.3:-.1),10,90);
+  LB.forEach(l=>{const o=S.lb[l[0]];o.t=clamp(o.t+(clamp(l[2]()+lbD(l[0]),-100,100)-o.t)*.12+rnd(-3,3),-100,100);o.sj=o.sj.map(v=>clamp(v*.9+rnd(-3,3),-25,25));o.pw=clamp(o.pw+(o.t<-40?.3:(55-o.pw)*.015),10,90);
     if(o.ey>0)o.ey--;else if(o.t<-35&&Math.random()<.15){const e=eyPick(l[0],o);o.ey=e[2];o.ea=e[4];lbLg(o,'Eylem: '+e[0]);h.push(`${l[1]} ${e[1]}.`);}});
   const ks=Object.keys(S.M),av=ks.reduce((a,k)=>a+S.M[k].yz,0)/ks.length,sk=ks.reduce((a,k)=>a+S.M[k].sk,0)/ks.length;
   ks.forEach(k=>{const m=S.M[k];m.yz=clamp(m.yz+rnd(-1,2)*(m.gv<40?1.5:1)+(b.yz-45)*.01-b.ly*.3,0,100);
-    if(m.yz>75&&Math.random()<.25){h.push(`${m.name} hakkında yolsuzluk iddiaları gündemde, bakan görevden alındı.`);applyFx({des:-1.2,par:-.3,bat:-.15});if(!S.own[k])S.M[k]={...cd(),gv:50,yz:30};else m.yz=40;}});
+    if(m.yz>75&&Math.random()<.25){const o=S.own[k];h.push(o?`${m.name} hakkında yolsuzluk iddiaları gündemde; ${PART[o].n} ismi değiştirdi.`:`${m.name} hakkında yolsuzluk iddiaları gündemde, bakan görevden alındı.`);applyFx({des:-1.2,par:-.3,bat:-.15});S.M[k]=o?{...newM(),sk:Math.round(rnd(4,8)),note:PART[o].n+' kontenjanı',yz:30}:{...cd(),gv:50,yz:30};}});
   b.yz=clamp(b.yz+(av-b.yz)*.1,0,100);b.kap=clamp(b.kap+(40+sk*3+rb('egit')*10+b.ly*4-b.kap)*.04,0,100);
   S.kr.s+=krSc();S.kr.n++;return h.concat(lobiUp());}
 function ileriClick(t){const d=t.dataset,b=S.bu;if(!d.lb&&!d.bz&&!d.bi&&!d.lbs)return false;ileriEnsure();if(d.lb)return lobiX(d.lb);if(d.lbs){S.lbs=d.lbs;render();return true;}
@@ -32,9 +32,9 @@ function ileriClick(t){const d=t.dataset,b=S.bu;if(!d.lb&&!d.bz&&!d.bi&&!d.lbs)r
   if(false){}
   else if(d.bz==='ly'&&b.ly<3&&use(b,'ly',2,6)){b.ly++;S.gr.kamu=clamp(S.gr.kamu-4,0,100);logA('Bürokrasi','Liyakat düzenlemesi','Atamalar sınav ve kurallara bağlandı.');}
   else if(d.bz==='kd'&&b.ly>-2&&use(b,'kd',1,3)){b.ly--;b.yz=clamp(b.yz+3,0,100);S.gr.kamu=clamp(S.gr.kamu+3,0,100);applyFx({par:.4});logA('Bürokrasi','Kadrolaşma','Yakın isimler üst kademelere atandı.');}
-  else if(d.bi){const k=d.bi,m=S.M[k];if(!m||S.own[k])return true;m.rv=S.month;
+  else if(d.bi){const k=d.bi,m=S.M[k];if(!m||S.own[k])return true;m.rv=S.month;const sm=su('bi'+k);suU('bi'+k);
     if(m.yz>60){b.yz=clamp(b.yz-5,0,100);applyFx({des:-.5,par:-.1});logA('Soruşturma',m.name,'Usulsüzlük bulundu, bakan görevden alındı.');S.M[k]={...cd(),gv:50,yz:30,rv:S.month};}
-    else{m.yz=clamp(m.yz-6,0,100);applyFx({par:-.15});logA('Soruşturma',m.name,'Bir usulsüzlük bulunmadı, denetim caydırıcı oldu.');}}
+    else{m.yz=clamp(m.yz-6*sm,0,100);applyFx({par:-.15});logA('Soruşturma',m.name,'Bir usulsüzlük bulunmadı, denetim caydırıcı oldu.');}}
   else return true;
   hap(20,520);save();render();return true;}
 const cdl=()=>null;

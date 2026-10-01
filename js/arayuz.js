@@ -16,7 +16,7 @@ function ajanda(){const L=[],a=(t,k,c)=>L.push([t,k,c]);if(!S.pz||!S.lb||!S.og)r
   if(S.pz.fa<-3)a('Yabancı sermaye çıkıyor','piyasa','bad');if(S.pz.kn<30)a('Kredi notu çok düşük','piyasa','bad');if(S.sy.amb>0)a('Savunma sanayii ambargoda','ssan','bad');
   if(natoAskida())a('NATO ayrıcalıkları askıda','askeri','bad');const u=uns();if(u>60)a('Toplumsal huzursuzluk yüksek','toplum','bad');else if(u>40)a('Toplumsal huzursuzluk artıyor','toplum','warn');
   Object.keys(S.M).forEach(k=>{if(S.M[k].gv<35)a(`${S.M[k].name} güven kaybediyor`,'kabine','warn');});
-  const l=TERM-S.month%TERM;if(l<=6)a(`Seçime ${l} ay kaldı`,'donem','warn');
+  const l=toEl();if(l<=6)a(`Seçime ${l} ay kaldı`,'donem','warn');
   return `<div class="panel"><b>Bu ay dikkat</b>${L.length?L.slice(0,8).map(([t,k,c])=>`<button class="ag ${c}" data-go="${k}"><i></i><span>${t}</span><small>${SUBN[k]}</small></button>`).join(''):'<div class="dl" style="margin-top:4px">Şimdilik acil bir şey yok.</div>'}</div>`;}
 /* trendler: her ay kaydedilir */
 function arayuzUp(){arayuzEnsure0();suDecay();const t=S.th,p=(k,v)=>{t[k].push(Math.round(v*100)/100);if(t[k].length>60)t[k].shift();};

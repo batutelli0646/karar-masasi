@@ -1,5 +1,5 @@
 /* ---------- Seçenekli eylemler: bekleme süresi yok, tekrar eden eylemde etki azalır (doygunluk) ---------- */
-const su=k=>1/(1+((S.su||{})[k]||0)),suU=k=>{S.su=S.su||{};S.su[k]=(S.su[k]||0)+1;};
+const su=k=>1/Math.pow(1+((S.su||{})[k]||0),2),suU=k=>{S.su=S.su||{};S.su[k]=(S.su[k]||0)+1;};
 const sfx2=(f,m)=>Object.fromEntries(Object.entries(f).map(([k,v])=>[k,v*m]));
 const suDecay=()=>{for(const k in (S.su||{})){S.su[k]*=.75;if(S.su[k]<.05)delete S.su[k];}};
 const sat=m=>m<.98?` Etki %${Math.round(m*100)} (tekrar ettikçe azalır).`:'';

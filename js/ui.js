@@ -94,7 +94,7 @@ function render(){
   const a=avail();
   const all=S.cur.events.every(e=>e.ch!==null);
   const left=S.cur.events.filter(e=>e.ch===null).length;
-  app.innerHTML=`<header class="top"><div class="top-in"><div class="brand">Karar Masası<small>${dateLabel(S.month)} · ${S.term}. DÖNEM · SEÇİME ${TERM-S.month%TERM} AY</small></div>
+  app.innerHTML=`<header class="top"><div class="top-in"><div class="brand">Karar Masası<small>${dateLabel(S.month)} · ${S.term}. DÖNEM · SEÇİME ${toEl()} AY</small></div>
   <button class="ico" data-ara="1" aria-label="Ara">⌕</button></div></header>
   <div class="wrap"><main>${subbar()}${(V[S.tab]||masa)()}</main></div>
   ${S.tab==='masa'||S.tab==='karar'||!V[S.tab]?`<div class="endbar"><div class="endbar-in"><span class="msg">${all?'Tüm kararlar verildi.':`${left} karar bekliyor.`}</span><button class="btn" data-end="1" ${all?'':'disabled'}>Ayı Bitir · ${dateLabel(S.month+1)}</button></div></div>`:''}
