@@ -51,7 +51,7 @@ const KR=[
 ['salgin','Salgın hastalığı','Bulaşıcı bir hastalık yayılıyor; hastaneler yoğun.',[3,6],{buy:-.5,des:-.08,huz:-.06,isz:.15},.005,()=>1,()=>clamp(1.25-cov(SV[0])/100,.5,1.3)]];
 const cov=v=>{const r=1+v[2].reduce((a,k)=>a+rb(k),0)/v[2].length,y=1+v[4]*(S.ref-3.6)/S.nuf*3+(v[0]==='saglik'?.02*(old()-11.1):v[0]==='egit'?.02*(kid()-20.4):0);let c=v[3]*Math.pow(Math.max(r,.2),.75)/y;if(v[0]==='konut'&&S.prg&&S.prg.some(p=>p.id==='kon'))c+=6;return clamp(c,15,100);};
 const hDev=()=>SV.reduce((a,v)=>a+cov(v)-v[3],0)/SV.length;
-const gT=g=>{const id=g[0];let t=g[5]()+gbias(g)+(S.gb[id]||0)-g[4]*4*(S.goc-2)-g[4]*3*(S.ref-3.6);PL.forEach(p=>{if(S.pol[p[0]])t+=p[5][id]||0;});if(id==='ciftci'&&S.krz.some(k=>k.id==='kurak'))t-=14;return clamp(t,5,95);};
+const gT=g=>{const id=g[0];let t=g[5]()+gbias(g)+(S.gb[id]||0)+((S.gk||{})[id]||0)-g[4]*4*(S.goc-2)-g[4]*3*(S.ref-3.6);PL.forEach(p=>{if(S.pol[p[0]])t+=p[5][id]||0;});if(id==='ciftci'&&S.krz.some(k=>k.id==='kurak'))t-=14;return clamp(t,5,95);};
 const gDev=()=>{if(!S.gr)return 0;let a=0,b=0;GRP.forEach(g=>{const w=gpay(g);a+=w*(S.gr[g[0]]-50-gbias(g));b+=w;});return a/b;};
 const uns=()=>clamp((10-S.huz)*6-gDev()*.8-hDev()*.3+(S.isz-9.2)*1.5,0,100);
 function toplumEnsure(force){S.nuf=S.nuf||86.1;if(S.ref===undefined)S.ref=3.6;if(S.goc===undefined)S.goc=2;S.pol=S.pol||{};S.krz=S.krz||[];S.gb=S.gb||{};S.unr=S.unr||0;
@@ -65,14 +65,14 @@ function toplumUp(){const h=[];toplumEnsure();
   const dr=GD[S.goc]-(S.pol.donus?.03:0)+(S.krz.some(k=>k.id==='gocd')?.12*(S.goc>=2?1:.3):0),r0=S.ref;S.ref=Math.max(1,S.ref+dr);
   if(S.tfr===undefined)S.tfr=1.48;S.tfr=clamp(S.tfr-.0015+(S.pol.evbakim?.0012:0)+(rb('aile')>0?rb('aile')*.002:0)+(S.buy-2.8)*.0002,1,2.4);
   const cbr=.0109*(S.tfr/1.48)*(kid()/20.4),cdr=.0056*(old()/11.1)+(S.krz.some(k=>k.id==='salgin')?.0008:0);S.nuf+=S.nuf*(cbr-cdr)/12+(S.ref-r0);S.pens=17.2+.9*(S.nuf*old()/100-86.1*11.1/100); /* TÜİK 2024: kaba doğum hızı ‰10,9, ölüm ‰5,6, TFR 1,48 */
-  let bi=null,bd=0;GRP.forEach(g=>{const id=g[0],o=S.gr[id];S.gp[id]=o;S.gr[id]=o+(gT(g)-o)*.3;S.gb[id]=(S.gb[id]||0)*.85;const d=S.gr[id]-o;if(Math.abs(d)>Math.abs(bd)){bd=d;bi=g;}});
+  let bi=null,bd=0;GRP.forEach(g=>{const id=g[0],o=S.gr[id];S.gp[id]=o;S.gr[id]=o+(gT(g)-o)*.3;S.gb[id]=(S.gb[id]||0)*.85;if(S.gk&&S.gk[id])S.gk[id]*=.985;const d=S.gr[id]-o;if(Math.abs(d)>Math.abs(bd)){bd=d;bi=g;}});
   if(bi&&Math.abs(bd)>3)h.push(bd<0?`${bi[1]} kesiminde hoşnutsuzluk artıyor.`:`${bi[1]} kesiminde memnuniyet yükseliyor.`);
   S.krz=S.krz.filter(k=>{const d=KR.find(x=>x[0]===k.id);if(k.id==='kurak')S.sec.tar=clamp(S.sec.tar-1.2,0,100);k.left--;if(k.left>0)return true;h.push(d[1]+' sona erdi.');return false;});
   if(S.krz.length<2)for(const d of KR.slice().sort(()=>Math.random()-.5)){if(S.krz.some(k=>k.id===d[0]))continue;if(Math.random()<d[5]*d[6]()){S.krz.push({id:d[0],left:Math.round(rnd(d[3][0],d[3][1])),sev:d[7](),aid:0});if(d[0]==='deprem')S.nuf-=rnd(.02,.06);h.unshift(d[1]+' başladı: '+d[2]);break;}}
   S.unr=uns()>=70?S.unr+1:0;if(S.unr>=2){S.unr=0;applyFx({des:-.5,huz:-.4,bat:-.1});h.unshift('Hoşnutsuzluk sokağa taştı: kentlerde büyük protestolar yaşandı.');}
   return h;}
 /* eylemler */
-function gmeet(id,i){const g=GRP.find(x=>x[0]===id),x=(GMO[id]||GM)[i];if(!g||!x)return;const m=su('g_'+id);S.gb[id]=(S.gb[id]||0)+x[2]*m;S.gr[id]=clamp(S.gr[id]+x[2]*.4*m,5,95);for(const k in (x[4]||{}))if(S.gr[k]!==undefined){S.gb[k]=(S.gb[k]||0)+x[4][k]*m;S.gr[k]=clamp(S.gr[k]+x[4][k]*.3*m,5,95);}applyFx(sfx2(x[3],m));suU('g_'+id);logA('Toplum',g[1],x[0]+': memnuniyet hedefi +'+nf(x[2]*m,1)+'.');hap(20,520);save();render();}
+function gmeet(id,i){const g=GRP.find(x=>x[0]===id),x=(GMO[id]||GM)[i];if(!g||!x)return;const m=su('g_'+id);S.gb[id]=(S.gb[id]||0)+x[2]*m;S.gr[id]=clamp(S.gr[id]+x[2]*.4*m,5,95);const pol=GMO[id]&&i<GMO[id].length-1;S.gk=S.gk||{};if(pol)S.gk[id]=clamp((S.gk[id]||0)+x[2]*.5*m,-25,25);for(const k in (x[4]||{}))if(S.gr[k]!==undefined){S.gb[k]=(S.gb[k]||0)+x[4][k]*m;if(pol)S.gk[k]=clamp((S.gk[k]||0)+x[4][k]*.5*m,-25,25);S.gr[k]=clamp(S.gr[k]+x[4][k]*.3*m,5,95);} /* politika niteliğindeki adımlar kalıcı iz bırakır (yavaş söner), görüşmeler kısa sürer */applyFx(sfx2(x[3],m));suU('g_'+id);logA('Toplum',g[1],x[0]+': memnuniyet hedefi +'+nf(x[2]*m,1)+'.');hap(20,520);save();render();}
 function gocSet(i){if(i===S.goc)return;S.goc=i;logA('Göç politikası',GK[i][0],GK[i][1]);hap(20,520);save();render();}
 function polTog(id){const p=PL.find(x=>x[0]===id);if(!p)return;if(S.pol[id]){delete S.pol[id];}else{if(Object.keys(S.pol).length>=6||avail()<1)return;S.pol[id]=1;S.cur.spent+=1;logA('Politika',p[2],'Yürürlüğe girdi.');}hap(20,520);save();render();}
 function krAid(id){const k=S.krz.find(x=>x.id===id);if(!k||k.aid)return;k.aid=1;k.sev*=.7;k.left=Math.max(1,Math.ceil(k.left*.75));applyFx({des:-.8,bat:-.2,acik:-.1});logA('Kriz',KR.find(x=>x[0]===id)[1],'Dış yardım kabul edildi.');save();render();}
