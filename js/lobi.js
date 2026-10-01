@@ -41,7 +41,7 @@ const LM=[['Kısa görüşme','Yöneticilerle kısa görüşme.',5,{}],['Heyet t
 const LY=[['Bildirim zorunluluğu','Eylem öncesi bildirim şartı.',6,8,0],['Eylem sınırlaması','Eylem yeri ve süresine sınırlama.',12,14,.15],['Kapsamlı kısıtlama','Geniş yasal kısıtlamalar; büyük tepki çeker.',20,24,.4]];
 /* Kuruluşla iletişim: [ad, açıklama, puan, ek etki] */
 const SM=[['Takdir açıklaması','Kuruluşun çalışmalarını öven kamuoyu açıklaması.',4,{}],['Yöneticileriyle görüş','Bakan düzeyinde yüz yüze görüşme.',9,{des:.02}],['Ortak protokol','Ortak proje protokolü imzalanır.',14,{acik:.05,huz:.03}]];
-const lbU=(x,j)=>x[3]==='%'?'%'+x[2][j]:['Sınırlı','Orta','Geniş'][j];
+const lbU=(x,j)=>x[3]==='%'?'%'+x[2][j]:'Seviye '+(j+1)+'/'+x[2].length;
 function lobiX(code){const [id,a]=code.split(':'),o=S.lb[id],l=LB.find(x=>x[0]===id),k=a[0],[i,j]=a.slice(1).split('.').map(Number),T=v=>clamp(v,-100,100);
   if(k==='m'){const x=(LMO[id]||LM)[i],m=su('lm'+id);applyFx(sfx2(x[3],m));o.t=T(o.t+x[2]*m);suU('lm'+id);lbLg(o,x[0]);logA('Lobiler',l[1],x[0]+': tutum +'+nf(x[2]*m,0)+'.');}
   else if(k==='t'){const x=LT[id][i],u=x[2][j],m=su('lt'+id+i),h=x[6];applyFx(sfx2(x[4],u*m));o.t=T(o.t+x[5]*u*m);

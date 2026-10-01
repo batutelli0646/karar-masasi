@@ -123,7 +123,7 @@ function propose(id,lobi){
     const y=Math.round(s*f);return [k,y,s-y];});
   const yes=rows.reduce((a,r)=>a+r[1],0),ref=id==='anayasa'&&yes>=360&&yes<400,ok=id==='anayasa'?(yes>=400||(ref&&S.des+rnd(-6,6)>=47)):yes>=l[3];
   S.cur.spent+=c;S.lawT[id]=S.month+3;
-  if(ok){const ms=S.cl.includes(l)?su('dr'+id.slice(0,3)):1;if(S.cl.includes(l))suU('dr'+id.slice(0,3));applyFx(sfx2(l[6],ms));S.laws[id]=Math.max(S.month,.01);if(id==='baraj')S.barajM=S.month;const ex=l[7];if(ex&&ex.base)S.laws[ex.base]=Math.max(S.month,.01);if(ex&&ex.tax){S.tax[ex.tax]=ex.v;S.tref=S.tref||{};S.tref[ex.tax]=ex.v;delete (S.tp||{})[ex.tax];if(ex.nw)S.laws['vt_'+ex.tax]=Math.max(S.month,.01);}if(ex&&ex.erken){S.nel=S.month+2;S.erkM=1;}S.cur.spent=Math.max(0,S.cur.spent-1);}else applyFx({des:-.3,par:-.3});
+  if(ok){const ms=S.cl.includes(l)?su('dr'+id.slice(0,3)):1;if(S.cl.includes(l))suU('dr'+id.slice(0,3));applyFx(sfx2(l[6],ms));S.laws[id]=Math.max(S.month,.01);if(id==='baraj')S.barajM=S.month;const ex=l[7];if(ex&&ex.base)S.laws[ex.base]=Math.max(S.month,.01);if(ex&&ex.tax){S.tax[ex.tax]=ex.v;S.tref=S.tref||{};S.tref[ex.tax]=ex.v;delete (S.tp||{})[ex.tax];if(ex.nw)S.laws['vt_'+ex.tax]=Math.max(S.month,.01);}if(ex&&ex.repeal){delete S.laws[ex.repeal];}if(ex&&ex.erken){S.nel=S.month+2;S.erkM=1;}S.cur.spent=Math.max(0,S.cur.spent-1);}else applyFx({des:-.3,par:-.3});
   hap(ok?[20,30,20]:60,ok?660:220);S.vote={n:l[1],d:l[5],rows,yes,need:l[3],ok};
   logA(l[1],ok?'Kabul edildi':'Reddedildi',`Oylama: ${yes} kabul, ${600-yes} ret (gerekli ${l[3]}).${ref?' Halkoylamasına gidildi: '+(ok?'evet çıktı.':'hayır çıktı.'):''}`);save();render();
 }
