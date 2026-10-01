@@ -28,4 +28,4 @@ const refahP=()=>{const pc=S.gdp*1000/(S.nuf||86.1),md=pc*.42*(1-(S.isz-9.2)*.01
 function yeniClick(t){const d=t.dataset;
   if(d.pri){const i=S.pri.indexOf(d.pri);if(i<0){if(S.pri.length<2)S.pri.push(d.pri);}else S.pri.splice(i,1);render();return true;}
   if(d.prid){S.prip=0;save();render();return true;}
-  if(d.pg){pgStart(d.pg);return true;}return toplumClick(t)||dunyaClick(t)||piyasaClick(t)||ileriClick(t)||genisClick(t)||genis2Click(t)||partiClick(t)||arayuzClick(t);}
+  if(d.pg){pgStart(d.pg);return true;}return toplumClick(t)||dunyaClick(t)||piyasaClick(t)||ileriClick(t)||genisClick(t)||genis2Click(t)||partiClick(t)||sec2Click(t)||arayuzClick(t);}
