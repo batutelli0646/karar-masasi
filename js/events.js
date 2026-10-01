@@ -160,7 +160,7 @@ function applyFx(fx){
       else if(l==='vergi')S.tax.kdv=clamp(S.tax.kdv+v[l]*2,0,100);
       else if(l==='sosyal')S.bud.calisma=clamp(S.bud.calisma*(1+.1*v[l]),MB.calisma*.4,MB.calisma*2);
       else if(l==='sav')S.bud.sav=clamp(S.bud.sav+v[l],MB.sav*.4,MB.sav*2);}}
-    else if(k==='kur')S.kur*=1+v/100;
+    else if(k==='kur'){S.kur*=1+v/100;S.gdp/=Math.pow(Math.max(.2,1+v/100),.5);}
     else if(k==='fR'||k==='fG'||k==='fS'){const f=k[1];S.fac[f]=Math.max(3,S.fac[f]+v);const t=S.fac.R+S.fac.G+S.fac.S;for(const q in S.fac)S.fac[q]=S.fac[q]/t*100;}
     else if(RANGE[k]){S[k]=clamp(S[k]+v,RANGE[k][0],RANGE[k][1]);}
   }
