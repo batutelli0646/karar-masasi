@@ -25,7 +25,7 @@ function ileriUp(){const h=[];ileriEnsure();const b=S.bu;
   const ks=Object.keys(S.M),av=ks.reduce((a,k)=>a+S.M[k].yz,0)/ks.length,sk=ks.reduce((a,k)=>a+S.M[k].sk,0)/ks.length;
   ks.forEach(k=>{const m=S.M[k];m.yz=clamp(m.yz+rnd(-1,2)*(m.gv<40?1.5:1)+(b.yz-45)*.01-b.ly*.3,0,100);
     if(m.yz>75&&Math.random()<.25){const o=S.own[k];h.push(o?`${m.name} hakkında yolsuzluk iddiaları gündemde; ${PART[o].n} ismi değiştirdi.`:`${m.name} hakkında yolsuzluk iddiaları gündemde, bakan görevden alındı.`);applyFx({des:-1.2,par:-.3,bat:-.15});S.M[k]=o?{...newM(),sk:Math.round(rnd(4,8)),note:PART[o].n+' kontenjanı',yz:30}:{...cd(),gv:50,yz:30};}});
-  b.yz=clamp(b.yz+(av-b.yz)*.1,0,100);b.kap=clamp(b.kap+(40+sk*3+rb('egit')*10+b.ly*4-b.kap)*.04,0,100);
+  b.yz=clamp(b.yz+(av+(b.yb||0)-b.yz)*.1,0,100);b.kap=clamp(b.kap+(40+sk*3+rb('egit')*10+b.ly*4+(b.kb||0)-b.kap)*.04,0,100);b.kb=(b.kb||0)*.985;b.yb=(b.yb||0)*.985;
   S.kr.s+=krSc();S.kr.n++;return h.concat(lobiUp());}
 function ileriClick(t){const d=t.dataset,b=S.bu;if(!d.lb&&!d.bz&&!d.bi&&!d.lbs)return false;ileriEnsure();if(d.lb)return lobiX(d.lb);if(d.lbs){S.lbs=d.lbs;render();return true;}
   const use=()=>true;

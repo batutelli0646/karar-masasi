@@ -26,7 +26,7 @@ const STATS=[
  {k:'bol',l:'İtibar: Bölge',u:'/10',d:1,st:v=>v>=7?'good':v>=4?'warn':'bad',lb:['İyi','Soğuk','Kopuk']}
 ];
 const RANGE={enf:[2,300],buy:[-12,12],isz:[3,40],acik:[-2,20],borc:[10,150],cari:[2,90],rez:[-5,120],kur:[10,500],des:[0,100],par:[0,10],kol:[0,10],ord:[0,10],huz:[0,10],bat:[0,10],dog:[0,10],bol:[0,10],kamp:[-10,12]};
-const LVR={faiz:[0,150,5]};
+const LVR={faiz:[-1,150,5]};
 /* ölçüm çıpaları: başlangıç enflasyonu, politika faizi ve kur (göreli formüller buna göre) */
 const E0=31.5,F0=37,K0=46;
 const EO=20,toEl=()=>Math.max(1,(S.nel??EO)-S.month),isElM=()=>S.month===(S.nel??EO),isLocM=()=>S.month>=29&&(S.month-29)%TERM===0; /* genel seçim Haziran 2028 (ay 20), yerel seçim Mart 2029 (ay 29), sonra 5 yılda bir */
@@ -75,7 +75,7 @@ function ensure(){
   S.lv={faiz:S.lv.faiz};S.lv0={faiz:S.lv0.faiz};
   if(!S.me||(S.seats&&S.seats.A!==undefined)){S.me='AKP';S.seats=null;S.coal=[];S.own={};}
   if(!S.seats)initGov();
-  dunyaEnsure();toplumEnsure();piyasaEnsure();ileriEnsure();genisEnsure();genis2Ensure();partiEnsure();if(S.debt===undefined)S.debt=S.borc*S.gdp/100;arayuzEnsure();
+  dunyaEnsure();toplumEnsure();piyasaEnsure();ileriEnsure();genisEnsure();genis2Ensure();partiEnsure();s2Ensure();e2Ensure();d2Ensure();if(S.debt===undefined)S.debt=S.borc*S.gdp/100;arayuzEnsure();
 }
 const levCost=()=>Object.keys(S.lv).filter(k=>S.lv[k]!==S.lv0[k]).length;
 const avail=()=>99; /* Siyasi Sermaye kaldırıldı: eylemlerde bekleme süresi yok; tekrar edince etki azalır (secenek.js) */

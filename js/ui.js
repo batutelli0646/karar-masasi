@@ -14,16 +14,17 @@ function tile(s){
   return `<div class="tile"><div class="lb"><span>${s.l}</span></div><div class="val">${nf(v,s.d)}<small>${s.u}</small></div><div class="row">${dtxt||'<span></span>'}${lab?`<span class="st ${st}">${lab}</span>`:''}</div>${spark(S.hist[s.k])}</div>`;
 }
 function fmtLev(k,v){
+  if(typeof LVF!=='undefined'&&LVF[k])return LVF[k](v);
   if(k==='faiz')return '%'+nf(v,1);
   if(k==='sav')return '%'+nf(v,2);
   const n=['−2','−1','0','+1','+2'][v+2];return n;
 }
-const LEVERS=[['faiz','Politika faizi','Yüksek faiz enflasyonu ve kuru bastırır, büyümeyi yavaşlatır.']];
+const LEVERS=[['faiz','Politika faizi','Yüksek faiz enflasyonu ve kuru bastırır, büyümeyi yavaşlatır.']].concat(typeof LEV2!=='undefined'?LEV2:[]);
 function levers(c){
   return `<div class="panel">${c?'':'<h2>Politika Kolları</h2>'}${LEVERS.map(([k,n,h])=>{
     const chg=S.lv[k]!==S.lv0[k];
-    return `<div class="lever"><span class="n">${n}</span>${c?'':`<span class="h">${h}</span>`}<div class="step"><button data-lv="${k}" data-d="-1" aria-label="${n} azalt">−</button><output class="${chg?'chg':''}">${fmtLev(k,S.lv[k])}</output><button data-lv="${k}" data-d="1" aria-label="${n} artır">+</button></div>${c?'':`<input class="rng" type="range" min="${LVR[k][0]}" max="${LVR[k][1]}" step="0.5" value="${S.lv[k]}" data-faizr="1" aria-label="${n} ayarla">`}</div>`;}).join('')}
-  ${c?'':`<div class="note">Faiz %−10 ile %500 arasında ayarlanabilir. Bütçe ve vergiler için alttaki sekmelere bak.</div>`}</div>`;
+    return `<div class="lever"><span class="n">${n}</span>${c?'':`<span class="h">${h}</span>`}<div class="step"><button data-lv="${k}" data-d="-1" aria-label="${n} azalt">−</button><output class="${chg?'chg':''}">${fmtLev(k,S.lv[k])}</output><button data-lv="${k}" data-d="1" aria-label="${n} artır">+</button></div>${c||k!=='faiz'?'':`<input class="rng" type="range" min="${LVR[k][0]}" max="${LVR[k][1]}" step="0.5" value="${S.lv[k]}" data-faizr="1" aria-label="${n} ayarla">`}</div>`;}).join('')}
+  ${c?'':`<div class="note">Faiz %−1 ile %150 arasında ayarlanabilir; %5'in altında çeyrek puanlık adımlarla ilerler (Japonya ve İsviçre bir dönem eksi faiz uyguladı). Bütçe ve vergiler için alttaki sekmelere bak.</div>`}</div>`;
 }
 function eventCard(e,i){
   const d=EVB[e.id];const a=avail();const mn=Math.min(...d.c.map(x=>x.ss));
@@ -76,13 +77,13 @@ function endScreen(){
   const o=S.over;
   return `<div class="end"><div class="muted" style="font-family:var(--mono);font-size:12px">${dateLabel(S.month)} · ${S.term}. dönem</div><h1>${o.t}</h1><p>${o.x}</p>${o.p?`<div class="big">%${nf(o.p,1)}</div><div class="note">Kampanya etkisi: ${S.kamp>=0?'+':''}${nf(S.kamp||0,1)} puan</div>`:''}<div class="stats" style="margin-top:18px">${['enf','buy','isz','rez','des','huz'].map(k=>tile(STATS.find(s=>s.k===k))).join('')}</div>${karne()}<button class="btn" data-new="1" style="margin-top:14px">Yeni oyun başlat</button></div>`;
 }
-function diger(){return ayar()+ayar2()+ist()+'<div class="panel"><button class="btn sec sm" data-tut="1">Rehberi göster</button></div>'+slots()+'<div class="panel" style="margin-top:14px"><button class="btn sec sm" data-new="1">'+(S.confirmNew?'Emin misin? Tekrar bas':'Yeni oyun')+'</button></div>'+kayit();}
-const V={masa:()=>masa().replace('<div class="sq big">',cmdP()+'<div class="sq big">'),karar,harita,ticaret,butce,vergi,sektor,kurum,dis,meclis:()=>meclis()+cbP(),kabine:()=>kabP()+kabine(),diger:()=>zorP()+diger(),toplum,hizmet,nufus,sinif,politika,ulke:()=>ulke()+dipP(),orgut:()=>orgut()+orgX(),askeri:()=>askeri()+komP(),piyasa,ssan,lobi,buro,donem,istat};
-const GR=[['masa','Masa',['masa','karar','harita']],['eko','Ekonomi',['butce','vergi','piyasa','sektor','ticaret']],['top','Toplum',['toplum','hizmet','nufus','sinif','politika','lobi']],['sia','Siyaset',['meclis','kabine','buro','donem']],['dev','Devlet',['kurum','dis','ulke','orgut','askeri','ssan']],['diger','Diğer',['diger','istat']]],SUBN={sinif:'Sınıflar',istat:'İstatistik',masa:'Göstergeler',karar:'Kararlar',harita:'Harita',butce:'Bütçe',vergi:'Vergi',kurum:'Kurum',sektor:'Sektörler',ticaret:'Dış ticaret',dis:'Anlaşma',toplum:'Gruplar',hizmet:'Hizmet',nufus:'Nüfus',politika:'Politika',orgut:'Örgütler',askeri:'Ordu',piyasa:'Piyasa',ssan:'Sanayii',lobi:'Lobiler',buro:'Bürokrasi',donem:'Karne',ulke:'Ülkeler',meclis:'Meclis',kabine:'Kabine',kampanya:'Kampanya',diger:'Diğer'};
+function diger(){return '<div class="panel"><b>Oyun</b><div class="step" style="margin-top:8px"><button class="btn sm" data-new="1">'+(S.confirmNew?'Emin misin? Tekrar bas':'Yeni oyun')+'</button><button class="btn sec sm" data-tut="1">Rehberi göster</button></div></div>'+slots()+kayit()+ayar()+ayar2()+ist();}
+const V={masa:()=>masa().replace('<div class="sq big">',cmdP()+'<div class="sq big">'),karar,harita,ticaret:()=>ticaret()+ticX(),butce,vergi,sektor:()=>sektor2(),kurum,dis:()=>dis2(),meclis:()=>meclis()+cbP(),kabine:()=>kabP()+kabine(),diger:()=>diger()+zorP(),toplum,hizmet:()=>hizmet()+politika(),nufus:()=>nufus()+sinif(),sinif,politika,beled:()=>belP(),ulke:()=>wmP()+ulke()+dipP()+dipX(),orgut:()=>orgut()+orgY()+kuP()+orgX().replace(/<h2>Kurum kur<\/h2>[\s\S]*?(?=<div class="panel"><b>Dönem başkanlığı)/,''),askeri:()=>askeri()+komP()+ordX()+ssan().split('<div class="panel"><b>İhracat anlaşmaları')[0],piyasa:()=>piyasa()+pzX(),ssan,lobi,buro:()=>buro()+buroX(),donem:()=>donem()+donemX(),istat};
+const GR=[['masa','Masa',['masa','karar','harita']],['eko','Ekonomi',['butce','vergi','piyasa','sektor','ticaret']],['top','Toplum',['toplum','hizmet','nufus','beled','lobi']],['sia','Siyaset',['meclis','kabine','buro','donem']],['dev','Devlet',['kurum','dis','ulke','orgut','askeri']],['diger','Diğer',['diger','istat']]],SUBN={beled:'Belediyeler',sinif:'Sınıflar',istat:'İstatistik',masa:'Göstergeler',karar:'Kararlar',harita:'Harita',butce:'Bütçe',vergi:'Vergi',kurum:'Kurum',sektor:'Sektörler',ticaret:'Dış ticaret',dis:'Anlaşma',toplum:'Gruplar',hizmet:'Hizmet ve politika',nufus:'Nüfus ve sınıflar',politika:'Politika',orgut:'Örgütler',askeri:'Ordu ve sanayi',piyasa:'Piyasa',ssan:'Sanayii',lobi:'Lobiler',buro:'Bürokrasi',donem:'Karne',ulke:'Ülkeler',meclis:'Meclis',kabine:'Kabine',kampanya:'Kampanya',diger:'Diğer'};
 const grp=()=>GR.find(g=>g[2].includes(V[S.tab]?S.tab:'masa'));
 const subbar=()=>{const g=grp();return g[2].length<2?'':'<div class="subtabs">'+g[2].map(k=>'<button class="bn2" aria-selected="'+(k===S.tab)+'" data-tab="'+k+'">'+SUBN[k]+rz(k)+'</button>').join('')+'</div>';};
 function render(){
-  const app=document.getElementById('app');
+  const app=document.getElementById('app'),TAL={sinif:'nufus',politika:'hizmet',ssan:'askeri'};if(TAL[S.tab])S.tab=TAL[S.tab];
   if(S.over){app.innerHTML=`<div class="wrap">${endScreen()}</div>`;return;}
   if(S.pick){app.innerHTML=pickScreen();return;}
   if(S.prip){app.innerHTML=priScreen();return;}

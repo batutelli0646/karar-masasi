@@ -7,7 +7,7 @@ const LV=[['Vasıfsız',.2,-.05],['İlkokul',.25,.02],['Lise',.3,-.01],['Üniver
 const ZD=[{buy:.04,des:.04,acik:-.04,enf:-.03,huz:.01},{},{buy:-.04,des:-.04,acik:.04,enf:.03,huz:-.01}],ZN=['Kolay','Normal','Zor'];
 function gfxB(){const F={};if(!S.th2)return F;mrg(F,ZD[S.dif===undefined?1:S.dif]);F.des=(F.des||0)+(refah()-55)*.002;
   const ms=Object.values(S.M),av=ms.reduce((a,m)=>a+m.sk,0)/ms.length;F.buy=(F.buy||0)+(av-6)*.012;F.acik=(F.acik||0)-(av-6)*.008;return F;}
-const gfxAll=()=>{const F=gfxA();mrg(F,gfxB());return F;};
+const gfxAll=()=>{const F=gfxA();mrg(F,gfxB());if(typeof d2fx==='function')mrg(F,d2fx());return F;};
 function genis2Ensure(){if(!S.th2)S.th2={};STATS.forEach(s=>{if(!S.th2[s.k])S.th2[s.k]=[];});if(S.lit===undefined)S.lit=96.5;if(S.ist2===undefined)S.ist2='enf';}
 function genis2Up(){genis2Ensure();STATS.forEach(s=>{const a=S.th2[s.k];a.push(Math.round(S[s.k]*100)/100);if(a.length>60)a.shift();});
   S.lit=clamp(S.lit+Math.max(-.01,(cov(SV[1])-78)*.002),80,100);return [];}

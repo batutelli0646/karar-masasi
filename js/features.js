@@ -9,7 +9,7 @@ function fire(k){
   save();render();
 }
 function lever(k,dir){
-  const r=LVR[k];const nv=Math.round((S.lv[k]+dir*r[2])*100)/100;
+  const r=LVR[k],st=k==='faiz'?(S.lv.faiz+dir*.01<5?.25:S.lv.faiz+dir*.01<15?1:r[2]):r[2];const nv=Math.round((S.lv[k]+dir*st)*100)/100;
   if(nv<r[0]||nv>r[1])return;
   const old=S.lv[k];S.lv[k]=nv;
   const after=levCost();S.lv[k]=old;
@@ -33,7 +33,7 @@ function startGame(k){S.me=k;S.pick=false;initGov();S.pool=base();S.h0=0;
   if(S.sc===1){Object.assign(S,{enf:68,kur:62,rez:6,des:32,buy:.5,acik:7,borc:52,isz:11.5});S.gdp=1150;}
   if(S.sc===2){S.month=14;S.des=44;S.h0=14;}
   S.hd=Math.round(S.enf*.6);S.gv=50;STATS.forEach(s=>S.hist[s.k]=[S[s.k]]);S.prev=snap();S.mun={AKP:12,CHP:14,DEM:3,YRP:1}[k]??0;S.pl=[];poll();S.pri=[];S.prip=1;S.prg=[];S.cpi=100;
-  dunyaEnsure();toplumEnsure(true);piyasaEnsure();ileriEnsure();genisEnsure();genis2Ensure();partiEnsure();S.debt=S.borc*S.gdp/100;S.nel=20;arayuzEnsure();if(!ls('km-tut'))S.tut=1;save();render();}
+  dunyaEnsure();toplumEnsure(true);piyasaEnsure();ileriEnsure();genisEnsure();genis2Ensure();partiEnsure();e2Ensure();d2Ensure();S.bel=null;s2Ensure();S.debt=S.borc*S.gdp/100;S.nel=20;arayuzEnsure();if(!ls('km-tut'))S.tut=1;save();render();}
 /* anketler, belediyeler, sektörler */
 function poll(){if(S.pl.length>40)S.pl=S.pl.slice(-40);const p=S.pl[S.pl.length-1],me=pvt(),o={},ks=PK.filter(k=>k!==S.me);let z=0;ks.forEach(k=>{o[k]=(p?p[k]:PART[k].w)*(1+rnd(-.04,.04));z+=o[k];});ks.forEach(k=>o[k]=o[k]/z*(100-me));o[S.me]=me;S.pl.push(o);}
 const PCOL=['#28597F','#B02A30','#A96B0C','#1E7A4B','#7A4FA0','#56666E'];
@@ -50,7 +50,7 @@ const PRIV=[['bank','Kamu bankası hissesi sat',2,{acik:-1.2,des:-.8,huz:-.2,par
 const AL=[...DEALS,...PROJ,...PRIV],isDone=e=>S.done[e[0]]&&S.month<S.done[e[0]];
 const listPanel=(t,L,n)=>`<h2>${t}</h2><div class="panel">${L.map(e=>`<div class="lever"><span class="n">${e[1]}</span><span class="h">${e[4]} (Etkisi: ${fxText(e[3])}.)</span><div class="step">${isDone(e)?'<span class="st good">Yapıldı</span>':sbtn(`data-deal="${e[0]}"`,`Uygula`,avail()<e[2])}</div></div>`).join('')}${n?`<div class="note">${n}</div>`:''}</div>`;
 const DQ={ab:['ger'],dam:['gre'],golf:['sau','qat'],ots:['aze'],nato:['usa'],brics:['rus','chn']};
-function dealAct(id){const e=AL.find(x=>x[0]===id);if(!e||isDone(e)||e[2]>avail())return;if(DQ[id]&&S.ul&&DQ[id].some(c=>S.ul[c]<50)){S.done[id]=0;logA('Devlet',e[1],'Karşı taraf hazır değil: '+DQ[id].map(c=>CT.find(x=>x[0]===c)[1]+' ilişkisi 50 olmalı').join(', ')+'.');save();render();return;}const m=e[5]?su('d_'+id):1;if(e[5])suU('d_'+id);applyFx(sfx2(e[3],m));if(PRIV.includes(e)&&e[3].acik)S.acikP=(S.acikP||0)-e[3].acik*.25;if(DQ[id])DQ[id].forEach(c=>{S.ul[c]=clamp(S.ul[c]+3,0,100);});S.done[id]=e[5]?0:S.month+9999;S.cur.spent+=e[2];logA('Devlet',e[1],'Uygulandı.');save();render();}
+function dealAct(id){let md=1;if(String(id).includes(':')){const p=String(id).split(':');id=p[0];if(typeof DLM!=='undefined'&&DLM[+p[1]]){md=DLM[+p[1]][2];S.dlm=S.dlm||{};S.dlm[id]=+p[1];}}const e=AL.find(x=>x[0]===id);if(!e||isDone(e)||e[2]>avail())return;if(DQ[id]&&S.ul&&DQ[id].some(c=>S.ul[c]<50)){S.done[id]=0;logA('Devlet',e[1],'Karşı taraf hazır değil: '+DQ[id].map(c=>CT.find(x=>x[0]===c)[1]+' ilişkisi 50 olmalı').join(', ')+'.');save();render();return;}const m=e[5]?su('d_'+id):1;if(e[5])suU('d_'+id);applyFx(sfx2(e[3],m*md));if(PRIV.includes(e)&&e[3].acik)S.acikP=(S.acikP||0)-e[3].acik*.25;if(DQ[id])DQ[id].forEach(c=>{S.ul[c]=clamp(S.ul[c]+3,0,100);});S.done[id]=e[5]?0:S.month+9999;S.cur.spent+=e[2];logA('Devlet',e[1],'Uygulandı.');save();render();}
 const dis=()=>listPanel('Anlaşmalar ve ittifaklar',DEALS,'Her anlaşma bir kez yapılır. Karşı ülkelerle ilişki en az 50 olmalı (AB: Almanya, Doğu Akdeniz: Yunanistan, Körfez: Suudi Arabistan ve Katar, Türk devletleri: Azerbaycan, NATO: ABD, BRICS: Rusya ve Çin).')+listPanel('Savunma projeleri',PROJ,'Projeler bir kez, tatbikat istediğin kadar tekrarlanabilir. Bütçe açığı etkisi ay ay yansır.');
 function sektor(){return `<h2>Sektörler</h2><div class="panel">${[['tur','Turizm','Kültür ve Turizm bütçesi, Batı itibarı, huzur'],['tar','Tarım','Tarım bütçesi'],['san','Sanayi','Sanayi bütçesi, büyüme, enflasyon'],['ene','Enerji','Enerji bütçesi, rezerv, Doğu itibarı']].map(([k,n,h])=>`<div style="display:grid;grid-template-columns:70px minmax(0,1fr) 34px;gap:10px;align-items:center;margin-top:10px"><span>${n}</span><div class="bar"><i style="width:${S.sec[k]}%"></i></div><span class="dl">${nf(S.sec[k],0)}</span></div><div class="note" style="margin:2px 0 0">${h}</div>`).join('')}<div class="note">Ortalama 50'nin üstündeyse büyüme artar. Turizm cari açığı azaltır, tarım enflasyonu düşürür.</div></div>${listPanel('Özelleştirme',PRIV,'Kamu varlığı sat, bütçe açığını kapat. Halk tepki gösterebilir.')}`;}
 const prep=()=>clamp(.4+((S.bud.ic/MB.ic+S.bud.cevre/MB.cevre)/2-1)*.9,.1,.9);
@@ -73,7 +73,7 @@ const mcomp=()=>{const k=(S.kur/K0)/((S.cpi||100)/100)-1;return [5*(S.tr.pe/70)*
 const exg=()=>{const w=EXG.map(g=>g[1]*(1+g[2]*((S.kur/K0)/((S.cpi||100)/100)-1)+g[3]*(S.bat-5)/10+(S.sec.san-50)/250)),z=w.reduce((a,b)=>a+b,0);return w.map(v=>S.tr.x*v/z);};
 const pv=(P,T,tot)=>{const v=P.map(p=>{const ci=typeof CT!=='undefined'&&S.ul?CT.find(c=>c[4]===p[0]):null;return tot*p[1]/T*(1+.04*(S[p[2]]-(p[2]==='bol'?6:5))+(S.fta[p[2]]?.06:0)+(ci?.004*(S.ul[ci[0]]-ci[3]):0));});return [...v,tot-v.reduce((a,b)=>a+b,0)];};
 function tradeUp(){const t=S.tr,k=(S.kur/K0)/((S.cpi||100)/100)-1;t.pe=clamp(t.pe+rnd(-3,3)+(70-t.pe)*.06,35,150);
-  const x=22.8*(1+k*.25+(S.sec.san-50)*.004+(S.bat-5)*.01+((S.cool.ihr||0)>S.month?.08:0)+Object.keys(S.fta).length*.02-.004*Math.max(0,S.tar-8)),m=mcomp().reduce((a,b)=>a+b,0)*(1-.006*S.tar);
+  const tb=typeof trB==='function'?trB():[0,0],x=22.8*(1+tb[0]+(typeof exB==='function'?exB():0)+k*.25+(S.sec.san-50)*.004+(S.bat-5)*.01+((S.cool.ihr||0)>S.month?.08:0)+Object.keys(S.fta).length*.02-.004*Math.max(0,S.tar-8)),m=mcomp().reduce((a,b)=>a+b,0)*(1-.006*S.tar)*(1+tb[1]);
   t.x=t.x*.8+.2*(x+rnd(-.5,.5));t.m=t.m*.8+.2*(m+rnd(-.5,.5));S.cari=clamp(S.cari+((t.m-t.x)-7.6)*.1,2,90);
   S.enf+=(S.tar-(S.tarL||0))*.1;S.tarL=(S.tarL||0)+(S.tar-(S.tarL||0))/12;S.bat=clamp(S.bat-S.tar*.004,0,10);S.sec.san=clamp(S.sec.san+S.tar*.02,0,100);}
 function tact(a,v){if(a==='tar'){if(avail()<1)return;S.cur.spent+=1;S.tar=clamp(S.tar+ +v,0,30);}else{if(avail()<2)return;if(a==='yl'){if(S.yl>=5)return;S.yl++;S.sec.san=clamp(S.sec.san+2,0,100);applyFx({acik:.2});}else{if(S.fta[v])return;S.fta[v]=1;applyFx({[v]:.4});}S.cur.spent+=2;logA('Dış ticaret',a==='yl'?'Yerlileşme programı':'Serbest ticaret anlaşması ('+FT[v]+')','Uygulandı.');}hap(20,520);save();render();}
@@ -105,7 +105,10 @@ const ozet=e=>`<div class="panel" style="margin-top:14px;text-align:left"><b>Dö
 /* tema, ses ve titreşim */
 const th=v=>{try{if(v!==undefined)ls('km-th',v);const t=ls('km-th')||'';if(t)document.documentElement.setAttribute('data-theme',t);else document.documentElement.removeAttribute('data-theme');}catch(e){}};
 const fxs=()=>ls('km-fx')!=='0';
-function beep(f,d=.09){try{if(!fxs())return;const A=window.AudioContext||window.webkitAudioContext,c=beep.c||(beep.c=new A()),o=c.createOscillator(),g=c.createGain();o.frequency.value=f;g.gain.value=.05;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+d);}catch(e){}}
+/* yumuşak iki notalı onay sesi: üçgen dalga, hızlı yükselen ve doğal sönen zarf */
+function beep(f,d=.22){try{if(!fxs())return;const A=window.AudioContext||window.webkitAudioContext,c=beep.c||(beep.c=new A()),t=c.currentTime,ok=f>=400,ns=ok?[f*.75,f]:[f,f*.84];
+  ns.forEach((fr,i)=>{const o=c.createOscillator(),g=c.createGain(),lp=c.createBiquadFilter();o.type='triangle';o.frequency.value=fr;lp.type='lowpass';lp.frequency.value=2200;const t0=t+i*.07;
+    g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(.06,t0+.012);g.gain.exponentialRampToValueAtTime(.0008,t0+d);o.connect(lp);lp.connect(g);g.connect(c.destination);o.start(t0);o.stop(t0+d+.02);});}catch(e){}}
 const hap=(p,f)=>{try{if(fxs()){navigator.vibrate&&navigator.vibrate(p);f&&beep(f);}}catch(e){}};
 const ayar=()=>`<h2>Ayarlar</h2><div class="panel"><div class="dl">Tema</div><div class="chips" style="margin:6px 0 10px">${[['auto','Otomatik'],['light','Açık'],['dark','Koyu']].map(([v,n])=>`<button class="btn sm ${(ls('km-th')||'auto')===v?'':'sec'}" data-th="${v}">${n}</button>`).join('')}</div><div class="dl">Ses ve titreşim</div><div class="chips" style="margin-top:6px"><button class="btn sm ${fxs()?'':'sec'}" data-fx="1">${fxs()?'Açık':'Kapalı'}</button></div></div>`;
 /* seçim kampanyası ve dönem hikâyeleri */

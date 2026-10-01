@@ -24,7 +24,7 @@ function gfxA(){const F={};if(!S.kk||!S.dp)return F;
   KK.forEach(([b])=>{const i=S.kk[b];if(i>=0)mrg(F,KO[b][i][2],1);});delete F.hz;delete F.tc;
   Object.entries(S.dp.m).forEach(([c,v])=>{if(v>0){mrg(F,DM[v][1]);F.acik=(F.acik||0)+.004*v;}});
   Object.entries(S.dp.ok).forEach(([c,o])=>{const k=.3;mrg(F,TR[o.tr][1],k);mrg(F,TF[o.tf][1],k);mrg(F,GA[o.ga][1],k);});
-  S.ku.forEach(u=>mrg(F,KT[u.t][2],u.m.length/6));
+  S.ku.forEach(u=>mrg(F,KT[u.t][2],u.m.length/6*(1+.25*(u.b||0))*(u.f>0?1.3:1)));
   ORG.forEach(o=>{const g=S.og[o[0]];if(g&&g.bk>0)mrg(F,{des:.04,bat:.015,ord:.01});});
   if(S.dp.ig.on){F.acik=(F.acik||0)+.01;F.huz=(F.huz||0)+S.dp.ig.g*.0004;}
   return F;}
@@ -33,7 +33,7 @@ function genisUp(){const h=[];genisEnsure();
   Object.entries(S.dp.ok).forEach(([c,o])=>{relB(c,(TR[o.tr][1].rel||0)+(TF[o.tf][1].rel||0)+(GA[o.ga][1].rel||0));});
   S.ku.forEach(u=>{u.m.forEach(c=>rel(c,.1));if(Math.random()<.02&&u.m.length>3){const c=u.m.pop();h.push(`${u.n}: ${CT.find(x=>x[0]===c)[1]} üyelikten ayrıldı.`);}});
   S.ku=S.ku.filter(u=>u.m.length>=3||(h.push(`${u.n} dağıldı: yeterli üye kalmadı.`),false));
-  const I=S.dp.ig;if(I.on)I.g=clamp(I.g+1.5,0,100);
+  const I=S.dp.ig;if(I.on)I.g=clamp(I.g+1.5*(1+rb('mit')),0,100);
   ORG.forEach(o=>{const g=S.og[o[0]];if(g.bk>0){g.bk--;if(!g.bk)h.push(`${o[1]} dönem başkanlığı sona erdi.`);}});
   return h;}
 /* eylemler */
