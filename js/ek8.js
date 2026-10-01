@@ -16,11 +16,11 @@ const sumP=()=>{const h=S.sh||[],a=h[h.length-1],b=h[Math.max(0,h.length-4)],lg=
 {const _m=masa;masa=function(){return warnP()+sumP()+_m();};}
 {const _u=arayuzUp;arayuzUp=function(){const r=_u.apply(this,arguments);S.sh=S.sh||[];S.sh.push({m:S.month,enf:S.enf,des:S.des,acik:S.acik,rez:S.rez,isz:S.isz,kur:S.kur,huz:S.huz});if(S.sh.length>13)S.sh.shift();return r;};}
 /* ---------- Büyük kararlarda onay ---------- */
-const CFM=/^(ozs|dfb|lawr|oxs|dsg)$/,CFX=['kkm','vf','k1','k8','k10','kapa','dvt'];
+const CFM=/^(ozs|dfb|lawr|oxs|dsg)$/,CFX=['k1','k8','k10','kapa'];
 document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('button');if(!t)return;const d=t.dataset,k=Object.keys(d).find(x=>CFM.test(x)),big=k||(d.xa&&CFX.includes(d.xa));if(!big||t.disabled)return;
   if(t.dataset.cf==='1')return;e.stopImmediatePropagation();e.preventDefault();t.dataset.cf='1';const o=t.textContent;t.textContent='Emin misin? Tekrar bas';setTimeout(()=>{if(t.isConnected){t.dataset.cf='';t.textContent=o;}},4000);},true);
 /* ---------- Katlanır bölümler ---------- */
-const COLT=['askeri','kurum','hizmet','ulke','lobi','meclis','ticaret','kabine','nufus','beled','sektor','piyasa','orgut','dis','buro','donem'];
+const COLT=['askeri','kurum','hizmet','ulke','lobi','meclis','ticaret','kabine','nufus','beled','sektor','orgut','dis','buro','donem'];
 function ek8Post(){if(!document.querySelector)return;const m=document.querySelector('main');if(!m)return;S.col=S.col||{};
   m.querySelectorAll('.panel').forEach(p=>{let t=p.firstElementChild,key,own=true;if(t&&t.tagName==='B'){key=t.textContent;}else{const pv=p.previousElementSibling;if(pv&&pv.tagName==='H2'){t=pv;key=pv.textContent;own=false;}else return;}
     const k=S.tab+'|'+key,v=S.col[k],tall=p.scrollHeight>600&&COLT.includes(S.tab);if(!tall&&v===undefined)return;const col=v===undefined?true:v===1;
