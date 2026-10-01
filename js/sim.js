@@ -1,20 +1,20 @@
 /* ---------- Aylık simülasyon ---------- */
 function simulate(){
   const L=S.lv,s=S,mk=M,X=eco(),F=sfx(),e=k=>(X.E[k]||0)+(F[k]||0);
-  const real=L.faiz-s.enf,sf=x=>x>20?20+(x-20)*.1:x<-20?-20+(x+20)*.1:x,rl=sf(real);
+  const p0={des:s.des,par:s.par,ord:s.ord,huz:s.huz},real=L.faiz-s.enf,sf=x=>x>20?20+(x-20)*.1:x<-20?-20+(x+20)*.1:x,rl=sf(real);
   let depr=1.6+0.05*(s.enf-40)-0.05*(s.rez-22)-0.10*(rl+3)+rnd(-0.8,0.8)-(mk.maliye.sk-5)*0.1+(s.des<30?0.5:0)+(s.huz<4?0.4:0);
   depr+=0.3*Math.max(0,s.acik-7);depr+=(50-s.gv)*.012;depr=clamp(depr,-0.5,9);
   s.kur*=1+depr/100;s.gdp*=1+clamp(.25*(Math.min(s.enf,60)*.9/1200-depr/100)-Math.max(0,depr-3)*.004,-.03,.008); /* reel kur: GSYH'nın dolar değeri, kur artışı fiyat artışından hızlıysa küçülür, yavaşsa büyür */
-  s.rez+=-0.3*Math.max(0,s.acik-7)-0.5+0.10*(rl+3)+(depr>4?-2:0)+(s.bat-5)*0.1+rnd(-0.6,0.6)+e('rez');
-  s.enf+=-0.09*(rl+3)+0.5*(depr-1.6)+0.15*(s.acik-4.6)+rnd(-0.4,0.4)-(mk.mb.sk-5)*0.06+e('enf');
-  const tg=2.8-0.05*(L.faiz-45)+e('buy')-0.03*(s.enf-48);
+  s.rez+=-0.3*Math.max(0,s.acik-7)-0.5+0.10*(rl+3)+(depr>4?-2:0)+(s.bat-5)*0.1+rnd(-0.6,0.6)-0.08*Math.max(0,s.rez-50)+e('rez');
+  s.enf+=(rl+3>0?-0.09*(rl+3)*s.enf/(s.enf+12):-0.09*(rl+3))+(depr>1.6?0.5:0.25)*(depr-1.6)+0.06*Math.max(0,12-s.enf)+0.15*(s.acik-4.6)+rnd(-0.4,0.4)-(mk.mb.sk-5)*0.06+e('enf');
+  const tg=2.8-0.06*clamp(real+3,-25,35)+e('buy')-0.03*(s.enf-48);
   s.buy+=(tg-s.buy)*0.25+rnd(-0.1,0.1);
   s.isz+=0.04*(3.0-s.buy)+0.02*(9.2-s.isz)+rnd(-0.05,0.05)+e('isz');
   const ta=4.6+X.dev-X.rev+e('acik')+0.06*sf(L.faiz-45)-0.15*(s.buy-2.8)+loanC();
   s.acik+=(ta-s.acik)*0.3;
   s.borc+=0.10*(s.acik-2.5)+0.06*depr-0.1+e('borc');
   s.cari+=0.25*(s.buy-2.8)-0.1*(depr-1.6)+(34-s.cari)*0.03+rnd(-0.4,0.4)+e('cari');
-  s.des+=-0.06*(s.enf-45)+0.35*(s.buy-2.5)-0.25*(s.isz-9.2)+0.1*(s.huz-5)-0.15+(41-s.des)*0.02+e('des');
+  s.des+=-0.06*Math.max(s.enf-45,-25)+0.35*(s.buy-2.5)-0.25*(s.isz-9.2)+0.1*(s.huz-5)-0.15+(41-s.des)*0.02+e('des');
   s.par+=(6-s.par)*0.05+(s.des-40)*0.01+e('par');
   s.kol+=(6-s.kol)*0.04;
   s.ord+=e('ord')+(mk.sav.sk-5)*0.03+(6-s.ord)*0.03;
@@ -22,6 +22,7 @@ function simulate(){
   ['bat','dog','bol'].forEach(k=>s[k]+=(6-s[k])*0.03+(mk.dis.sk-5)*0.02+e(k));
   s.pens+=.02;s.rez-=S.loans.reduce((a,l)=>a+l.amt*l.rate/1200,0);S.loans=S.loans.filter(l=>{if(l.end>s.month+1)return true;s.rez-=l.amt;s.borc-=l.amt/s.gdp*100;return false;});
   s.gdp*=1+s.buy/1200;MIN.forEach(m=>{if(S.own[m[0]])s.kol+=(S.bud[m[0]]-m[2])/m[2]*.3;});
+  for(const k in p0){const d=s[k]-p0[k],hi=k==='des'?45:6.5,top=k==='des'?78:9.5;if(d>0&&p0[k]>hi)s[k]=p0[k]+d*clamp((top-p0[k])/(top-hi),.08,1);} /* yüksek düzeylerde kazanım zorlaşır: destek en fazla ≈ %70 civarına yaklaşır */
   for(const k in RANGE)s[k]=clamp(s[k],RANGE[k][0],RANGE[k][1]);
   return depr;
 }
@@ -60,6 +61,7 @@ function endTurn(){
     if(S.des>=40){S.par+=1;S.des+=1;}else{S.par-=1.5;S.kol-=1;}
     S.mun=clamp(Math.round(30*(vote()-8)/50),0,30);S.flags.yerel=(S.des>=40?'Yerel seçimlerde iktidar kendi belediyelerini korudu.':'Yerel seçimlerde iktidar önemli kayıplar verdi.')+' Büyükşehir belediyesi: '+S.mun+'/30.';
   }
+  if(S.des>62)S.des=62+(S.des-62)*.85;['ord','huz','par'].forEach(k=>{if(S[k]>8)S[k]=8+(S[k]-8)*.8;}); /* doygunluk: tam destek ve tam huzur gerçekçi değil */
   for(const k in RANGE)S[k]=clamp(S[k],RANGE[k][0],RANGE[k][1]);
   const b=snap();
   STATS.forEach(x=>S.hist[x.k].push(S[x.k]));
