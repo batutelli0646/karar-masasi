@@ -177,3 +177,10 @@ h2{font-size:19px;color:var(--ink);border-left:3px solid var(--accent);padding-l
 .bn{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;height:56px}.bn .bi{font-size:19px;line-height:1;font-family:system-ui,sans-serif}.bn .bdg{position:absolute;top:3px;right:50%;margin:0 -22px 0 0;min-width:15px;height:15px;line-height:15px;font-size:9px}
 .endbar{bottom:calc(56px + env(safe-area-inset-bottom,0px))}
 .bn span:last-of-type{font-size:10.5px}.bn{letter-spacing:0}
+
+/* katlanır bölümler */
+.cxt{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cxt::before{content:'▾ ';color:var(--gold,#F2C14E)}
+.cxt[data-cs="1"]::before{content:'▸ '}
+.panel.cx>*:not(.cxt){display:none}
+.panel.cxo{display:none}

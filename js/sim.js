@@ -53,7 +53,8 @@ function checkEnd(){
   if(S.des<12)return {t:'Erken Seçim ve İktidar Kaybı',x:'Halk desteği çöktü. Meclis 360 oyla seçimlerin yenilenmesine karar verdi ve erken seçimi kaybettin.'};
   if(S.par<=1)return {t:'Parti Seni Devirdi',x:'Parti içi isyan sonuç verdi. Olağanüstü kurultayda liderlikten alındın.'};
   if(S.ord<=1)return {t:'Askeri Müdahale',x:'Ordu içinde biriken huzursuzluk patladı. Hükümet görevden uzaklaştırıldı.'};
-  if(S.rez<=-5)return {t:'Ekonomik Çöküş',x:'Rezervler tükendi, dış borç ödemeleri aksadı. Ülke ödeme dengesi krizine girdi.'};
+  if(S.rez<=0&&!S.imfK){S.imfK=1;S.rez+=15;S.debt+=15;S.borc=S.debt/S.gdp*100;applyFx({des:-3,bat:.2,par:-.3});logA('Rezerv krizi','IMF acil kredisi','Rezervler tükenmek üzereyken IMF 15 milyar $ acil kredi verdi; halk desteği ve parti içi huzur zarar gördü. Bu can simidi yalnızca bir kez kullanılır.');}
+  if(S.rez<=-5&&S.imfK)return {t:'Ekonomik Çöküş',x:'Rezervler tükendi, dış borç ödemeleri aksadı. Ülke ödeme dengesi krizine girdi.'};
   return null;
 }
 function endTurn(){
