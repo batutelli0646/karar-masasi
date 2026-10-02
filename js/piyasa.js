@@ -39,7 +39,7 @@ const spk=a=>{const mn=Math.min(...a),mx=Math.max(...a);return a.map(v=>'▁▂�
 function piyasa(){const p=S.pz,k=p.kn,c=k>=56?'good':k>=36?'warn':'bad',rk=rsk(),ch=p.h.length>1?p.b/p.h[p.h.length-2]-1:0,a=avail();
   return `<h2>Piyasa</h2><div class="panel">${kv('Kredi notu (kurgusal kuruluş)',`<b>${notL(k)}</b> <span class="st ${c}">${nf(k,0)}/100</span>`)}${gbar(k,c)}${kv('10 yıllık tahvil faizi','%'+nf(tvf(),1))}${kv('Risk primi',nf(rk,1)+' puan')}${kv('Borsa endeksi',nf(p.b,0)+' <small style="color:var(--'+(ch>=0?'good':'bad')+')">('+(ch>=0?'+':'−')+'%'+nf(Math.abs(ch)*100,1)+')</small>')}<div class="dl" style="font-family:var(--mono);letter-spacing:2px;text-align:right">${spk(p.h)}</div>${kv('Yabancı portföy akımı',(p.fa>=0?'+':'−')+nf(Math.abs(p.fa),1)+' mlr $/ay')}
   <div class="note">Not; bütçe açığı, borç, rezerv, cari açık, yolsuzluk algısı ve istikrardan oluşur. Düşük not yabancı çıkışı ve yüksek faiz demektir. Borsa ve akım rezervi, büyümeyi ve desteği etkiler. Tahvil faizi bütçe yükünü artırır.</div></div>
-  <div class="panel"><b>Eylemler</b><div class="lever"><span class="n">Yatırımcı turu</span><span class="h">${PR.map(x=>x[0]+': not +'+x[2]).join(' · ')}.${sat(su('rs'))}</span><div class="step">${PR.map((x,i)=>sbtn(`data-pz="rs:${i}"`,x[0])).join('')}</div></div>
+  <div class="panel"><b>Eylemler</b>
   
   <div class="lever"><span class="n">Sermaye kontrolü ${p.ks?'(açık)':''}</span><span class="h">Çıkışlar %70, girişler %50 azalır. Not anında −4, hedef −8; büyüme baskılanır, Batı itibarı aylık azalır.</span><div class="step">${sbtn('data-pz="ks"',p.ks?'Kaldır':'Uygula')}</div></div></div>`;}
 function ssan(){const y=S.sy,c=y.kap>=55?'good':y.kap>=30?'warn':'bad',a=avail(),el=CT.filter(x=>S.ul[x[0]]>=55&&!y.ks.some(k=>k.id===x[0]));

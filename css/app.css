@@ -182,5 +182,6 @@ h2{font-size:19px;color:var(--ink);border-left:3px solid var(--accent);padding-l
 .cxt{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .cxt::before{content:'▾ ';color:var(--gold,#F2C14E)}
 .cxt[data-cs="1"]::before{content:'▸ '}
+.cxt[data-cs="1"][data-n]::after{content:' · ' attr(data-n) ' işlem';color:var(--muted,#9a9486);font-size:.8em;font-weight:400;text-transform:none;letter-spacing:0}
 .panel.cx>*:not(.cxt){display:none}
 .panel.cxo{display:none}
