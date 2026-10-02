@@ -22,8 +22,8 @@ document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest
 /* ---------- Katlanır bölümler ---------- */
 const COLT=['askeri','kurum','hizmet','ulke','lobi','meclis','ticaret','kabine','nufus','beled','sektor','orgut','dis','buro','donem'];
 function ek8Post(){if(!document.querySelector)return;const m=document.querySelector('main');if(!m)return;S.col=S.col||{};
-  m.querySelectorAll('.panel').forEach(p=>{let t=p.firstElementChild,key,own=true;if(t&&t.tagName==='B'){key=t.textContent;}else{const pv=p.previousElementSibling;if(pv&&pv.tagName==='H2'){t=pv;key=pv.textContent;own=false;}else return;}
-    const k=S.tab+'|'+key,v=S.col[k],tall=p.scrollHeight>600&&COLT.includes(S.tab);if(!tall&&v===undefined)return;const col=v===undefined?true:v===1;
+  const PS=m.querySelectorAll('.panel');PS.forEach((p,pi)=>{let t=p.firstElementChild,key,own=true;if(t&&t.tagName==='B'){key=t.textContent;}else{const pv=p.previousElementSibling;if(pv&&pv.tagName==='H2'){t=pv;key=pv.textContent;own=false;}else return;}
+    const k=S.tab+'|'+key,v=S.col[k],tall=p.scrollHeight>600&&COLT.includes(S.tab)&&PS.length>=3&&pi>0;if(!tall&&v===undefined)return;const col=v===undefined?true:v===1;
     t.classList.add('cxt');t.dataset.ck=k;if(col){p.classList.add('cx');if(!own)p.classList.add('cxo');}t.dataset.cs=col?'1':'0';});}
 {const _r=render;render=function(){_r();try{ek8Post();}catch(e){}};}
 document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('.cxt');if(!t)return;S.col=S.col||{};const k=t.dataset.ck;S.col[k]=t.dataset.cs==='1'?0:1;save();render();});
