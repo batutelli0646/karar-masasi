@@ -1,5 +1,5 @@
 /* Sıkıştırma: kaydırıcı + hemen altındaki düğmeler tek satırda yan yana */
-(function(){
+(function(){if(!document.createElement||!document.head)return;
 const st=document.createElement('style');
 st.textContent='.rr{display:flex;align-items:center;gap:8px;margin:2px 0}.rr>.rng{flex:1;min-width:0;width:auto;margin:0}.rr>.chips,.rr>.step{margin:0!important;flex:none}';
 document.head.appendChild(st);
