@@ -187,3 +187,5 @@ h2{font-size:19px;color:var(--ink);border-left:3px solid var(--accent);padding-l
 .cxt[data-cs="1"][data-n]::after{content:' · ' attr(data-n) ' işlem';color:var(--muted,#9a9486);font-size:.8em;font-weight:400;text-transform:none;letter-spacing:0}
 .panel.cx>*:not(.cxt){display:none}
 .panel.cxo{display:none}
+
+.sl2{display:flex;align-items:center;gap:6px;padding-block:5px;border-bottom:1px solid var(--line)}.sl2:last-child{border-bottom:0}.sl2 .n{font-weight:700;color:var(--accent);width:1.2em}.sl2 .h{flex:1;min-width:0;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sl2 .btn.sm{min-height:28px!important;height:28px;padding:0 10px!important;font-size:11px!important;letter-spacing:.04em;width:auto}
