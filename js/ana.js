@@ -24,7 +24,7 @@ css.textContent='.hm{max-width:460px;margin:0 auto;padding:calc(26px + env(safe-
 +'.hm .tx2{color:var(--ink);font-size:14px;line-height:1.55}.hm .tx2 p{margin:0 0 8px}';
 try{document.head.appendChild(css);}catch(e){}
 const top=t=>'<div class="tp"><button class="bk" data-hm="back" aria-label="Geri">‹</button><b>'+t+'</b></div>';
-function home(){const g=has(),o=g&&S.over,ab=g?PART[S.me].n:'',nw=S.confirmNew;
+function home(){const g=has(),o=g&&S.over,ab=g?PART[S.me].n+(S.ldn?' · '+S.ldn:''):'',nw=S.confirmNew;
   return `<div class="hm"><img class="lg" src="icon-192.png" alt=""><div class="ti">Karar Masası</div><div class="su">Siyaset ve ekonomi simülasyonu</div>
   ${g?`<button class="co" data-hm="go"><span class="bd">${S.me}</span><span class="tx"><small>${o?'Son oyun':'Devam et'}</small><b>${ab}</b><span>${dateLabel(S.month)} · ${S.term}. dönem${o?' · '+S.over.t:' · seçime '+toEl()+' ay'}</span></span><span class="pl">▶</span></button>`:''}
   <button class="btn nw" data-hm="new">${nw&&g&&!o?'Emin misin? Tekrar bas':'▶ Yeni oyun'}</button>
