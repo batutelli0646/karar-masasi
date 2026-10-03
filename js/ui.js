@@ -68,11 +68,7 @@ function gunluk(){
   return `<h2>Günlük</h2><div class="log">${S.log.slice().reverse().map(e=>`<div class="e"><small>${dateLabel(e.m)}</small><div><b>${e.t}</b> · ${e.c}</div><div class="muted">${e.msg}</div></div>`).join('')}</div>`;
 }
 function makeCode(){try{return btoa(unescape(encodeURIComponent(JSON.stringify(S))));}catch(e){return '';}}
-function kayit(){
-  return `<h2>Kayıt</h2><p style="max-width:62ch">Oyun bu tarayıcıda otomatik kaydedilir. Başka bir bilgisayara ya da telefona geçmek için aşağıdaki kodu kopyala, orada bu sayfayı aç, Kayıt sekmesine yapıştırıp yükle.</p>
-  <div class="panel"><b>Kayıt kodun</b> <span class="muted">(${dateLabel(S.month)})</span><textarea id="code" readonly rows="5" style="width:100%;margin:8px 0;font-family:var(--mono);font-size:11px;background:var(--bg);color:var(--ink);border:1px solid var(--line);padding:8px">${makeCode()}</textarea><button class="btn sm" data-copy="1">Kodu kopyala</button></div>
-  <div class="panel"><b>Kayıt yükle</b><textarea id="imp" rows="5" placeholder="Kodu buraya yapıştır" style="width:100%;margin:8px 0;font-family:var(--mono);font-size:11px;background:var(--bg);color:var(--ink);border:1px solid var(--line);padding:8px"></textarea><button class="btn sm" data-import="1">Yükle</button> <span id="kmsg" class="muted">${S.kmsg||''}</span></div>`;
-}
+function kayit(){return '';}
 function endScreen(){
   const o=S.over;
   return `<div class="end"><div class="muted" style="font-family:var(--mono);font-size:12px">${dateLabel(S.month)} · ${S.term}. dönem</div><h1>${o.t}</h1><p>${o.x}</p>${o.p?`<div class="big">%${nf(o.p,1)}</div><div class="note">Kampanya etkisi: ${S.kamp>=0?'+':''}${nf(S.kamp||0,1)} puan</div>`:''}<div class="stats" style="margin-top:18px">${['enf','buy','isz','rez','des','huz'].map(k=>tile(STATS.find(s=>s.k===k))).join('')}</div>${karne()}${typeof kartP==='function'?kartP():''}<button class="btn" data-new="1" style="margin-top:14px">Yeni oyun başlat</button></div>`;
