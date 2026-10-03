@@ -174,7 +174,7 @@ document.addEventListener('input',ev=>{
   const i=[...root.querySelectorAll('.rng')].indexOf(t),n=d.querySelectorAll('.rng')[i];if(!n)return;
   const Lv=t.closest('.lever');
   if(Lv){const N=n.closest('.lever');Lv.querySelector('.h').innerHTML=N.querySelector('.h').innerHTML;Lv.querySelector('output').replaceWith(N.querySelector('output'));}
-  else t.previousElementSibling.innerHTML=n.previousElementSibling.innerHTML;
+  else {const pt=(t.closest(".rr")||t).previousElementSibling,pn=(n.closest(".rr")||n).previousElementSibling;if(pt&&pn)pt.innerHTML=pn.innerHTML;};
 });
 document.addEventListener('change',ev=>{
   const t=ev.target;if(!t.classList||!t.classList.contains('rng'))return;const v=+t.value;

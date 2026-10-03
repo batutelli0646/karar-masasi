@@ -234,3 +234,4 @@ body{line-height:1.35}main{padding-block:6px}h2{margin:0 0 4px}
 .lever{padding-block:3px}.lever .step{margin-top:2px}.bar{margin:3px 0 4px!important}.fac .bar{margin:0!important}
 input[type=range]{margin:2px 0}.chips{gap:3px;margin-top:3px}.choice{padding:5px 9px}.ag{padding:6px 0}.subtabs{margin:6px 0 2px}.bn2{height:30px}
 .panel p,.panel .note,.note{margin:3px 0 0}.grid2{gap:5px}.stats{gap:5px;margin-bottom:6px}.tile{padding:5px 8px}.panel>b:first-child{margin-bottom:2px}
+.rng{height:22px;margin:0}.lever .step:has(output){grid-row:1!important}.lever:has(output) .h{grid-column:1/-1;grid-row:2}.lever:has(output) .n{grid-row:1}.step button:not(.btn){width:32px;height:26px}.step output{min-width:40px}
