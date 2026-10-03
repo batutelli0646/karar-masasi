@@ -60,7 +60,7 @@ const ap=()=>{try{PK.forEach(k=>Object.assign(PART[k],ORIG[k]));if(S&&S.cp&&PART
 function cbuild(){const b=base(),ok=cu.t.length===2;
 return `<div class="hd">${lg2(cu.lg,cu.col,46)}<b>${cu.n||'Yeni Parti'}</b><small>Kendi partin<br>Taban: ${PART[b].n}</small></div>
 <div class="cf"><label>Parti adı</label><input data-cu="n" maxlength="26" value="${cu.n}"><label>Kısaltma</label><input data-cu="ab" maxlength="4" value="${cu.ab}"><label>Genel başkan adı</label><input data-cu="lead" maxlength="26" value="${cu.lead}"></div>
-<div class="sh">Logo</div><div class="lgs">${LOGO.map((l,n)=>(n&&LOGO[n-1][0]===l[0]?'':`<div class="lgh">${l[0]}</div>`)+`<button class="${n===cu.lg?'on':''}" data-cl="${n}" title="${l[1]}">${lg2(n,cu.col,52)}</button>`).join('')}</div>
+<div class="sh">Logo</div><div class="lgs">${LOGO.map((l,n)=>`<button class="${n===cu.lg?'on':''}" data-cl="${n}" title="${l[1]}">${lg2(n,cu.col,52)}</button>`).join('')}</div>
 <div class="sh">Renk</div><div class="cl">${CC.map((c,i)=>`<button class="${i===cu.col?'on':''}" data-cc="${i}"><i style="background:${c[0]}"></i></button>`).join('')}</div>
 <div class="sh">İdeolojik yön · 2 tane seç</div><div class="chips">${Object.keys(TG).map(t=>`<button class="btn sm ${cu.t.includes(t)?'':'sec'}" data-ct="${t}">${t}</button>`).join('')}</div>
 ${ok?trH(cu.t):'<div class="note">İki yön seç.</div>'}
