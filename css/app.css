@@ -199,3 +199,24 @@ h2{font-size:19px;color:var(--ink);border-left:3px solid var(--accent);padding-l
 .dg .step{margin-top:4px!important;gap:4px}
 .dg .panel p,.dg .note,.dg .muted{font-size:12px;margin:4px 0 0}
 .dg .panel>div:not(.chips):not(.sl2):not(.step){font-size:12px;line-height:1.35}
+/* Tüm menüler: yalnızca boşluklar sıkılaştırıldı, yazı boyutlarına dokunulmadı */
+main{padding-block:10px}
+h2{margin:0 0 6px}
+.panel{padding:9px 11px;margin-bottom:8px}
+.card{padding:10px 12px;margin-bottom:8px}
+.report{padding:9px 11px;margin-bottom:8px}
+.min{padding:9px 11px}
+.tile{padding:7px 9px}
+.stats{gap:6px;margin-bottom:10px}
+.lever{padding-block:5px}
+.chips{gap:4px;margin-top:4px}
+.btn{padding:8px 16px}
+.btn.sm{padding:6px 11px;min-height:32px}
+.step .btn{height:34px}
+.choice{padding:7px 10px}
+.subtabs{margin:8px 0 2px}
+.bn2{height:34px}
+.grid2{gap:6px}
+.note{margin-top:4px}
+header.top{padding-block:8px}
+.endbar{padding-block:6px}
