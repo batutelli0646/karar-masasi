@@ -1,7 +1,7 @@
 /* ---------- Kabine ---------- */
 function fire(k){
   if(S.confirm!==k){S.confirm=k;render();return;}
-  S.cand={k,l:[cd(),cd(),cd()]};S.confirm=null;save();render();return;
+  S.cand={k,l:cds(k)};S.confirm=null;save();render();return;
   const old=S.M[k].name;
   S.M[k]={name:NAMES1[Math.floor(Math.random()*16)]+' '+NAMES2[Math.floor(Math.random()*16)],sk:Math.round(rnd(3,9)),note:'Yeni atanan isim'};
   S.cur.spent+=3;S.confirm=null;S.par=clamp(S.par-0.3,0,10);
@@ -58,10 +58,6 @@ const dis=()=>listPanel('Anlaşmalar ve ittifaklar',DEALS,'Her anlaşma bir kez 
 function sektor(){return `<h2>Sektörler</h2><div class="panel">${[['tur','Turizm','Kültür ve Turizm bütçesi, Batı itibarı, huzur'],['tar','Tarım','Tarım bütçesi'],['san','Sanayi','Sanayi bütçesi, büyüme, enflasyon'],['ene','Enerji','Enerji bütçesi, rezerv, Doğu itibarı']].map(([k,n,h])=>`<div style="display:grid;grid-template-columns:70px minmax(0,1fr) 34px;gap:10px;align-items:center;margin-top:10px"><span>${n}</span><div class="bar"><i style="width:${S.sec[k]}%"></i></div><span class="dl">${nf(S.sec[k],0)}</span></div><div class="note" style="margin:2px 0 0">${h}</div>`).join('')}<div class="note">Ortalama 50'nin üstündeyse büyüme artar. Turizm cari açığı azaltır, tarım enflasyonu düşürür.</div></div>${listPanel('Özelleştirme',PRIV,'Kamu varlığı sat, bütçe açığını kapat. Halk tepki gösterebilir.')}`;}
 const prep=()=>clamp(.4+((S.bud.ic/MB.ic+S.bud.cevre/MB.cevre)/2-1)*.9,.1,.9);
 /* ---------- Ek özellikler 2: bakan adayı, yasa taslağı, PPK, dış ticaret, harita, tema, ses ---------- */
-const TP={tek:['Teknokrat',{kur:-.5,par:-.2}],pop:['Popülist',{des:.5,acik:.3}],sad:['Sadık',{par:.4}],ref:['Reformcu',{bat:.4,par:-.2}]};
-const cd=()=>{const tp=Object.keys(TP)[Math.floor(Math.random()*4)],m=newM();m.tp=tp;if(tp==='tek')m.sk=Math.min(10,m.sk+1);if(tp==='sad')m.sk=Math.max(2,m.sk-1);return m;};
-function appoint(i){const c=S.cand.l[i],k=S.cand.k,old=S.M[k].name;if(avail()<2)return;S.M[k]={name:c.name,sk:c.sk,note:TP[c.tp][0],gv:55};applyFx(TP[c.tp][1]);S.cur.spent+=2;S.par=clamp(S.par-.3,0,10);S.cand=null;logA('Kabine değişikliği',`${k==='mb'?'Merkez Bankası Başkanı':minName(k)+' Bakanı'} değişti`,`${old} görevden alındı. ${c.name} atandı (${TP[c.tp][0]}, yetkinlik ${c.sk}/10).`);save();render();}
-const candP=()=>`<div class="panel"><b>${S.cand.k==='mb'?'Merkez Bankası Başkanı':minName(S.cand.k)+' Bakanı'} için aday seç</b>${S.cand.l.map((c,i)=>`<div class="lever"><span class="n">${c.name}</span><span class="h">${TP[c.tp][0]} · yetkinlik ${c.sk}/10 · ${fxText(TP[c.tp][1])}</span><div class="step">${sbtn(`data-ap="${i}"`,'Ata',avail()<2)}</div></div>`).join('')}<div style="margin-top:8px"><button class="btn sec sm" data-apx="1">Vazgeç</button></div></div>`;
 const YT=[['mv','Vergi indirimi',{des:1.2,acik:.5,buy:.3},.7],['mya','Sosyal yardım artışı',{des:1.5,huz:.5,acik:.4},.7],['mis','Kamu istihdam programı',{isz:-.5,des:.8,acik:.5},.6],['myu','Yerli üretim desteği',{buy:.4,cari:-.8,acik:.3},.5],['men','Enerji verimliliği',{cari:-.6,buy:.2,acik:.2,bat:.3},.5],['mkr','Kira ve konut düzenlemesi',{des:1,huz:.4,buy:-.2},.6]],YL=['Hafif','Orta','Sert'];
 function draft(){const b=S.dr.b||0,lv=S.dr.l===undefined?1:S.dr.l,t=YT[b],f=[.6,1,1.5][lv],fx={};for(const k in t[2])fx[k]=Math.round(t[2][k]*f*100)/100;return [t[0]+lv+'_'+S.month,`${t[1]} (${YL[lv]})`,2+lv,301,clamp(t[3]-lv*.1,.1,.9),`Kendi taslağın: ${t[1].toLowerCase()}, ${YL[lv].toLowerCase()} kapsam.`,fx];}
 function submitDraft(){const l=draft();if(l[2]>avail())return;S.cl=S.cl.slice(-19).concat([l]);propose(l[0],false);}
