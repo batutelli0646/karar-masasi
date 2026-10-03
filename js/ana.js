@@ -26,7 +26,7 @@ try{document.head.appendChild(css);}catch(e){}
 const top=t=>'<div class="tp"><button class="bk" data-hm="back" aria-label="Geri">‹</button><b>'+t+'</b></div>';
 function home(){const g=has(),o=g&&S.over,ab=g?PART[S.me].n+(S.ldn?' · '+S.ldn:''):'',nw=S.confirmNew;
   return `<div class="hm"><img class="lg" src="icon-192.png" alt=""><div class="ti">Karar Masası</div><div class="su">Siyaset ve ekonomi simülasyonu</div>
-  ${g?`<button class="co" data-hm="go"><span class="bd">${S.me}</span><span class="tx"><small>${o?'Son oyun':'Devam et'}</small><b>${ab}</b><span>${dateLabel(S.month)} · ${S.term}. dönem${o?' · '+S.over.t:' · seçime '+toEl()+' ay'}</span></span><span class="pl">▶</span></button>`:''}
+  ${g?`<button class="co" data-hm="go"><span class="bd">${S.cp?S.cp.ab:S.me}</span><span class="tx"><small>${o?'Son oyun':'Devam et'}</small><b>${ab}</b><span>${dateLabel(S.month)} · ${S.term}. dönem${o?' · '+S.over.t:' · seçime '+toEl()+' ay'}</span></span><span class="pl">▶</span></button>`:''}
   <button class="btn nw" data-hm="new">${nw&&g&&!o?'Emin misin? Tekrar bas':'▶ Yeni oyun'}</button>
   <button class="ol" data-hm="kayit"><span>⤓</span>Kayıt yükle</button>
   <div class="r4"><button data-hm="rehber"><span>?</span>Rehber</button><button data-hm="ist" ${g?'':'disabled'}><span>▤</span>İstatistik</button><button data-hm="ayar"><span>⚙</span>Ayarlar</button><button data-hm="hak"><span>ⓘ</span>Hakkında</button></div>
