@@ -70,7 +70,7 @@ function endTurn(){
   for(const k in RANGE)S[k]=clamp(S[k],RANGE[k][0],RANGE[k][1]);
   const b=snap();
   STATS.forEach(x=>S.hist[x.k].push(S[x.k]));
-  const hl=headlines(a,b,depr);hl.push(...yeniUp(),...toplumUp(),...dunyaUp(),...piyasaUp(),...ileriUp(),...genisUp(),...genis2Up(),...partiUp(),...e2Up(),...d2Up(),...arayuzUp());hl.push('PPK toplantısı: Merkez Bankası %'+mbRec()+' faiz öneriyor.');
+  const hl=headlines(a,b,depr);hl.push(...yeniUp(),...toplumUp(),...dunyaUp(),...piyasaUp(),...ileriUp(),...genisUp(),...genis2Up(),...partiUp(),...e2Up(),...d2Up(),...arayuzUp(),...(typeof dxUp==='function'?dxUp():[]));hl.push('PPK toplantısı: Merkez Bankası %'+mbRec()+' faiz öneriyor.');
   if(isLocM())hl.unshift(S.flags.yerel);
   if(S.coal.length&&S.kol<=0){clearCoal();S.kol=4;S.par=clamp(S.par-.5,0,10);hl.unshift('İttifak ortağı ittifaktan çekildi. Yasa çıkarmak için Meclis\'te yeni destek gerekecek.');S.log.push({m:S.month,t:'İttifak çöktü',c:'Ortak çekildi',msg:'Uyum sıfıra indi. Meclis\'te ortaksız devam ediyorsun.'});}
   const over=checkEnd();
