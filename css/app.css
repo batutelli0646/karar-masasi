@@ -227,3 +227,10 @@ header.top{padding-block:8px}
 .pri{margin:8px auto;padding:10px 12px}.pri h1{margin:0 0 4px}.pri p{margin:0 0 2px}.pri h2{margin:8px 0 4px!important}.pri .panel{padding:5px 10px!important;margin:0 0 5px!important}.pri .lever{padding-block:0!important;gap:0 10px}.pri .btn.sm{min-height:28px;padding:0 10px}.pri>.btn{margin-top:8px!important}
 .pri .lever{grid-template-columns:minmax(0,1fr) auto;gap:0 8px;line-height:1.2}.pri .lever .step{grid-column:2!important;grid-row:1!important;margin:0!important}.pri .lever .n{grid-column:1;grid-row:1}.pri .lever .h{grid-column:1/-1!important;grid-row:2}.pri .btn.sm{min-height:24px;padding:0 9px}.pri .panel{padding:4px 8px!important;margin:0 0 4px!important}.pri h2{margin:6px 0 3px!important}.pri{padding:8px 8px;margin:4px auto}.pri p{margin:0}
 .pri .lever .btn{min-height:0!important;height:26px!important;padding:0 10px!important;line-height:26px}
+/* Genel sıkıştırma (yazı boyutu aynı, yalnızca boşluk/yükseklik) */
+body{line-height:1.35}main{padding-block:6px}h2{margin:0 0 4px}
+.panel{padding:7px 9px;margin-bottom:6px}.card{padding:8px 10px;margin-bottom:6px}.report{padding:7px 9px;margin-bottom:6px}.min{padding:7px 9px}
+.btn{padding:5px 12px;min-height:30px}.btn.sm{padding:3px 10px;min-height:26px}.step .btn{height:28px}.step button:not(.btn){width:34px;height:28px}
+.lever{padding-block:3px}.lever .step{margin-top:2px}.bar{margin:3px 0 4px!important}.fac .bar{margin:0!important}
+input[type=range]{margin:2px 0}.chips{gap:3px;margin-top:3px}.choice{padding:5px 9px}.ag{padding:6px 0}.subtabs{margin:6px 0 2px}.bn2{height:30px}
+.panel p,.panel .note,.note{margin:3px 0 0}.grid2{gap:5px}.stats{gap:5px;margin-bottom:6px}.tile{padding:5px 8px}.panel>b:first-child{margin-bottom:2px}
