@@ -44,5 +44,5 @@ document.addEventListener('click',ev=>{const t=ev.target.closest&&ev.target.clos
   else if(k==='new'){if(!has()||S.over||S.confirmNew){S.confirmNew=false;newGame();hm=0;hs=null;}else{S.confirmNew=true;setTimeout(()=>{if(S&&S.confirmNew){S.confirmNew=false;render();}},4000);}}
   else if(k==='ist'){hm=0;hs=null;S.scr=null;S.tab='istat';}else hs=k;
   render();window.scrollTo(0,0);},true);
-window.kmHome={set:v=>{hm=v;hs=null;}};render();
+window.kmHome={set:v=>{hm=v;hs=null;},on:()=>!!hm};render();
 })();
