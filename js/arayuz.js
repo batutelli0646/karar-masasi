@@ -33,8 +33,7 @@ const araSheet=()=>S.ara?`<div class="sheet"><div class="sheet-in"><input id="ar
 document.addEventListener('input',ev=>{if(ev.target.id==='araq')document.getElementById('arasonuc').innerHTML=araRes(ev.target.value);});
 /* görünüm ayarları: yazı boyutu, yazı tipi, etki okları */
 function arayuzApply(){try{const d=document.documentElement,a=(k,v)=>v&&v!=='1'&&v!=='tm'?d.setAttribute(k,v):d.removeAttribute(k);a('data-fs',ls('km-fs'));a('data-font',ls('km-ff'));}catch(e){}}
-const ayar2=()=>{const C=(k,def,l)=>`<div class="chips" style="margin:6px 0 10px">${l.map(([v,n])=>`<button class="btn sm ${(ls(k)||def)===v?'':'sec'}" data-set="${k}:${v}">${n}</button>`).join('')}</div>`;
-  return `<div class="panel"><div class="dl">Yazı boyutu</div>${C('km-fs','1',[['0.92','Küçük'],['1','Normal'],['1.12','Büyük'],['1.25','Çok büyük']])}<div class="dl">Yazı tipi</div>${C('km-ff','tm',[['tm','Tomorrow'],['sys','Sistem']])}<div class="dl">Açılış animasyonu</div>${C('km-sp','1',[['1','Sesli'],['s','Sessiz'],['0','Kapalı']])}<div class="dl">Müzik</div>${C('km-mu','2',[['0','Kapalı'],['1','Düşük'],['2','Orta'],['3','Yüksek']])}</div>`;};
+const ayar2=()=>{const on=(ls('km-mu')||'2')!=='0';return `<div class="panel"><div class="dl">Müzik</div><div class="chips" style="margin:6px 0 4px"><button class="btn sm ${on?'':'sec'}" data-set="km-mu:2">Açık</button><button class="btn sm ${on?'sec':''}" data-set="km-mu:0">Kapalı</button></div></div>`;};
 const fxArr=c=>{const ar=!!c.fx,a=ar?Object.keys(c.fx).map(k=>[k,c.fx[k],STATS.find(s=>s.k===k)]).filter(x=>x[2]&&x[1]).sort((x,y)=>Math.abs(y[1])/(RANGE[y[0]][1]-RANGE[y[0]][0])-Math.abs(x[1])/(RANGE[x[0]][1]-RANGE[x[0]][0])).slice(0,6):[];
   if(!ar)return '';return a.length||c.fn?`<span class="ars">${a.map(([k,v,s])=>`<i class="ar ${(v<0)===!!s.low?'good':'bad'}">${SH[k]} ${v>0?'▲':'▼'}</i>`).join('')}${c.fn?'<i class="ar">sonuç şansa bağlı</i>':''}</span>`:'';};
 function arayuzClick(t){const d=t.dataset;
