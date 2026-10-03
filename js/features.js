@@ -32,6 +32,9 @@ const karne=()=>{const H=S.hist,mx=k=>Math.max(...H[k]),mn=k=>Math.min(...H[k]);
 function startGame(k){S.me=k;S.pick=false;initGov();S.pool=base();S.h0=0;
   if(S.sc===1){Object.assign(S,{enf:68,kur:62,rez:6,des:32,buy:.5,acik:7,borc:52,isz:11.5});S.gdp=1150;}
   if(S.sc===2){S.month=14;S.des=44;S.h0=14;}
+  if(S.sc===3)Object.assign(S,{enf:85,kur:58,rez:12,des:36,buy:1.8,acik:5.5,borc:46,isz:10,cari:42});
+  if(S.sc===4)Object.assign(S,{enf:36,kur:50,rez:30,des:48,buy:3.8,acik:4,borc:42,isz:9.5,cari:28});
+  if(S.sc===5)Object.assign(S,{enf:18,kur:36,rez:70,des:34,buy:5,acik:1.8,borc:30,isz:7,cari:12});
   S.hd=Math.round(S.enf*.6);S.gv=50;STATS.forEach(s=>S.hist[s.k]=[S[s.k]]);S.prev=snap();S.mun={AKP:12,CHP:14,DEM:3,YRP:1}[k]??0;S.pl=[];poll();S.pri=[];S.prip=1;S.prg=[];S.cpi=100;
   dunyaEnsure();toplumEnsure(true);piyasaEnsure();ileriEnsure();genisEnsure();genis2Ensure();partiEnsure();e2Ensure();d2Ensure();S.bel=null;s2Ensure();S.debt=S.borc*S.gdp/100;S.nel=20;arayuzEnsure();if(!ls('km-tut'))S.tut=1;save();render();}
 /* anketler, belediyeler, sektörler */
