@@ -51,7 +51,7 @@ const SN=['Dengeli başlangıç: enflasyon %31, destek %41.','Kriz ortasında: e
 const CC=[['#d6202c','#7a0f16'],['#f08a00','#8a4b00'],['#e6b800','#7a6000'],['#2e9e5b','#14502d'],['#1e9fd4','#0c5878'],['#2a54c4','#112a66'],['#7b3fa0','#43205c'],['#3a3f4a','#14171c']];
 const st5=(cx,cy,r)=>{let p=[];for(let a=0;a<10;a++){const q=a%2?r*.42:r,t=-Math.PI/2+a*Math.PI/5;p.push((cx+q*Math.cos(t)).toFixed(1)+' '+(cy+q*Math.sin(t)).toFixed(1));}return `<path d="M${p.join('L')}z" fill="#fff"/>`;};
 const rays=(n,a,b,w)=>Array.from({length:n},(_,i)=>`<path d="M20 ${a}V${b}" stroke="#fff" stroke-width="${w}" stroke-linecap="round" transform="rotate(${i*360/n} 20 20)"/>`).join('');
-const lg2=(n,c,s)=>`<svg class="lgo" width="${s}" height="${s}" viewBox="0 0 100 100"><defs><linearGradient id="c${c}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${CC[c][0]}"/><stop offset="1" stop-color="${CC[c][1]}"/></linearGradient></defs><rect width="100" height="100" rx="20" fill="url(#c${c})"/>${LOGO[n][2].replace(/'/g,'"')}</svg>`;
+const lg2=(n,c,s)=>`<svg class="lgo" width="${s}" height="${s}" viewBox="0 0 100 100"><defs><linearGradient id="c${c}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${CC[c][0]}"/><stop offset="1" stop-color="${CC[c][1]}"/></linearGradient></defs><rect width="100" height="100" rx="20" fill="url(#c${c})"/><circle cx="50" cy="50" r="38" fill="none" stroke="#fff" stroke-width="3"/><path d="M50 22l8.500 17.500 19 2.700-13.800 13.400 3.300 19L50 65.500 33 74.600l3.300-19L22.500 42.200l19-2.700z" fill="#ffe08a"/></svg>`;
 const XT={Milliyetçi:.8,Popülist:.4,'Sosyal devletçi':-.5,Liberal:-.1,Teknokrat:.1,Muhafazakâr:.7,Laik:-.4,Çoğulcu:-.7,Sosyalist:-.9,Ulusalcı:.3,Devletçi:-.2,Çevreci:-.5,'Serbest piyasacı':.3,Reformist:-.2,Dindar:.8,Türkçü:.9,'Avrupa yanlısı':-.3,'Yerel yönetimci':-.1,Otoriter:.7,'Anti-emperyalist':-.2};
 let cu={n:'Yeni Parti',ab:'YP',lead:'Aday Lider',lg:0,col:5,t:['Liberal','Çoğulcu']};
 const cx=()=>(XT[cu.t[0]]+XT[cu.t[1]])/2,base=()=>PK.slice().sort((a,b)=>Math.abs(PART[a].x-cx())-Math.abs(PART[b].x-cx()))[0];
@@ -60,7 +60,6 @@ const ap=()=>{try{PK.forEach(k=>Object.assign(PART[k],ORIG[k]));if(S&&S.cp&&PART
 function cbuild(){const b=base(),ok=cu.t.length===2;
 return `<div class="hd">${lg2(cu.lg,cu.col,46)}<b>${cu.n||'Yeni Parti'}</b><small>Kendi partin<br>Taban: ${PART[b].n}</small></div>
 <div class="cf"><label>Parti adı</label><input data-cu="n" maxlength="26" value="${cu.n}"><label>Kısaltma</label><input data-cu="ab" maxlength="4" value="${cu.ab}"><label>Genel başkan adı</label><input data-cu="lead" maxlength="26" value="${cu.lead}"></div>
-<div class="sh">Logo · 100 seçenek</div><div class="lgs">${LOGO.map((l,n)=>(n%5?'':`<div class="lgh">${l[0]}</div>`)+`<button class="${n===cu.lg?'on':''}" data-cl="${n}" title="${l[1]}">${lg2(n,cu.col,52)}</button>`).join('')}</div>
 <div class="sh">Renk</div><div class="cl">${CC.map((c,i)=>`<button class="${i===cu.col?'on':''}" data-cc="${i}"><i style="background:${c[0]}"></i></button>`).join('')}</div>
 <div class="sh">İdeolojik yön · 2 tane seç</div><div class="chips">${Object.keys(TG).map(t=>`<button class="btn sm ${cu.t.includes(t)?'':'sec'}" data-ct="${t}">${t}</button>`).join('')}</div>
 ${ok?trH(cu.t):'<div class="note">İki yön seç.</div>'}
