@@ -20,12 +20,6 @@ function kdata(){const H=S.hist,L=STATS.filter(s=>H[s.k]&&H[s.k].length>1&&RANGE
   return {g,rows,best:sc[0]&&sc[0].v>0?sc[0].s.l:null,worst:sc.length&&sc[sc.length-1].v<0?sc[sc.length-1].s.l:null,head:`${PART[S.me].n} · ${S.month-(S.h0||0)} ay (${nf((S.month-(S.h0||0))/12,1)} yıl) · ${S.term}. dönem`+(S.over?' · '+S.over.t:'')};}
 const kartP=()=>{try{const d=kdata();return `<div class="panel"><b>Dönem notu: ${d.g}</b><div class="dl">${d.head}</div>${d.rows.map(r=>`<div class="dl">${r}</div>`).join('')}${d.best?`<div class="dl">En çok iyileşen: ${d.best}</div>`:''}${d.worst?`<div class="dl">En çok kötüleşen: ${d.worst}</div>`:''}<div class="step" style="margin-top:8px"><button class="btn sm" data-kshare="1">Paylaşım kartı oluştur</button></div><div id="kimg" style="margin-top:10px"></div></div>`;}catch(e){return '';}};
 {const _d=V.donem;if(_d)V.donem=function(){return _d()+kartP();};}
-function kdraw(){const d=kdata(),c=document.createElement('canvas');c.width=1080;c.height=1350;const x=c.getContext('2d'),F='system-ui,Segoe UI,Arial,sans-serif',gr=x.createLinearGradient(0,0,0,560);
-  gr.addColorStop(0,'#16345A');gr.addColorStop(1,'#0D1419');x.fillStyle='#0D1419';x.fillRect(0,0,1080,1350);x.fillStyle=gr;x.fillRect(0,0,1080,560);
-  x.fillStyle='#F2A65A';x.font='600 38px '+F;x.fillText('KARAR MASASI',72,120);x.fillStyle='#E5ECEE';x.font='700 300px '+F;x.fillText(d.g,72,430);
-  x.font='500 34px '+F;x.fillStyle='#8C9EA6';x.fillText('DÖNEM NOTU',76,490);x.fillStyle='#E5ECEE';x.font='500 36px '+F;
-  const w=(t,y)=>{while(x.measureText(t).width>940&&t.length>8)t=t.slice(0,-2);x.fillText(t,72,y);};w(d.head,640);x.fillStyle='#B8C4D6';x.font='500 40px '+F;d.rows.forEach((r,i)=>w(r,740+i*76));
-  x.fillStyle='#4CC38A';x.font='600 36px '+F;if(d.best)w('▲ En çok iyileşen: '+d.best,1090);x.fillStyle='#EA6660';if(d.worst)w('▼ En çok kötüleşen: '+d.worst,1150);return c;}
 function kshare(){try{const c=kdraw(),box=document.getElementById('kimg');if(box)box.innerHTML='<img src="'+c.toDataURL('image/png')+'" alt="Dönem notu kartı" style="max-width:100%;border-radius:12px"><div class="dl" style="margin-top:6px">Görsele basılı tutup kaydedebilirsin.</div>';
   c.toBlob(b=>{try{const f=new File([b],'karar-masasi-not.png',{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]}))navigator.share({files:[f],title:'Karar Masası dönem notu'}).catch(()=>{});}catch(e){}},'image/png');}catch(e){}}
 /* ---------- Koalisyon: otomatik teklif ---------- */

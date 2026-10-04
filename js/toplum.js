@@ -74,11 +74,9 @@ function toplumUp(){const h=[];toplumEnsure();
 /* eylemler */
 function gmeet(id,i){const g=GRP.find(x=>x[0]===id),x=(GMO[id]||GM)[i];if(!g||!x)return;const m=su('g_'+id);S.gb[id]=(S.gb[id]||0)+x[2]*m;S.gr[id]=clamp(S.gr[id]+x[2]*.4*m,5,95);const pol=GMO[id]&&i<GMO[id].length-1;S.gk=S.gk||{};if(pol)S.gk[id]=clamp((S.gk[id]||0)+x[2]*.5*m,-25,25);for(const k in (x[4]||{}))if(S.gr[k]!==undefined){S.gb[k]=(S.gb[k]||0)+x[4][k]*m;if(pol)S.gk[k]=clamp((S.gk[k]||0)+x[4][k]*.5*m,-25,25);S.gr[k]=clamp(S.gr[k]+x[4][k]*.3*m,5,95);} /* politika niteliğindeki adımlar kalıcı iz bırakır (yavaş söner), görüşmeler kısa sürer */applyFx(sfx2(x[3],m));suU('g_'+id);logA('Toplum',g[1],x[0]+': memnuniyet hedefi +'+nf(x[2]*m,1)+'.');hap(20,520);save();render();}
 function gocSet(i){if(i===S.goc)return;S.goc=i;logA('Göç politikası',GK[i][0],GK[i][1]);hap(20,520);save();render();}
-function polLv(id){if(!S.pol[id])return;S.pol[id]=S.pol[id]===2?1:2;logA('Politika',PL.find(x=>x[0]===id)[2],S.pol[id]===2?'Kapsamı genişletildi.':'Kapsamı daraltıldı.');hap(20,520);save();render();}
-function polTog(id){const p=PL.find(x=>x[0]===id);if(!p)return;if(S.pol[id]){delete S.pol[id];}else{if(Object.keys(S.pol).length>=8||avail()<1)return;S.pol[id]=1;S.cur.spent+=1;logA('Politika',p[2],'Yürürlüğe girdi.');}hap(20,520);save();render();}
 function krAid(id){const k=S.krz.find(x=>x.id===id);if(!k||k.aid)return;k.aid=1;k.sev*=.7;k.left=Math.max(1,Math.ceil(k.left*.75));applyFx({des:-.8,bat:-.2,acik:-.1});logA('Kriz',KR.find(x=>x[0]===id)[1],'Dış yardım kabul edildi.');save();render();}
 function toplumClick(t){const d=t.dataset;
-  if(d.gm){const p=d.gm.split(':');gmeet(p[0],+p[1]);return true;}if(d.goc!==undefined){gocSet(+d.goc);return true;}if(d.pol){polTog(d.pol);return true;}if(d.poll){polLv(d.poll);return true;}if(d.kaid){krAid(d.kaid);return true;}return false;}
+  if(d.gm){const p=d.gm.split(':');gmeet(p[0],+p[1]);return true;}if(d.goc!==undefined){gocSet(+d.goc);return true;}if(d.kaid){krAid(d.kaid);return true;}return false;}
 /* görünümler */
 const gL=v=>v>=60?['Destekliyor','good']:v>=40?['Kararsız','warn']:['Karşı','bad'];
 const gfx=o=>Object.entries(o).map(([k,v])=>GRP.find(g=>g[0]===k)[1]+' '+(v>0?'+':'−')+Math.abs(v)).join(', ');

@@ -1,5 +1,4 @@
 /* ek19: Dış İlişkiler gerçekçilik kuralları — hangi ülkeyle hangi anlaşma, temas ve talep mümkün */
-OK2.length=0;
 const ENR=['rus','aze','irn','irq','qat','sau','uae','kaz','tkm','lby','nga','geo','uzb','kwt','bgr'],KOM=['gre','bgr','geo','aze','irn','irq','syr','arm','kktc'],
   AB_=['ger','fra','ita','esp','nld','pol','swe','bgr','hun','gre'],TRN=['rus','irn','irq','aze','geo','bgr','gre','syr','kaz','uzb','tkm','chn','arm','ukr'],
   GCM=['syr','irq','irn','pak','lby','som','nga','egy','jor','gre','bgr','ukr','ind'],

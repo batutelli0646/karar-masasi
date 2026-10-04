@@ -132,7 +132,6 @@ function runElection(){
   const pt=S.coal[0]||best(),ha=!!aPt(),p=pvt(1),o=ha?vote(1)-p:clamp(PART[pt].w*.8,1,40),{sh,se}=seatsFor(p,o,pt),pr=promRes();
   const bl=p+(ha?o:0)+hf,oth=PK.filter(k=>k!==S.me&&k!==pt),R=oth.reduce((a,k)=>sh[k]>sh[a]?k:a,oth[0]),Ra=ALLY[R]&&oth.includes(ALLY[R])?ALLY[R]:null,r2=bl>=50?bl:bl+oth.filter(k=>k!==R&&k!==Ra).reduce((a,k)=>a+sh[k]*(cmp(S.me,k)+.5)/(cmp(S.me,k)+cmp(R,k)+1),0)+rnd(-1.5,1.5); /* ikinci tur: rakip ittifak dışındaki seçmen ideolojik yakınlığa göre bölünür */S.cb={r1:bl,r2};
   if(r2<50){S.over={t:'Cumhurbaşkanlığı Seçimi Kaybedildi',x:`${S.cbH?'Dönem sınırı nedeniyle partinin halef adayı yarıştı. ':''}İlk turda ittifakın %${nf(bl,1)} oy aldı. ${bl>=50?'':'İkinci turda %'+nf(r2,1)+' ile kaybettin.'} Meclis'te ${se[S.me]} sandalye kazandın ama yürütme rakibe geçti.`,win:false,p};return;}
-  if(PK.some(k=>k!==S.me&&se[k]>se[S.me])&&false){const top=PK.reduce((a,k)=>se[k]>se[a]?k:a);S.over={t:'İktidar Kaybı',x:`Seçimde %${nf(p,1)} oy aldın ve ${se[S.me]} sandalye kazandın. ${PART[top].n} ${se[top]} sandalyeyle önde bitirdi ve iktidara geliyor.`,win:false,p};return;}
   clearCoal();if(se[pt]>0)S.coal=[pt];S.seats=se;S.el={p,sh,se,pr}; /* seçim ittifakı seçimden sonra da sürer; ortağa bakanlık verilmez */
 }
 function finishEl(){
