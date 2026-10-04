@@ -3,13 +3,13 @@ const norm=s=>String(s).toLocaleLowerCase('tr').replace(/ı/g,'i').normalize('NF
 function arayuzEnsure(){if(!S.th)S.th={};['b','kn','uns','gd','yz','kr'].forEach(k=>{if(!S.th[k])S.th[k]=[];});S.ara=null;}
 /* sekme rozetleri: bekleyen iş sayısı */
 function RZ(){const r={},add=(k,n)=>{if(n>0)r[k]=(r[k]||0)+n;};if(!S.pz||!S.lb||!S.og)return r;
-  add('karar',S.cur.events.filter(e=>e.ch===null).length);
+  add('karar',S.cur.events.filter(e=>e.ch===null).length);add('dis',(S.ta||[]).length);
   add('lobi',LB.filter(l=>S.lb[l[0]].ey>0).length);add('piyasa',(S.pz.fa<-3?1:0)+(S.pz.kn<30?1:0));add('askeri',S.sy&&S.sy.amb>0?1:0);
   add('kabine',Object.keys(S.M).filter(k=>S.M[k].gv<35).length);add('toplum',(uns()>60?1:0)+(S.krz&&S.krz.length?1:0));add('askeri',natoAskida()?1:0);return r;}
 const rz=(ks,r)=>{const n=[].concat(ks).reduce((a,k)=>a+((r||RZ())[k]||0),0);return n?` <i class="bdg">${n}</i>`:'';};
 /* masa: "bu ay dikkat" listesi */
 function ajanda(){const L=[],a=(t,k,c)=>L.push([t,k,c]);if(!S.pz||!S.lb||!S.og)return '';
-  const w=S.cur.events.filter(e=>e.ch===null).length;if(w)a(`${w} karar bekliyor`,'karar','warn');
+  const w=S.cur.events.filter(e=>e.ch===null).length;if(w)a(`${w} karar bekliyor`,'karar','warn');if(S.ta&&S.ta.length)a(`${S.ta.length} ülke talebi bekliyor`,'dis','warn');
   LB.forEach(l=>{const o=S.lb[l[0]];if(o.ey>0)a(`${l[1]} eylemde`,'lobi','bad');else if(o.t<-20)a(`${l[1]} mesafeli`,'lobi','warn');});
   if(S.pz.fa<-3)a('Yabancı sermaye çıkıyor','piyasa','bad');if(S.pz.kn<30)a('Kredi notu çok düşük','piyasa','bad');if(S.sy.amb>0)a('Savunma sanayii ambargoda','askeri','bad');
   if(natoAskida())a('NATO %2 hedefinin altındasın','askeri','bad');const u=uns();if(u>60)a('Toplumsal huzursuzluk yüksek','toplum','bad');else if(u>40)a('Toplumsal huzursuzluk artıyor','toplum','warn');
