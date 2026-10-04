@@ -13,7 +13,7 @@ const tgFx=tg=>{const o={};tg.forEach(t=>{const f=TGE[t]||{};for(const k in f)o[
 const isFit=(k,tg)=>(FIT[k]||[]).some(t=>tg.includes(t));
 const pickN=a=>a[Math.floor(Math.random()*a.length)];
 const bnm=n=>{let r=String(n||'');[...Object.values(TI).flat(),'Prof.',...TOLD].forEach(t=>{if(r.startsWith(t+' '))r=r.slice(t.length+1);});return r;};
-const cl=n=>{let r=String(n||'');if(r.startsWith('Prof. ')&&!r.startsWith('Prof. Dr.'))r='Prof. Dr. '+r.slice(6);TOLD.forEach(t=>{if(r.startsWith(t+' '))r=r.slice(t.length+1);});return r;};
+function cl(n){let r=String(n||'');if(r.startsWith('Prof. ')&&!r.startsWith('Prof. Dr.'))r='Prof. Dr. '+r.slice(6);TOLD.forEach(t=>{if(r.startsWith(t+' '))r=r.slice(t.length+1);});return r;};
 const usedN=(ex)=>Object.keys(S.M||{}).filter(x=>x!==ex).map(x=>bnm(S.M[x].name));
 const cd=k=>{const f=FIT[k]||TGN,u=usedN(k);let c;for(let n=0;n<30;n++){const tg=[];if(Math.random()<.6)tg.push(pickN(f));else tg.push(pickN(TGN));if(Math.random()<.55){const t=pickN(TGN);if(!tg.includes(t))tg.push(t);}
   const fit=isFit(k,tg),nm=pickN(BN),ti=tg.map(t=>TI[t]).find(x=>x&&Math.random()<.6),name=(ti?pickN(ti)+' ':'')+nm;

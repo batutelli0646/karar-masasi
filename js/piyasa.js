@@ -32,7 +32,6 @@ function piyasaClick(t){const d=t.dataset,p=S.pz,y=S.sy;if(!d.pz&&!d.sy)return f
   else if(d.pz&&a==='oz'){const x=PV[i];if(!x||p.sd.includes(i))return true;p.sd.push(i);p.oz=p.sd.length;p.b*=1.03;S.gr.kamu=clamp(S.gr.kamu-x[3],0,100);applyFx({...x[2],des:-.4});logA('Özelleştirme',x[0],'Satıldı: rezerv ve bütçe rahatladı, kamu çalışanları tepkili.');}
   else if(d.pz==='ks'){p.ks=p.ks?0:1;if(p.ks)p.kn=clamp(p.kn-4,0,100);logA('Sermaye kontrolleri','Piyasa',p.ks?'Devreye alındı: çıkışlar yavaşlar, güven azalır.':'Kaldırıldı.');}
   else if(d.sy&&a==='yat'){const x=SY[i];if(!x)return true;const m=su('yat');y.kap=clamp(y.kap+x[2]*m,0,100);applyFx(sfx2(x[3],m));suU('yat');logA('Savunma sanayii',x[0],'Kapasite +'+nf(x[2]*m,1)+'.');}
-  else if(d.sy&&a==='k'){const id=b;if(y.ks.length>=3||y.ks.some(c=>c.id===id)||S.ul[id]<55)return true;y.ks.push({id,left:18});S.ul[id]=clamp(S.ul[id]+4,0,100);logA('Savunma ihracatı',CT.find(c=>c[0]===id)[1],'18 aylık ihracat anlaşması imzalandı.');}
   else return true;
   hap(20,520);save();render();return true;}
 const spk=a=>{const mn=Math.min(...a),mx=Math.max(...a);return a.map(v=>'▁▂▃▄▅▆▇█'[Math.round((v-mn)/((mx-mn)||1)*7)]).join('');};
@@ -42,8 +41,8 @@ function piyasa(){const p=S.pz,k=p.kn,c=k>=56?'good':k>=36?'warn':'bad',rk=rsk()
   <div class="panel"><b>Eylemler</b>
   
   <div class="lever"><span class="n">Sermaye kontrolü ${p.ks?'(açık)':''}</span><span class="h">Çıkışlar %70, girişler %50 azalır. Not anında −4, hedef −8; büyüme baskılanır, Batı itibarı aylık azalır.</span><div class="step">${sbtn('data-pz="ks"',p.ks?'Kaldır':'Uygula')}</div></div></div>`;}
-function ssan(){const y=S.sy,c=y.kap>=55?'good':y.kap>=30?'warn':'bad',a=avail(),el=CT.filter(x=>S.ul[x[0]]>=55&&!y.ks.some(k=>k.id===x[0]));
+function ssan(){const y=S.sy,c=y.kap>=55?'good':y.kap>=30?'warn':'bad',a=avail();
   return `<h2>Savunma sanayii</h2><div class="panel">${kv('Üretim kapasitesi',nf(y.kap,0)+'/100')}${gbar(y.kap,c)}${kv('Yıllık ihracat',nf(y.ihr,1)+' mlr $')}${kv('Tamamlanan projeler',dnP()+'/'+PROJ.length)}${y.amb>0?`<div class="dl"><span class="st bad">Ambargo</span> ${y.amb} ay daha sürecek: kapasite hedefi −15, ihracat %40 düşük</div>`:''}
   <div class="note">Kapasite; savunma bütçesi, sanayi sektörü ve tamamlanan projelerle yükselir. İhracat cari açığı azaltır. Batı itibarı 4,5'in altına düşerse veya NATO %2 hedefinin altındayken ya da ABD ve Almanya ile ilişkiler bozulduğunda ambargo riski doğar.</div>
   <div class="lever"><span class="n">Üretim yatırımı</span><span class="h">${SY.map(x=>x[0]+': '+x[1]).join(' ')}${sat(su('yat'))}</span><div class="step">${SY.map((x,i)=>sbtn(`data-sy="yat:${i}"`,x[0].split(' ')[0]+' '+x[0].split(' ')[1])).join('')}</div></div></div>
-  <div class="panel"><b>İhracat anlaşmaları (${y.ks.length}/3)</b>${y.ks.map(k=>`<div class="dl">${CT.find(c=>c[0]===k.id)[1]}: ${k.left} ay kaldı</div>`).join('')||'<div class="dl muted">Yok</div>'}${el.map(x=>`<div class="lever"><span class="n">${x[1]}</span><span class="h">İlişki ${nf(S.ul[x[0]],0)} · 18 ay · savunma ihracatı +%12 · ilişki +4</span><div class="step">${sbtn(`data-sy="k:${x[0]}"`,'İmzala',y.ks.length>=3)}</div></div>`).join('')}<div class="note">Anlaşma için ilişki puanı 55 ve üstü olmalı. Ülkelerle ilişkiyi Ülkeler sekmesinden yönet.</div></div>`;}
+`;}

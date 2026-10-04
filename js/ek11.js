@@ -30,7 +30,7 @@ function dxUp(){const h=[];try{const d=dxEnsure(),r=S.enf/12,dk=(S.kur/d.k0-1)*1
   d.sc=clamp(d.sc+((45+(S.isz-9)*1.1+(gini()-.41)*60-(cov(SV[2])-72)*.5+(S.huz<4?6:0)-6*pa('asayis'))-d.sc)*.08+A()*1.6-.8,10,100);
   if(d.sc>55)applyFx({huz:-(d.sc-55)*.004});else if(d.sc<45)applyFx({huz:(45-d.sc)*.002});if(d.sc>65)applyFx({des:-(d.sc-65)*.01});
   /* mülteci sayısı */
-  const ev=(S.cur&&S.cur.events||[]).some(e=>e.id==='d_multeci');d.mu=clamp(d.mu+.004+A()*.024-.012+(ev?.12:0)-.03*pa('mulgeri'),.3,8);
+  d.mu=clamp(S.ref===undefined?d.mu:S.ref,.3,8);
   if(d.mu>3.5)applyFx({des:-(d.mu-3.5)*.04,huz:-(d.mu-3.5)*.01});
   /* eğitim kalitesi ve bebek ölümü: bütçeye yavaş tepki verir */
   d.ed+=(cov(SV[1])-d.ed)*.04;d.bb+=((11.5-cov(SV[0])*.035)-d.bb)*.04;applyFx({buy:(d.ed-78)*.0015,des:(9-d.bb)*.01});
@@ -38,8 +38,8 @@ function dxUp(){const h=[];try{const d=dxEnsure(),r=S.enf/12,dk=(S.kur/d.k0-1)*1
 }catch(e){}return h;}
 const dxTr=()=>(40+.42*S.sec.tur)*(1+(S.huz-5)*.015);
 const ar=(c,p,lowGood)=>p==null||Math.abs(c-p)<.005?'':`<span style="color:var(--${(c<p)===!!lowGood?'good':'bad'});margin-left:4px">${c>p?'▲':'▼'}</span>`;
-function dxP(){const d=dxEnsure(),P=d.p||{},ga=yy(d.g,d.hg),ka=yy(d.k,d.hk),R=(a,b,c)=>kv(a,b+(c||''));
+function gostP(){const d=dxEnsure(),P=d.p||{},ga=yy(d.g,d.hg),ka=yy(d.k,d.hk),R=(a,b,c)=>kv(a,b+(c||''));
   return `<h2>Alt göstergeler</h2><div class="panel"><b>Fiyatlar</b>${R('Gıda fiyatları (yıllık)',ga===null?'veri toplanıyor':'%'+nf(ga,1),ga===null?'':ar(ga,P.g,1))}${R('Kira (yıllık)',ka===null?'veri toplanıyor':'%'+nf(ka,1),ka===null?'':ar(ka,P.k,1))}${R('Enerji fiyat endeksi',nf(d.e,0),ar(d.e,P.e,1))}${R('Enerji ithalat bağımlılığı','%'+nf(enDep(),0))}${R('Enerji faturası (yıllık)',nf(70*enDep()/74*d.e/100,0)+' milyar $')}${R('Rekolte endeksi',nf(d.rk,0),ar(d.rk,P.rk))}<div class="note">Endeksler oyun başında 100. Gıda ve kira enflasyonun, kurun ve rekoltenin ardından gelir; yıllık oran ilk 3 ay hesaplanmaz.</div></div>
   <div class="panel"><b>Toplum ve hizmet sonuçları</b>${R('Suç endeksi (50 = ortalama)',nf(d.sc,0),ar(d.sc,P.sc,1))}${R('Mülteci sayısı',nf(d.mu,2)+' milyon',ar(d.mu,P.mu,1))}${R('Eğitim kalite endeksi',nf(d.ed,0),ar(d.ed,P.ed))}${R('Bebek ölümü',nf(d.bb,1)+' ‰',ar(d.bb,P.bb,1))}${R('Gini katsayısı',nf(gini(),3))}${R('Yolsuzluk algısı',nf(yzI(),0)+' / 100 (yüksek kötü)')}<div class="note">Eğitim ve sağlık göstergeleri bütçeye yavaş tepki verir; etkileri aylar sonra görülür.</div></div>
   <div class="panel"><b>Dış gelir ve finans</b>${R('Turizm geliri (yıllık)',nf(dxTr(),0)+' milyar $')}${R('Risk primi',nf(rsk(),1)+' puan')}${R('10 yıllık tahvil faizi','%'+nf(tvf(),1))}<div class="note">Turizm geliri Turizm sektörünün seviyesine ve huzura bağlıdır, cari açığa sektör üzerinden zaten yansır. Kararların etkisi: Politikalar ekranında gıda stoku, tarım sigortası, kira sınırı, enerji stoku, asayiş timleri ve geri dönüş programı yer alır.</div></div>`;}
-GR[1][2].push('gost');SUBN.gost='Alt göstergeler';V.gost=dxP;
+GR[1][2].push('gost');SUBN.gost='Alt göstergeler';V.gost=gostP;

@@ -16,6 +16,6 @@ PL.push(
 ['kobid','Sanayi','KOBİ dijital dönüşüm hibesi','Küçük işletmelere yazılım ve e-ticaret hibesi.',{buy:.04,acik:.06,isz:-.02},{esnaf:5,genc:2}]
 );
 /* Gerçek Türkiye'de zaten yürürlükte olan düzenlemeler yeni oyunda başlangıçta yasalaşmış sayılır (etkileri başlangıç değerlerine işlenmiştir). */
-const REALL=['kadin','ihale','medya','hayvan','kripto','siber','iklim','maden','gelirdv','tuketici','dogum','mesleki','tapu','enerji','nukl','sosyalg','sigara','spor','gida','veri','iltica','savunma','harc','sendika','grev','ozel2','deprem','cevre','kultur','calisma','yerli','yardim','konut','kamuist','israf','turizm'];
+const REALL=['kadin','ihale','medya','hayvan','kripto','siber','iklim','maden','gelirdv','tuketici','dogum','mesleki','tapu','enerji','nukl','sosyalg','sigara','spor','gida','iltica','savunma','harc','sendika','grev','ozel2','deprem','cevre','kultur','calisma','yerli','yardim','konut','kamuist','israf','turizm'];
 window.kmRealLaws=()=>{S.laws=S.laws||{};REALL.forEach(id=>{if(LAWS.some(l=>l[0]===id)&&!S.laws[id])S.laws[id]=.001;});};
 {const _s=startGame;startGame=function(k){const r=_s.apply(this,arguments);try{kmRealLaws();save();}catch(e){}return r;};}
