@@ -175,7 +175,7 @@ function taxs(k,d){const t=TAX.find(x=>x[0]===k),st=Math.max(.1,Math.round(t[5])
 function taxLaw(k){const t=TAX.find(x=>x[0]===k),v=(S.tp||{})[k];if(v===undefined)return;const nw=t[2]===1&&!S.laws['vt_'+k],up=v>S.tax[k];
   const l=['vk_'+k+'_'+S.month,nw?t[1]+' Kanunu':`${t[1]} oranı: %${nf(S.tax[k],1)} → %${nf(v,1)}`,1,301,up?.15:.6,nw?`${t[1]} kanunla getirilir; oran %${nf(v,1)} olur, sonrasında Cumhurbaşkanı kanunun verdiği sınır içinde değiştirebilir.`:`Oran kanunla değiştirilir. ${up?'Vergi artışı muhalefetin desteğini zorlaştırır.':'İndirim muhalefetten de destek alabilir.'}`,{},{tax:k,v,nw}];
   S.cl=S.cl.slice(-19).concat([l]);propose(l[0],false);}
-function setFaiz(v){const old=S.lv.faiz,r=LVR.faiz;v=clamp(Math.round(v*2)/2,r[0],r[1]);S.lv.faiz=v;const after=levCost();S.lv.faiz=old;if(after>levCost()&&avail()<1){render();return;}S.lv.faiz=v;save();render();}
+function setFaiz(v){const old=S.lv.faiz,r=LVR.faiz;v=clamp(Math.round(v*4)/4,r[0],r[1]);S.lv.faiz=v;const after=levCost();S.lv.faiz=old;if(after>levCost()&&avail()<1){render();return;}S.lv.faiz=v;save();render();}
 function act(w){
   const gt=S.gdp*S.kur,cl=k=>false,rz=ui('rez',5),ss=0;let fx,msg;
   if(w==='rez'){if(!rz||S.rez+rz<1)return;const m=su('rez');suU('rez');fx={rez:rz>0?rz*m:rz,kur:rz*.3,enf:rz*.03,acik:rz>0?rz*m/S.gdp*100*S.lv.faiz/100*.5:0};msg=`Merkez Bankası ${Math.abs(rz)} mlr $ rezerv ${rz<0?'sattı':'topladı'}.`;}

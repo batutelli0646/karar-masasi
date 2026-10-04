@@ -15,7 +15,7 @@ function tile(s){
 }
 function fmtLev(k,v){
   if(typeof LVF!=='undefined'&&LVF[k])return LVF[k](v);
-  if(k==='faiz')return '%'+nf(v,1);
+  if(k==='faiz')return '%'+nf(v,2);
   if(k==='sav')return '%'+nf(v,2);
   const n=['−2','−1','0','+1','+2'][v+2];return n;
 }
@@ -23,7 +23,7 @@ const LEVERS=[['faiz','Politika faizi','Yüksek faiz enflasyonu ve kuru bastır�
 function levers(c){
   return `<div class="panel">${c?'':'<h2>Politika Kolları</h2>'}${LEVERS.map(([k,n,h])=>{
     const chg=S.lv[k]!==S.lv0[k];
-    return `<div class="lever"><span class="n">${n}</span>${c?'':`<span class="h">${h}</span>`}<div class="step"><button data-lv="${k}" data-d="-1" aria-label="${n} azalt">−</button><output class="${chg?'chg':''}">${fmtLev(k,S.lv[k])}</output><button data-lv="${k}" data-d="1" aria-label="${n} artır">+</button></div>${c||k!=='faiz'?'':`<input class="rng" type="range" min="${LVR[k][0]}" max="${LVR[k][1]}" step="0.5" value="${S.lv[k]}" data-faizr="1" aria-label="${n} ayarla">`}</div>`;}).join('')}
+    return `<div class="lever"><span class="n">${n}</span>${c?'':`<span class="h">${h}</span>`}<div class="step"><button data-lv="${k}" data-d="-1" aria-label="${n} azalt">−</button><output class="${chg?'chg':''}">${fmtLev(k,S.lv[k])}</output><button data-lv="${k}" data-d="1" aria-label="${n} artır">+</button></div>${c||k!=='faiz'?'':`<input class="rng" type="range" min="${LVR[k][0]}" max="${LVR[k][1]}" step="0.25" value="${S.lv[k]}" data-faizr="1" aria-label="${n} ayarla">`}</div>`;}).join('')}
   ${c?'':`<div class="note">Faiz %−1 ile %150 arasında ayarlanabilir; %5'in altında çeyrek puanlık adımlarla ilerler (Japonya ve İsviçre bir dönem eksi faiz uyguladı). Bütçe ve vergiler için alttaki sekmelere bak.</div>`}</div>`;
 }
 function eventCard(e,i){
@@ -167,13 +167,13 @@ document.addEventListener('click',ev=>{
 });
 document.addEventListener('input',ev=>{
   const t=ev.target;if(!t.classList||!t.classList.contains('rng'))return;const v=+t.value;
-  if(t.dataset.faizr){t.closest('.lever').querySelector('output').textContent='%'+nf(v,1);return;}
+  if(t.dataset.faizr){t.closest('.lever').querySelector('output').textContent='%'+nf(v,2);return;}
   if(t.dataset.ui)S.ui[t.dataset.ui]=v;else if(t.dataset.taxr){const b=tBand(t.dataset.taxr);S.tax[t.dataset.taxr]=clamp(v,b[0],b[1]);}else if(t.dataset.wage)S.wage.G=v;else return;
   const root=t.closest('main,.wrap'),d=document.createElement('div');d.innerHTML=S.wage?wageScreen():(V[S.tab]||masa)();
   if(S.wage){const o=root.querySelectorAll('.dl'),w=d.querySelectorAll('.dl');o.forEach((e,j)=>{if(w[j])e.innerHTML=w[j].innerHTML;});return;}
   const i=[...root.querySelectorAll('.rng')].indexOf(t),n=d.querySelectorAll('.rng')[i];if(!n)return;
   const Lv=t.closest('.lever');
-  if(Lv){const N=n.closest('.lever');Lv.querySelector('.h').innerHTML=N.querySelector('.h').innerHTML;Lv.querySelector('output').replaceWith(N.querySelector('output'));}
+  if(Lv){const N=n.closest('.lever'),a=Lv.querySelector('.h'),b=N&&N.querySelector('.h'),o=Lv.querySelector('output'),o2=N&&N.querySelector('output');if(a&&b)a.innerHTML=b.innerHTML;if(o&&o2)o.replaceWith(o2);}
   else {const pt=(t.closest(".rr")||t).previousElementSibling,pn=(n.closest(".rr")||n).previousElementSibling;if(pt&&pn)pt.innerHTML=pn.innerHTML;};
 });
 document.addEventListener('change',ev=>{

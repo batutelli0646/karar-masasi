@@ -1,9 +1,9 @@
 /* ---------- Ekonomi 2: ek politika kolları, piyasa araçları, özelleştirme, sektör programları, ticaret ve ihracat politikası, politika ve program kataloğu ---------- */
 /* Ek para ve makroihtiyati kollar: [anahtar, ad, açıklama] ; aralık LVR'de */
 const LEV2=[['zk','Zorunlu karşılık oranı','Bankaların Merkez Bankası\'nda tutması gereken mevduat payı. Yükseldikçe kredi daralır, enflasyon ve büyüme düşer, rezerv artar.'],['kb','Kredi büyüme sınırı (yıllık)','BDDK\'nın ticari ve bireysel kredilere koyduğu büyüme tavanı. Yüksek tavan büyümeyi ve ithalatı, düşük tavan dezenflasyonu destekler.'],['mud','Kur müdahalesi','Merkez Bankası\'nın döviz piyasasına müdahale yoğunluğu. Sıkı müdahale kuru sabitler ama rezervi eritir.'],['mk','Makroihtiyati sıkılık','Kredi kartı taksit, taşıt ve konut kredisi limitleri. Sıkılık tüketimi, enflasyonu ve cari açığı frenler.']];
-LVR.zk=[0,30,1];LVR.kb=[5,80,5];LVR.mud=[0,3,1];LVR.mk=[0,3,1];
+LVR.zk=[0,30,.25];LVR.kb=[5,80,.25];LVR.mud=[0,3,1];LVR.mk=[0,3,1];
 const LVD={zk:10,kb:30,mud:1,mk:1},MUD=['Serbest dalgalı','Ölçülü','Sıkı yönetilen','Sabite yakın'],MKS=['Gevşek','Normal','Sıkı','Çok sıkı'];
-const LVF={zk:v=>'%'+nf(v,0),kb:v=>'%'+nf(v,0),mud:v=>MUD[v],mk:v=>MKS[v]};
+const LVF={zk:v=>'%'+nf(v,2),kb:v=>'%'+nf(v,2),mud:v=>MUD[v],mk:v=>MKS[v]};
 function levFx(){const F={},L=S.lv||{},a=(k,v)=>{F[k]=(F[k]||0)+v;};if(L.zk===undefined)return F;
   const z=L.zk-10,kb=(L.kb-30)/10,m=L.mk-1,u=L.mud-1;
   a('enf',-.025*z+.05*kb-.06*m);a('buy',-.035*z+.22*kb-.2*m);a('rez',.02*z-.4*u+(u<0?.15:0));a('cari',.02*kb-.03*m);a('des',.015*kb-.03*m-(u<0?.05:0));a('isz',-.01*kb+.01*m);return F;}
