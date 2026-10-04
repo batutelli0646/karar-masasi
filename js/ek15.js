@@ -10,4 +10,4 @@ function disYeni(){const c=CT.find(x=>x[0]===S.dpc)||CT[0],mine=DEALS.filter(e=>
   return a+`<div class="panel"><b>${c[1]} · anlaşmalar ve ortaklıklar</b>${uRows(c,true)}${mine.map(dRow).join('')}</div>`+dipX()+(gen.length?`<details class="panel"><summary><b>Genel anlaşmalar (${gen.length})</b></summary>${gen.map(dRow).join('')}</details>`:'')+b;}
 V.dis=disYeni;V.ulke=()=>wmP()+ulke();
 /* Devlet grubunda yalnız Kurum ve Ordu kaldı; eski kayıtlarda gizlenen sekmede kalanları ana sekmeye al */
-{const _r=render;render=function(){try{if(S&&S.tab&&!GR.some(g=>g[2].includes(S.tab))&&!['sinif','politika'].includes(S.tab))S.tab='masa';}catch(e){}return _r.apply(this,arguments);};}
+{const _r=render;render=function(){try{if(S&&S.tab&&!GR.some(g=>g[2].includes(S.tab))){S.tab={sinif:'nufus',politika:'hizmet'}[S.tab]||'masa';}}catch(e){}return _r.apply(this,arguments);};}
