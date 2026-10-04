@@ -92,7 +92,7 @@ const minName=k=>(MIN.find(m=>m[0]===k)||[])[1]||k;
 const newM=()=>({name:NAMES1[Math.floor(Math.random()*16)]+' '+NAMES2[Math.floor(Math.random()*16)],sk:Math.round(rnd(3,9)),note:'Atanan isim'});
 const govSeats=()=>S.seats[S.me]+S.coal.reduce((a,k)=>a+S.seats[k],0);
 const best=()=>PK.filter(k=>k!==S.me).sort((a,b)=>cmp(S.me,b)-cmp(S.me,a))[0];
-const MVAL=(p,k)=>MV[k]*(PART[p].want.includes(k)?1.5:1),ask=p=>3+S.seats[p]/22+(10-cmp(S.me,p))*.35;
+const MVAL=(p,k)=>MV[k]*(PART[p].want.includes(k)?1.5:1),ask=p=>3+S.seats[p]/22+(10-cmp(S.me,p))*.35+(typeof prlAsk==='function'?prlAsk(p):1);
 const loanC=()=>S.loans.reduce((a,l)=>a+l.amt*l.rate/100,0)/S.gdp*100;
 const logA=(t,c,msg)=>S.log.push({m:S.month,t,c,msg});
 function clearCoal(){Object.keys(S.own).forEach(k=>{S.M[k]=newM();});S.own={};S.coal=[];}
@@ -117,7 +117,7 @@ function bud(k,d){const b=MB[k],st=Math.max(.05,Math.round(b*10)/100),v=Math.rou
 function dropP(k){Object.keys(S.own).filter(m=>S.own[m]===k).forEach(m=>{S.M[m]=newM();delete S.own[m];});S.coal=S.coal.filter(x=>x!==k);S.kol=clamp(S.kol-1,0,10);logA('İttifak',PART[k].n+' hükümetten ayrıldı','Bakanlıkları geri aldın.');save();render();}
 function offer(){
   const n=S.neg,p=n.p,y=n.off.reduce((a,k)=>a+MVAL(p,k),0),x=ask(p);
-  if(cmp(S.me,p)<2.5){n.msg=`${PART[p].n} seninle ideolojik olarak ortaklık kurmayı reddediyor.`;return render();}
+  if(cmp(S.me,p)<3.5){n.msg=`${PART[p].n} seninle ideolojik olarak ortaklık kurmayı reddediyor.`;return render();}
   if(y<x){const m=PART[p].want.find(k=>!n.off.includes(k)&&!S.own[k]);n.msg=`Teklif yetersiz. ${PART[p].n} en az ${nf(x,1)} puanlık bakanlık istiyor, sen ${nf(y,1)} puan sundun.${m?' Özellikle '+minName(m)+' Bakanlığına bakıyorlar.':''}`;return render();}
   
   S.coal.push(p);n.off.forEach(k=>{S.own[k]=p;S.M[k]={...newM(),sk:Math.round(rnd(4,8)),note:PART[p].n+' kontenjanı'};});
@@ -210,7 +210,7 @@ function kurum(){
   ${P('BDDK · kredi hacmi',Q('kre',-10,10,.5,kre,`Kredi hacmi ${kre>=0?'+':''}${nf(kre,1)}% GSYH ≈ ${tl(Math.abs(kre))} ${kre>=0?'büyüme':'küçülme'}`)+B('kre','Uygula',!kre))}
   ${P('SGK · prim affı ve emekliler',`<div class="dl">Asgari ücret (net) ${nf(S.minw,0)} ₺ · Emekli sayısı ≈ ${nf(S.pens,1)} milyon</div>`+Q('af',0,100,5,af,`Prim affı: borcun %${af}'ı silinir · devlete maliyeti ≈ ${tl(af/100*2.5)}`)+B('af',cl('af')?`${cl('af')} ay sonra`:'Affı çıkar',cl('af')||(a<2&&!fr)||!af)+Q('ikr',0,20000,250,ikr,`Bayram ikramiyesi: ${nf(ikr,0)} ₺ × ${nf(S.pens,1)} milyon emekli = ${nf(ikr*S.pens/1000,1)} milyar ₺ (GSYH %${nf(ikr*S.pens/1000/gt*100,2)})`)+B('ikr',cl('ikr')?`${cl('ikr')} ay sonra`:'İkramiye öde',cl('ikr')||!ikr))}`;
 }
-const pRow=(k,a)=>{const on=S.coal.includes(k);return `<div class="lever"><span class="n">${PART[k].n}</span><span class="h">${S.seats[k]} sandalye · uyum ${nf(cmp(S.me,k),1)}/10${on?' · ortak, '+Object.keys(S.own).filter(m=>S.own[m]===k).length+' bakanlık':''}</span><div class="step">${sbtn(on?`data-dropp="${k}"`:`data-neg="${k}"`,on?'Çıkar':'Görüş'+(S.el?'':''),!on&&(S.seats[k]===0||(!S.el&&a<2)))}</div></div>`;};
+const pRow=(k,a)=>{const on=S.coal.includes(k);return `<div class="lever"><span class="n">${PART[k].n}</span><span class="h">${S.seats[k]} sandalye · uyum ${nf(cmp(S.me,k),1)}/10 · ilişki ${typeof rl==='function'?nf(prl(k),0):'-'}${on?' · ortak, '+Object.keys(S.own).filter(m=>S.own[m]===k).length+' bakanlık':''}</span><div class="step">${sbtn(on?`data-dropp="${k}"`:`data-neg="${k}"`,on?'Çıkar':'Görüş'+(S.el?'':''),!on&&(S.seats[k]===0||(!S.el&&a<2)))}</div></div>`;};
 function meclis(){
   const g=govSeats(),a=avail(),camp=toEl()<=6,inG=k=>k===S.me||S.coal.includes(k);
   const bar=k=>`<div class="f"><span>${PART[k].n}${inG(k)?' ✓':''}</span><div class="bar"><i style="width:${S.seats[k]/6}%;${inG(k)?'':'background:var(--muted)'}"></i></div><span class="dl">${S.seats[k]}</span></div>`;
@@ -235,7 +235,7 @@ function elScreen(){
 }
 function kabine(){
   const a=avail(),tot=S.fac.R+S.fac.G+S.fac.S,list=[['mb','Merkez Bankası Başkanı'],...MIN.filter(m=>!m[4]).map(m=>[m[0],m[1]+' Bakanı'])];
-  return `${S.cand&&typeof candP==="function"?candP():''}<h2>Kabine</h2><div class="panel"><div class="note" style="margin:0 0 6px">${PART[S.me].n} hükümetini yönetiyorsun. 17 bakanlık ve Merkez Bankası. İttifak ortağına verdiğin bakanlıkları değiştiremezsin.</div>${list.map(([k,n])=>{const m=S.M[k],h=S.own[k];return `<div class="lever"><span class="n">${n}</span><span class="h">${m.name} · yetkinlik ${m.sk}/10${typeof mtx==='function'?mtx(k):''} · güven ${nf(m.gv===undefined?40+m.sk*5:m.gv,0)}${(m.gv===undefined?99:m.gv)<35?' · <b style="color:var(--bad)">Riskli</b>':''}${h?' · '+PART[h].n+' kontenjanı':''}</span><div class="step">${sbtn(`data-fire="${k}"`,S.confirm===k?'Onayla':'Değiştir',a<2||h).replace('class="btn sm"','class="btn sm sec"')}</div></div>`;}).join('')}</div>
+  return `${S.cand&&typeof candP==="function"?candP():''}<h2>Kabine</h2><div class="panel"><div class="note" style="margin:0 0 6px">${PART[S.me].n} hükümetini yönetiyorsun. 17 bakanlık ve Merkez Bankası. İttifak ortağının bakanını değiştirirsen o partiyle ilişkilerin bozulur.</div>${list.map(([k,n])=>{const m=S.M[k],h=S.own[k];return `<div class="lever"><span class="n">${n}</span><span class="h">${m.name} · yetkinlik ${m.sk}/10${typeof mtx==='function'?mtx(k):''} · güven ${nf(m.gv===undefined?40+m.sk*5:m.gv,0)}${(m.gv===undefined?99:m.gv)<35?' · <b style="color:var(--bad)">Riskli</b>':''}${h?' · '+PART[h].n+' kontenjanı':''}</span><div class="step">${sbtn(`data-fire="${k}"`,S.confirm===k?'Onayla':'Değiştir',a<2).replace('class="btn sm"','class="btn sm sec"')}</div></div>`;}).join('')}</div>
   <h2>İttifak Ortakları</h2><div class="panel">${S.coal.length?S.coal.map(k=>`<div class="lever"><span class="n">${PART[k].n}</span><span class="h">Lider ${PART[k].lead} · ${S.seats[k]} sandalye</span></div>`).join('')+`<div class="note">İttifak uyumu ${nf(S.kol,1)}/10</div>`:'<span class="muted">Ortak yok. Meclis sekmesinden ortak arayabilirsin.</span>'}</div>
   ${partiP()}`;
 }
