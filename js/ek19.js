@@ -19,3 +19,10 @@ uSet('Enerji işbirliği görüşmesi',i=>ENR.includes(i)||['egy','chn','ind','j
 uSet('Su ve enerji ortak projesi',i=>['irq','syr','geo','aze','bgr','irn'].includes(i));
 uSet('Havayolu seferleri ve sınır kapısı',i=>KOM.includes(i));
 uSet('Arabulucu ve insani yardım',i=>['syr','irq','egy','isr','ukr','rus','irn','lby','som'].includes(i));
+/* yinelenen yasalar ve gerçeğe uymayan anlaşma/temas kayıtları */
+['veri','kadin2','ihale2'].forEach(id=>{const i=LAWS.findIndex(l=>l[0]===id);if(i>=0)LAWS.splice(i,1);});
+{const i=DEALS.findIndex(d=>d[0]==='gb_ab');if(i>=0){DEALS.splice(i,1);delete DQ.gb_ab;AL.length=0;AL.push(...DEALS,...PROJ,...PRIV);}}
+DQ.nukleer2=['jpn','kor'];DQ.ots=['aze','kaz','uzb','tkm'];DQ.golf=['sau','qat','uae','kwt'];DQ.korfez_yat=['qat','sau','uae','kwt'];
+{const d=DEALS.find(x=>x[0]==='kor_sav');if(d)d[4]='Altay tankı için motor ve zırh teknolojisi, ortak savunma projeleri.';}
+['Ticari yaptırım uygula','Ticarette kısıtlama'].forEach(n=>uSet(n,i=>!['kktc','aze','som','pak','qat'].includes(i)));
+['Büyükelçiyi istişareye çağır','Büyükelçiyi istişare için geri çağır','Protesto notası'].forEach(n=>uSet(n,i=>i!=='kktc'));
