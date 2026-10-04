@@ -114,20 +114,6 @@ function initGov(){
   clearCoal();const pt=ALLY[S.me]||best();S.seats={AKP:268,CHP:169,MHP:50,IYI:43,DEM:65,YRP:5};S.coal=[pt];S.ally=true;S.kol=clamp(cmp(S.me,pt),5,8); /* 2023 genel seçim sonuçları (TİP DEM bloğuna eklendi); Cumhurbaşkanlığı sisteminde ittifak ortağı bakanlık almaz */
 }
 function bud(k,d){const b=MB[k],st=Math.max(.05,Math.round(b*10)/100),v=Math.round((S.bud[k]+d*st)*100)/100;if(v<b*.4-1e-9||v>b*2+1e-9)return;S.bud[k]=v;save();render();}
-function propose(id,lobi){
-  const l=LAWS.find(x=>x[0]===id)||S.cl.find(x=>x[0]===id),c=l[2]+(lobi?2:0);
-  if(c>avail()||S.laws[id])return;
-  const rows=PK.map(k=>{const s=S.seats[k];let f;
-    if(k===S.me)f=clamp(.97+rnd(-.03,.02),.9,1);
-    else if(S.coal.includes(k))f=clamp(.7+S.kol/30+rnd(-.08,.08)+(l[4]-.5)*.2,.5,1);
-    else f=clamp(l[4]*.4+(lobi?.1:0)+cmp(S.me,k)/50-.08+rnd(-.1,.1),0,.95);
-    const y=Math.round(s*f);return [k,y,s-y];});
-  const yes=rows.reduce((a,r)=>a+r[1],0),ref=id==='anayasa'&&yes>=360&&yes<400,ok=id==='anayasa'?(yes>=400||(ref&&S.des+rnd(-6,6)>=47)):yes>=l[3];
-  S.cur.spent+=c;S.lawT[id]=S.month+3;
-  if(ok){const ms=S.cl.includes(l)?su('dr'+id.slice(0,3)):1;if(S.cl.includes(l))suU('dr'+id.slice(0,3));applyFx(sfx2(l[6],ms));S.laws[id]=Math.max(S.month,.01);if(id==='baraj')S.barajM=S.month;const ex=l[7];if(ex&&ex.base)S.laws[ex.base]=Math.max(S.month,.01);if(ex&&ex.tax){S.tax[ex.tax]=ex.v;S.tref=S.tref||{};S.tref[ex.tax]=ex.v;delete (S.tp||{})[ex.tax];if(ex.nw)S.laws['vt_'+ex.tax]=Math.max(S.month,.01);}if(ex&&ex.repeal){delete S.laws[ex.repeal];}if(ex&&ex.erken){S.nel=S.month+2;S.erkM=1;}S.cur.spent=Math.max(0,S.cur.spent-1);}else applyFx({des:-.3,par:-.3});
-  hap(ok?[20,30,20]:60,ok?660:220);S.vote={n:l[1],d:l[5],rows,yes,need:l[3],ok};
-  logA(l[1],ok?'Kabul edildi':'Reddedildi',`Oylama: ${yes} kabul, ${600-yes} ret (gerekli ${l[3]}).${ref?' Halkoylamasına gidildi: '+(ok?'evet çıktı.':'hayır çıktı.'):''}`);save();render();
-}
 function dropP(k){Object.keys(S.own).filter(m=>S.own[m]===k).forEach(m=>{S.M[m]=newM();delete S.own[m];});S.coal=S.coal.filter(x=>x!==k);S.kol=clamp(S.kol-1,0,10);logA('İttifak',PART[k].n+' hükümetten ayrıldı','Bakanlıkları geri aldın.');save();render();}
 function offer(){
   const n=S.neg,p=n.p,y=n.off.reduce((a,k)=>a+MVAL(p,k),0),x=ask(p);
@@ -234,10 +220,6 @@ function meclis(){
   ${draftP()}<h2>Yasalar</h2><div class="panel">${LAWS.map(([id,n,c,need,,d,fx])=>{const done=S.laws[id],wait=false;return `<div class="lever"><span class="n">${n}</span><span class="h">${d} <b>(Geçerse: ${fxText(fx)}.)</b> ${need} oy gerekir.</span><div class="step">${done?'<span class="st good">Yasalaştı</span>':sbtn(`data-law="${id}"`,`Teklif`,wait||a<c)+sbtn(`data-lawu="${id}"`,'Uzlaşmalı teklif')+sbtn(`data-law="${id}" data-lobi="1"`,`Lobiyle teklif`,wait||a<c+2)}</div></div>`;}).join('')}<div class="note">Uzlaşmalı teklif muhalefetin itirazlarını metne işler: geçme şansı artar, etkisi %60'a iner. Lobi, muhalefet vekillerini ikna eder ve oy şansını artırır. Teklif verdiğinde Genel Kurul oylaması açılır.</div></div>`;
 }
 const pickScreen=()=>`<div class="wrap"><div class="end"><h1>Hangi Partiyi Yöneteceksin?</h1><p>Türkiye'deki gerçek siyasi partilerden birini seç. Parti liderleri ve bakanlar kurgusaldır. Oy oranları ve sandalyeler oyunun başlangıç değerleridir.</p><div class="dl" style="margin:10px 0 4px">Zorluk</div><div class="chips">${['Kolay','Normal','Zor'].map((n,i)=>`<button class="btn sm ${S.dif===i?'':'sec'}" data-dif="${i}">${n}</button>`).join('')}</div><div class="note">${['Kolay: her ay hafif destek ve büyüme bonusu, daha az kriz, IMF acil kredisi 25 mlr $.','Normal: ek bonus ya da ceza yok, IMF acil kredisi 15 mlr $.','Zor: her ay hafif destek ve büyüme cezası, daha çok kriz, IMF acil kredisi yalnızca 8 mlr $.'][S.dif===undefined?1:S.dif]}</div><div class="dl" style="margin:10px 0 4px">Senaryo</div><div class="chips" style="margin-bottom:12px">${['Standart','Kriz ortasında','Seçim öncesi','Yüksek enflasyon','Toparlanma','Güçlü ekonomi'].map((n,i)=>`<button class="btn sm ${(S.sc||0)===i?'':'sec'}" data-sc="${i}">${n}</button>`).join('')}</div><div class="note" style="margin:-6px 0 12px">${['Dengeli başlangıç: enflasyon %31, destek %41.','Kriz ortasında: enflasyon %68, rezerv düşük, destek zayıf. Zor bir kurtarma.','Seçim öncesi: genel seçime 6 ay var, destek %44. Kampanya ve vaatler öne çıkar.','Yüksek enflasyon: enflasyon %85, kur baskılı. Fiyat istikrarı ana mesele.','Toparlanma: kriz geride, enflasyon %36, büyüme %3,8. Dengeyi koruman gerekir.','Güçlü ekonomi: enflasyon %18, büyüme %5, rezerv güçlü. Ama halk desteğin zayıf (%34).'][S.sc||0]}</div><div class="panel">${PK.map(k=>`<div class="lever"><span class="n">${PART[k].n}</span><span class="h">${PART[k].x>.3?'Sağ':'Sol'} çizgi · rakip lider: ${PART[k].lead}</span><div class="step">${sbtn(`data-pick="${k}"`,'Seç')}</div></div>`).join('')}</div></div></div>`;
-function voteScreen(){
-  const v=S.vote;
-  return `<div class="wrap"><div class="end"><div class="muted" style="font-family:var(--mono);font-size:12px">TBMM Genel Kurulu · oylama</div><h1>${v.n}</h1><p>${v.d}</p><div class="fac" style="margin:14px 0">${v.rows.map(([k,y,n])=>`<div class="f"><span>${PART[k].n}</span><div class="bar"><i style="width:${y/((y+n)||1)*100}%"></i></div><span class="dl">${y} / ${n}</span></div>`).join('')}</div><div class="big">${v.yes} kabul · ${600-v.yes} ret</div><div class="note">Gerekli oy: ${v.need}</div><h2 style="margin-top:14px;color:var(--${v.ok?'good':'bad'})">${v.ok?'Yasalaştı':'Teklif reddedildi'}</h2><button class="btn" data-votok="1">Tamam</button></div></div>`;
-}
 function negScreen(){
   const n=S.neg,p=n.p,y=n.off.reduce((a,k)=>a+MVAL(p,k),0),x=ask(p),ok=y>=x,pct=Math.min(100,y/(x||1)*100),mins=MIN.filter(m=>!m[4]),wnt=mins.filter(m=>PART[p].want.includes(m[0])),rst=mins.filter(m=>!PART[p].want.includes(m[0]));
   const row=m=>{const k=m[0],h=S.own[k],on=n.off.includes(k);return `<div class="lever"><span class="n">${m[1]}</span><span class="h">${nf(MVAL(p,k),1)} puan${h?' · '+PART[h].n+' elinde':''}</span><div class="step">${sbtn(`data-nego="${k}"`,on?'Geri al':'Ver',!!h).replace('class="btn sm"',`class="btn sm ${on?'':'sec'}"`)}</div></div>`;};
