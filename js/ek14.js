@@ -29,7 +29,7 @@ function kdraw(){const d=kdata(),c=document.createElement('canvas');c.width=1080
     x.fillStyle='#16222B';x.fillRect(cx,cy,480,112);T(s.l,cx+18,cy+34,'500 26px '+F,'#8C9EA6');T(nf(b,s.d)+' '+s.u,cx+18,cy+84,'700 44px '+F,col);T('başlangıç '+nf(a,s.d),cx+462,cy+34,'500 22px '+F,'#8C9EA6','right');
     if(h.length>2){const mn=Math.min(...h),mx=Math.max(...h)||1,r=(mx-mn)||1;x.strokeStyle=col;x.lineWidth=3;x.beginPath();h.slice(-48).forEach((v,j,L)=>{const px=cx+250+j*(210/Math.max(L.length-1,1)),py=cy+100-(v-mn)/r*40;j?x.lineTo(px,py):x.moveTo(px,py);});x.stroke();}});
   let y=520+Math.ceil(ks.length/2)*128+30;
-  const nl=Object.keys(S.laws||{}).filter(k=>S.laws[k]>.01).length,pk=(S.pri||[]).filter(k=>PRI[k]&&PRI[k][2]()).length,pn=(S.pri||[]).length;
+  const nl=Object.keys(S.laws||{}).filter(k=>!!S.laws[k]).length,pk=(S.pri||[]).filter(k=>PRI[k]&&PRI[k][2]()).length,pn=(S.pri||[]).length;
   T('SİYASİ BİLANÇO',60,y,'600 28px '+F,'#F2A65A');y+=50;
   [['Çıkarılan yasa',nl],['Tutulan söz',pn?pk+'/'+pn:'—'],['Ortak sayısı',S.coal.length],['Dönem',S.term+'.'],['Kazanılan puan',Math.round(S.sc||0)]].forEach((r,i)=>{const px=60+i*196;x.fillStyle='#16222B';x.fillRect(px,y,184,110);T(String(r[1]),px+92,y+56,'700 44px '+F,'#E5ECEE','center');T(r[0],px+92,y+92,'500 20px '+F,'#8C9EA6','center');});
   y+=150;if(S.coal.length){T('PARTİ İLİŞKİLERİ',60,y,'600 28px '+F,'#F2A65A');y+=40;PK.filter(k=>k!==S.me&&S.seats[k]).slice(0,5).forEach(k=>{const v=prl(k);T(PART[k].n,60,y+22,'500 26px '+F,'#B8C4D6');x.fillStyle='#16222B';x.fillRect(360,y,560,22);x.fillStyle=v>=60?'#4CC38A':v>=35?'#E8B84A':'#EA6660';x.fillRect(360,y,5.6*v,22);T(nf(v,0),960,y+22,'500 24px '+F,'#E5ECEE');y+=42;});y+=14;}

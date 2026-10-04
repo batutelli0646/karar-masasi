@@ -64,7 +64,7 @@ function newGame(){
 }
 const snap=()=>{const o={};STATS.forEach(s=>o[s.k]=S[s.k]);return o;};
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
-function load(){try{const r=localStorage.getItem(KEY);if(r){S=JSON.parse(r);ensure();return true;}}catch(e){}return false;}
+function load(){let r=null;try{r=localStorage.getItem(KEY);if(r){S=JSON.parse(r);ensure();return true;}}catch(e){try{if(r)localStorage.setItem(KEY+'-bak',r);}catch(_){}}return false;}
 function ensure(){
   S.kamp=S.kamp||0;S.bud=S.bud||{};S.tax=S.tax||{};S.laws=S.laws||{};S.lawT=S.lawT||{};S.prom=S.prom||[];S.term=S.term||1;S.own=S.own||{};S.gdp=S.gdp||1350;
   MIN.forEach(m=>{if(S.bud[m[0]]===undefined)S.bud[m[0]]=m[2];if(!m[4]&&!S.M[m[0]])S.M[m[0]]=newM();});
@@ -72,7 +72,7 @@ function ensure(){
   S.ui=S.ui||{};S.cool=S.cool||{};S.loans=S.loans||[];S.pens=S.pens||17.2;S.minw=S.minw||28075;if(S.wage===undefined)S.wage=null;
   if(!S.taxv){const o=S.tax;S.tax={};TAX.forEach(t=>{const v=o[t[0]]||0;S.tax[t[0]]=t[2]===1?(v>0?t[5]:0):t[5]*(1+.1*v);});S.taxv=1;}
   TAX.forEach(t=>{if(S.tax[t[0]]===undefined)S.tax[t[0]]=t[2]===1?0:t[5];});
-  S.lv={faiz:S.lv.faiz};S.lv0={faiz:S.lv0.faiz};
+  S.lv=S.lv||{faiz:37};S.lv0=S.lv0||{...S.lv};
   if(!S.me||(S.seats&&S.seats.A!==undefined)){S.me='AKP';S.seats=null;S.coal=[];S.own={};}
   if(!S.seats)initGov();
   dunyaEnsure();toplumEnsure();piyasaEnsure();ileriEnsure();genisEnsure();genis2Ensure();partiEnsure();s2Ensure();e2Ensure();d2Ensure();if(S.debt===undefined)S.debt=S.borc*S.gdp/100;arayuzEnsure();

@@ -56,7 +56,8 @@ const XT={Milliyetçi:.8,Popülist:.4,'Sosyal devletçi':-.5,Liberal:-.1,Teknokr
 let cu={n:'Yeni Parti',ab:'YP',lead:'Aday Lider',lg:0,col:5,t:['Liberal','Çoğulcu']};
 const cx=()=>(XT[cu.t[0]]+XT[cu.t[1]])/2,base=()=>PK.slice().sort((a,b)=>Math.abs(PART[a].x-cx())-Math.abs(PART[b].x-cx()))[0];
 const ORIG={};try{PK.forEach(k=>ORIG[k]={n:PART[k].n,x:PART[k].x,lead:PART[k].lead});}catch(e){}
-const ap=()=>{try{PK.forEach(k=>Object.assign(PART[k],ORIG[k]));if(S&&S.cp&&PART[S.me])Object.assign(PART[S.me],{n:S.cp.n,x:S.cp.x,lead:S.cp.lead});}catch(e){}};
+const sx=v=>String(v==null?'':v).replace(/[<>&"'`]/g,'');
+const ap=()=>{try{if(S&&S.cp)['n','ab','x','lead'].forEach(q=>{if(S.cp[q]!==undefined)S.cp[q]=sx(S.cp[q]);});PK.forEach(k=>Object.assign(PART[k],ORIG[k]));if(S&&S.cp&&PART[S.me])Object.assign(PART[S.me],{n:S.cp.n,x:S.cp.x,lead:S.cp.lead});}catch(e){}};
 function cbuild(){const b=base(),ok=cu.t.length===2;
 return `<div class="hd">${lg2(cu.lg,cu.col,46)}<b>${cu.n||'Yeni Parti'}</b><small>Kendi partin<br>Taban: ${PART[b].n}</small></div>
 <div class="cf"><label>Parti adı</label><input data-cu="n" maxlength="26" value="${cu.n}"><label>Kısaltma</label><input data-cu="ab" maxlength="4" value="${cu.ab}"><label>Genel başkan adı</label><input data-cu="lead" maxlength="26" value="${cu.lead}"></div>
@@ -75,7 +76,7 @@ ${o?cbuild():`<div class="hd">${logo(sel,46)}<b>${p.n}</b><small>Oy oranı %${p.
 <div class="sh">Senaryo</div><div class="chips">${['Standart','Kriz ortasında','Seçim öncesi','Yüksek enflasyon','Toparlanma','Güçlü ekonomi'].map((n,i)=>`<button class="btn sm ${sc===i?'':'sec'}" data-sc="${i}">${n}</button>`).join('')}</div><div class="note">${SN[sc]}</div>
 <div class="go"><button class="btn" data-pick="${o?base():sel}" ${o?'data-own="1"':''}>BAŞLA ▸</button></div></div></div>`;}
 {const _r=render;render=function(){ap();if(S&&S.pick&&!(window.kmHome&&window.kmHome.on&&window.kmHome.on())){try{const a=document.getElementById('app');if(a){document.documentElement.removeAttribute('data-nav');a.innerHTML=scr();return;}}catch(e){}}return _r();};}
-{const _s=startGame;startGame=function(k){const o=sel==='OZEL'&&k===base();if(o&&(cu.t.length!==2||!cu.n.trim()))return;const l=o?null:(LD[k]||[])[li];ap();_s(k);try{S.cp=o?{n:cu.n.trim(),ab:(cu.ab.trim()||cu.n.trim().slice(0,2)).toUpperCase(),lead:cu.lead.trim()||'Genel Başkan',lg:cu.lg,col:cu.col,t:cu.t.slice(),x:cx()}:null;S.ldn=o?S.cp.lead:l?l[0]:'';const f=o?sum(cu.t):sum([l[1],l[2],...PT[k]]);const fx={};for(const q in f)fx[q]=Math.round(f[q]*10)/10;ap();applyFx(fx);save();render();}catch(e){}};}
+{const _s=startGame;startGame=function(k){const o=sel==='OZEL'&&k===base();if(o){cu.n=sx(cu.n);cu.ab=sx(cu.ab);cu.lead=sx(cu.lead);}if(o&&(cu.t.length!==2||!cu.n.trim())){try{const i=document.querySelector('[data-cu=n]');if(i){i.focus();i.style.outline='2px solid #b02a30';}}catch(e){}return;}const l=o?null:(LD[k]||[])[li];ap();_s(k);try{S.cp=o?{n:cu.n.trim(),ab:(cu.ab.trim()||cu.n.trim().slice(0,2)).toUpperCase(),lead:cu.lead.trim()||'Genel Başkan',lg:cu.lg,col:cu.col,t:cu.t.slice(),x:cx()}:null;S.ldn=o?S.cp.lead:l?l[0]:'';const f=o?sum(cu.t):sum([l[1],l[2],...PT[k]]);const fx={};for(const q in f)fx[q]=Math.round(f[q]*10)/10;ap();applyFx(fx);STATS.forEach(s=>S.hist[s.k]=[S[s.k]]);S.prev=snap();save();render();}catch(e){}};}
 document.addEventListener('input',ev=>{const d=ev.target&&ev.target.dataset;if(d&&d.cu)cu[d.cu]=ev.target.value;});
 document.addEventListener('click',ev=>{const t=ev.target.closest&&ev.target.closest('button');if(!t)return;const d=t.dataset;
 if(d.ps!==undefined){ev.stopPropagation();sel=d.ps;li=0;render();return;}

@@ -8,7 +8,7 @@ function dxWorld(){const n={Müttefik:0,Dost:0,Normal:0,Gergin:0,Düşman:0};CT.
 function dxDeals(){const dn=DEALS.filter(isDone),bl=CT.filter(c=>S.dl[c[0]]);
   return dxSec('Anlaşmalarım',`${dn.length+bl.length} anlaşma`,(dn.length?dn.map(e=>`<div class="dl">✓ ${e[1]}</div>`).join(''):'<div class="dl muted">Yürürlükte çok taraflı anlaşma yok.</div>')+(bl.length?`<div class="dl" style="margin-top:6px"><b>İkili anlaşma:</b> ${bl.map(c=>c[1]).join(', ')}</div>`:''));}
 function dxDip(){const n=dpN(),m=dpMax(),on=CT.filter(c=>(S.dp.m[c[0]]||0)>0);
-  return `<div class="panel"><b>Diplomat kolordusu</b> <span class="muted dl">· ${n}/${m} diplomat</span><div class="note" style="margin:4px 0">Diplomatlar atandıkları ülkeyle ilişkiyi ay ay iyileştirir. Mod ve atama, ülke kartından yapılır; her diplomat bütçeye küçük yük bindirir.</div>${gbar(n/m*100,n>=m?'warn':'good')}${on.length?on.map(c=>`<div class="dl">${c[1]} · ${DM[S.dp.m[c[0]]][0]}</div>`).join(''):'<div class="dl muted">Atanmış diplomat yok.</div>'}</div>`;}
+  return `<div class="panel"><b>Diplomat kolordusu</b> <span class="muted dl">· ${n}/${m} diplomat</span><div class="note" style="margin:4px 0">Diplomatlar atandıkları ülkeyle ilişkiyi ay ay iyileştirir. Diplomat atamasını ülkenin Özel kurallar penceresinden yap; her diplomat bütçeye küçük yük bindirir.</div>${gbar(n/m*100,n>=m?'warn':'good')}${on.length?on.map(c=>`<div class="dl">${c[1]} · ${DM[S.dp.m[c[0]]][0]}</div>`).join(''):'<div class="dl muted">Atanmış diplomat yok.</div>'}</div>`;}
 const DXC=[['tem','Temas'],['anl','Anlaşma'],['dip','Diplomasi'],['tar','Tarife']];
 const dxCh=(a,arr,cur)=>`<div class="chips" style="margin:3px 0">${arr.map(([k,n])=>`<button class="btn sm ${cur===k?'':'sec'}" ${a}="${k}">${n}</button>`).join('')}</div>`;
 function dxCard(c,full){const id=c[0],v=S.ul[id],[lb,k]=rl(v),op=full||S.usel===id,dm=S.dp.m[id]||0,o=okc(id),fav=(S.fav||{})[id],t=S.dxc||'tem';
@@ -31,7 +31,7 @@ function dxP(){if(S.usel)S.dpc=S.usel;const t=S.dxt||'ozet',nt=(S.ta||[]).length
   else{const u0=S.usel;S.usel=null;const mp=wmP();S.usel=u0;h=mp+(sel?dxCard(sel,1).replace('<div class="lever">','<div class="panel"><div class="lever">')+'</div>':'')+dxWorld();}
   return `<div class="subtabs" style="margin:6px 0">${DXT.map(([k,n])=>`<button class="bn2" aria-selected="${k===t}" data-dxt="${k}">${n}${k==='talep'&&nt?' ('+nt+')':''}</button>`).join('')}</div>${h}`;}
 V.dis=dxP;SUBN.dis='Dış ilişkiler';
-{const g=GR.find(x=>x[0]==='dev');if(g&&!g[2].includes('dis'))g[2].splice(1,0,'dis');}
+{const g=GR.find(x=>x[0]==='dev');if(g&&!g[2].includes('dis'))g[2].splice(1,0,'dis');if(g&&!g[2].includes('orgut'))g[2].splice(2,0,'orgut');}
 if(document.addEventListener)document.addEventListener('click',ev=>{const t=ev.target.closest&&ev.target.closest('[data-dxs],[data-dxb],[data-dxo],[data-dxf],[data-dxt],[data-dxc],[data-dxm]');if(!t)return;ev.stopPropagation();const d=t.dataset;
   if(d.dxs)S.dxs=d.dxs;if(d.dxb){S.dxb=d.dxb;S.dxn=10;}if(d.dxt)S.dxt=d.dxt;if(d.dxc)S.dxc=d.dxc;if(d.dxm)S.dxn=(S.dxn||10)+15;if(d.dxo){S.usel=S.usel===d.dxo?null:d.dxo;if(S.usel){S.dpc=S.usel;S.wsel=S.usel;}}if(d.dxf){S.fav=S.fav||{};S.fav[d.dxf]=S.fav[d.dxf]?0:1;}save();render();},true);
 /* aynı adlı temasları tekilleştir */

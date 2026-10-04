@@ -16,7 +16,7 @@ function find(c){const a=[...document.querySelectorAll('button[data-d]')].filter
 function stop(){clearTimeout(tm);tm=null;cur=null;}
 function loop(n){if(!cur)return;const b=find(cur);if(!b||b.disabled){stop();return;}held=true;b.click();tm=setTimeout(()=>loop(n+1),n<6?130:n<14?80:45);}
 document.addEventListener('pointerdown',ev=>{const b=ev.target.closest&&ev.target.closest('button[data-d]');if(!b||!b.closest('.step'))return;const s=sig(b),i=[...document.querySelectorAll('button[data-d]')].filter(x=>sig(x)===s).indexOf(b);held=false;cur={s,i};clearTimeout(tm);tm=setTimeout(()=>loop(0),380);},true);
-['pointerup','pointercancel','pointerleave'].forEach(e=>document.addEventListener(e,()=>{stop();},true));
+['pointerup','pointercancel','pointerleave'].forEach(e=>document.addEventListener(e,()=>{stop();if(held)setTimeout(()=>{held=false;},350);},true));
 document.addEventListener('click',ev=>{if(held&&ev.isTrusted){held=false;ev.stopPropagation();ev.preventDefault();}},true);
 document.addEventListener('contextmenu',ev=>{if(ev.target.closest&&ev.target.closest('button[data-d]'))ev.preventDefault();});
 const st=document.createElement('style');st.textContent='button[data-d]{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}';document.head.appendChild(st);

@@ -1,5 +1,5 @@
 /* Düzen: üstte gösterge şeridi, altında karar kartları ve yan panelde politika kolları. Resmi dosya/dosya kapağı dili. */
-:root{
+:root{--gold:#F2C14E;
   --bg:#E8ECEB; --surface:#F6F8F7; --surface2:#DDE3E2; --ink:#111B22; --muted:#56666E; --line:#C4CDCD;
   --accent:#28597F; --accent-ink:#FFFFFF; --good:#1E7A4B; --warn:#A96B0C; --bad:#B02A30;
   --display:'Tomorrow',system-ui,sans-serif;
@@ -133,11 +133,11 @@ h2{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:.07e
 .top-in{flex-wrap:nowrap;gap:10px}.top-in .brand{min-width:0}.ico{flex:none;margin-left:auto}
 .brand small{font-size:10px;letter-spacing:.03em;white-space:nowrap}
 /* TEMA: koyu zemin + altın vurgu, yoğun başlıklar, ince altın çerçeveli paneller (Money Wars tarzı) */
-:root:root:root{--bg:#ece6d6;--surface:#f6f1e3;--surface2:#e2dac3;--ink:#1d1a14;--muted:#6a6252;--line:#cfc6ae;--accent:#8a1c1c;--accent-ink:#fff8ee;--good:#2e7d46;--warn:#9a6a10;--bad:#b02a30;--bg0:#f4eedf;--hd:linear-gradient(#f6f1e3,#ece6d6);--pn:linear-gradient(180deg,#f9f4e7,#f2ecdb);--glow:rgba(138,28,28,.05);--glow2:rgba(138,28,28,.14);--btn:linear-gradient(180deg,#a82626,#7a1717);--btnl:#5a0f0f;--f1:#f6f1e3;--f2:#f1ebda;--f3:#f6f1e3;--f3h:#ede4cd;--barbg:#ddd5bf;--navsel:#e9e0c8;--endb:#f1ebda;--sep:#d9d0b8;color-scheme:light;
+:root:root:root{--gold:#F2C14E;--bg:#ece6d6;--surface:#f6f1e3;--surface2:#e2dac3;--ink:#1d1a14;--muted:#6a6252;--line:#cfc6ae;--accent:#8a1c1c;--accent-ink:#fff8ee;--good:#2e7d46;--warn:#9a6a10;--bad:#b02a30;--bg0:#f4eedf;--hd:linear-gradient(#f6f1e3,#ece6d6);--pn:linear-gradient(180deg,#f9f4e7,#f2ecdb);--glow:rgba(138,28,28,.05);--glow2:rgba(138,28,28,.14);--btn:linear-gradient(180deg,#a82626,#7a1717);--btnl:#5a0f0f;--f1:#f6f1e3;--f2:#f1ebda;--f3:#f6f1e3;--f3h:#ede4cd;--barbg:#ddd5bf;--navsel:#e9e0c8;--endb:#f1ebda;--sep:#d9d0b8;color-scheme:light;
   --display:'Barlow Condensed','Tomorrow',system-ui,sans-serif;--body:'Barlow','Tomorrow',system-ui,sans-serif;--mono:'Barlow Condensed','Tomorrow',system-ui,sans-serif}
 @media (prefers-color-scheme:dark){:root:root:not([data-theme="light"]){--bg:#0a0908;--surface:#14110d;--surface2:#221c12;--ink:#ece6d6;--muted:#968c78;--line:#3a2f1a;--accent:#e2a22c;--accent-ink:#1a1204;--good:#5fb36e;--warn:#e2a22c;--bad:#d4493a;--bg0:#17120a;--hd:linear-gradient(#120f0a,#0a0908);--pn:linear-gradient(180deg,#17130e,#110e0a);--glow:rgba(226,162,44,.06);--glow2:rgba(226,162,44,.18);--btn:linear-gradient(180deg,#f0b43e,#c98a16);--btnl:#8a5d0a;--f1:#14110d;--f2:#100d09;--f3:#0f0c08;--f3h:#17110a;--barbg:#241d11;--navsel:#1c150a;--endb:#0d0b08;--sep:#2a2214;color-scheme:dark}}
 :root:root[data-theme="dark"]{--bg:#0a0908;--surface:#14110d;--surface2:#221c12;--ink:#ece6d6;--muted:#968c78;--line:#3a2f1a;--accent:#e2a22c;--accent-ink:#1a1204;--good:#5fb36e;--warn:#e2a22c;--bad:#d4493a;--bg0:#17120a;--hd:linear-gradient(#120f0a,#0a0908);--pn:linear-gradient(180deg,#17130e,#110e0a);--glow:rgba(226,162,44,.06);--glow2:rgba(226,162,44,.18);--btn:linear-gradient(180deg,#f0b43e,#c98a16);--btnl:#8a5d0a;--f1:#14110d;--f2:#100d09;--f3:#0f0c08;--f3h:#17110a;--barbg:#241d11;--navsel:#1c150a;--endb:#0d0b08;--sep:#2a2214;color-scheme:dark}
-:root[data-font="sys"]:root:root{--display:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--mono:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+:root[data-font="sys"]:root:root{--gold:#F2C14E;--display:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--body:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--mono:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
 body{background:radial-gradient(120% 60% at 50% 0,var(--bg0) 0,var(--bg) 60%) fixed;font-size:14.5px}
 header.top{background:var(--hd);border-bottom:1px solid var(--line)}
 .brand{color:var(--accent);font-weight:700;letter-spacing:.14em;font-size:24px}.brand small{letter-spacing:.2em;font-size:10px;color:var(--muted);text-transform:uppercase}

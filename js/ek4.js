@@ -13,7 +13,7 @@ PL.push(
 ['yasli','Sosyal','Yaşlı bakım ve gündüz evleri','Belediyelerle ortak yaşlı bakım ağı.',{des:.05,huz:.03,acik:.08},{emekli:6,muhaf:3}],
 ['siber','Güvenlik','Siber güvenlik ve veri koruma','Kritik altyapı için ulusal siber ordu.',{huz:.03,bat:.02,acik:.05,ord:.02},{milli:3,kentli:2}],
 ['afetf','Güvenlik','Afet hazırlık seferberliği','Deprem toplanma alanları, yapı denetimi ve gönüllü ağı.',{huz:.05,acik:.14,des:.03},{kentli:3,muhaf:3,dogu:3}],
-['denetim','Güvenlik','Yolsuzlukla mücadele ve şeffaflık','Kamu ihale denetimi ve bağımsız sayıştay.',{bat:.05,des:.03,acik:-.04,par:-.03},{kentli:6,sanayi:2,kamu:-3}],
+['denetim','Güvenlik','Yolsuzlukla mücadele ve şeffaflık','Kamu ihale denetimi ve bağımsız sayıştay.',{bat:.04,des:.02,acik:-.03,par:-.06},{kentli:6,sanayi:2,kamu:-3}],
 ['sulama','Tarım','Havza bazlı sulama ve kuraklık programı','Damla sulama ve gölet; su verimliliği.',{enf:-.03,acik:.1,des:.04},{ciftci:8,dogu:3}],
 ['kooper','Tarım','Tarım kooperatifleri ve hal reformu','Üretici-market arası aracı zinciri kısalır.',{enf:-.05,acik:.05,des:.03},{ciftci:6,esnaf:-2}],
 ['soguk','Tarım','Hububat alım ve depolama programı','TMO alım fiyatı ve depo kapasitesi.',{enf:-.03,acik:.1,des:.05},{ciftci:7}],

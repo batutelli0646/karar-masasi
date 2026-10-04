@@ -44,8 +44,8 @@ function genisClick(t){const d=t.dataset;
   if(d.dpm){const [c,v]=d.dpm.split(':');if(+v>0&&!S.dp.m[c]&&dpN()>=dpMax())return true;S.dp.m[c]=+v;save();render();return true;}
   if(d.dok){const [c,k,v]=d.dok.split(':');okc(c)[k]=+v;save();render();return true;}
   if(d.ult){const c=d.ult,u=CT.find(x=>x[0]===c);if(!u)return true;const m=su('ult'),p=clamp(.1+(gucu()-(CG[c]??45))/100,.05,.7)*(.6+.4*m);suU('ult');
-    if(Math.random()<p){rel(c,-8);applyFx({ord:.3*m,bat:-.1,dog:-.05});logA('Ultimatom',u[1],'Karşı taraf geri adım attı: ordu memnuniyeti arttı, ilişki −8.');}
-    else{rel(c,-20);applyFx({ord:-.2,[u[2]]:-.3,des:-.3});logA('Ultimatom',u[1],'Karşı taraf reddetti: ilişki −20, itibar kaybı.');}
+    if(Math.random()<p){rel(c,-8);applyFx({ord:.3*m,bat:-.1,dog:-.05});logA('Ültimatom',u[1],'Karşı taraf geri adım attı: ordu memnuniyeti arttı, ilişki −8.');}
+    else{rel(c,-20);applyFx({ord:-.2,[u[2]]:-.3,des:-.3});logA('Ültimatom',u[1],'Karşı taraf reddetti: ilişki −20, itibar kaybı.');}
     hap(20,520);save();render();return true;}
   if(d.igo){S.dp.ig.on=1;applyFx({acik:.15});logA('İstihbarat','Merkez','İstihbarat merkezi açıldı.');save();render();return true;}
   if(d.iop!==undefined){const x=IO[+d.iop];if(!x||!S.dp.ig.on)return true;const m=su('io');suU('io');
@@ -70,7 +70,7 @@ function dipP(){const c=S.dpc,u=CT.find(x=>x[0]===c)||CT[0],o=okc(u[0]),dm=S.dp.
   <div class="lever"><span class="n">Transit rotası</span><span class="h">Kapalı rota ilişkiyi bozar; öncelikli rota ticareti ve ilişkiyi artırır.</span><div class="step">${TR.map((m,i)=>dpBtn('data-dok',u[0]+':tr:'+i,m[0],o.tr===i)).join('')}</div></div>
   <div class="lever"><span class="n">Gümrük tarifesi</span><span class="h">Düşük tarife ilişkiyi artırır ama cari açığı büyütür; yüksek tarife tersi.</span><div class="step">${TF.map((m,i)=>dpBtn('data-dok',u[0]+':tf:'+i,m[0],o.tf===i)).join('')}</div></div>
   <div class="lever"><span class="n">Göçmen anlaşması</span><span class="h">Geri kabul ve sınır işbirliği: ilişki +, huzur −, bütçe +.</span><div class="step">${GA.map((m,i)=>dpBtn('data-dok',u[0]+':ga:'+i,m[0],o.ga===i)).join('')}</div></div>
-  <div class="lever"><span class="n">Ultimatom</span><span class="h">Başarı şansı savaş gücüne ve ilişkiye bağlı. Başarısızlık ilişkiyi ve itibarı yaralar.${sat(su('ult'))}</span><div class="step">${sbtn(`data-ult="${u[0]}"`,'Ver')}</div></div></div>
+  <div class="lever"><span class="n">Ültimatom</span><span class="h">Başarı şansı savaş gücüne ve ilişkiye bağlı. Başarısızlık ilişkiyi ve itibarı yaralar.${sat(su('ult'))}</span><div class="step">${sbtn(`data-ult="${u[0]}"`,'Ver')}</div></div></div>
   <div class="panel"><b>İstihbarat merkezi</b> <span class="muted dl">· ${I.on?'güç '+nf(I.g,0)+'/100':'kapalı'}</span>${I.on?gbar(I.g,I.g>=60?'good':'warn')+IO.map((x,i)=>`<div class="lever"><span class="n">${x[0]}</span><span class="h">${x[1]}</span><div class="step">${sbtn(`data-iop="${i}"`,'Yürüt')}</div></div>`).join('')+`<div class="note">Merkez her ay güç kazanır; operasyonlar tekrarlandıkça etkisi azalır.${sat(su('io'))}</div>`:`<div class="note">Ajanlar gölgede çalışır. Açılışta bütçe yükü oluşur, merkez zamanla güçlenir.</div><div class="step" style="margin-top:6px">${sbtn('data-igo="1"','Merkezi aç')}</div>`}</div>`;}
 function orgX(){const H=[];ORG.forEach(o=>(S.og[o[0]].h||[]).forEach(x=>H.push([x[0],o[1],x[1],x[2]])));H.sort((a,b)=>b[0]-a[0]);
   return `<h2>Kurum kur</h2><div class="panel"><b>Kendi örgütün</b> <span class="muted dl">· ${S.ku.length}/2</span>${S.ku.map((u,i)=>`<div class="lever"><span class="n">${u.n}</span><span class="h">${KT[u.t][0]} · ${u.m.length} üye: ${u.m.map(c=>CT.find(x=>x[0]===c)[1]).join(', ')}. ${KT[u.t][1]}</span><div class="step">${sbtn(`data-kf="${i}"`,'Feshet')}</div></div>`).join('')}

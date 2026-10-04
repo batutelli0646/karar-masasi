@@ -17,14 +17,14 @@ const BLD=[['İstanbul','CHP',.05,.1],['Ankara','CHP',.15,0],['İzmir','CHP',-.4
 function s2Ensure(){if(!S.bel){S.bel={};BLD.forEach(b=>S.bel[b[0]]=b[1]);if(S.me!=='AKP'&&S.me!=='CHP')Object.keys(S.bel).forEach(c=>{});}if(!S.bix)S.bix={};if(!S.kay)S.kay={};if(S.bu&&S.bu.kb===undefined){S.bu.kb=0;S.bu.yb=0;}if(!S.krH)S.krH=[];}
 const belN=p=>Object.values(S.bel||{}).filter(x=>x===p).length;
 /* yerel seçimde il il sonuç: oyuncu partisinin kazandığı il sayısı genel formülden, hangi iller olduğu eğilime ve yatırımlara göre */
-function belSecim(){s2Ensure();const me=S.me,n=S.mun,aff=b=>-Math.abs(PART[me].x-b[2])*2+(me==='DEM'?b[3]*3:-b[3]*.8)+(S.bel[b[0]]===me?.6:0)+(S.bix[b[0]]||0)*.15+rnd(-.3,.3);
+function belSecim(){s2Ensure();const me=S.me,n=S.mun,aff=b=>-Math.abs(PART[me].x-b[2])*2+(me==='DEM'?b[3]*3:-b[3]*.8)+(S.bel[b[0]]===me?.6:0)+(S.bix[b[0]]||0)*.15+(S.kay[b[0]]?2:0)+rnd(-.3,.3);
   const L=BLD.slice().sort((a,b)=>aff(b)-aff(a)),oth=PK.filter(k=>k!==me);L.forEach((b,i)=>{if(i<n){S.bel[b[0]]=me;return;}
     const sc=k=>-Math.abs(PART[k].x-b[2])*2+(k==='DEM'?b[3]*3.2:0)+Math.log(PART[k].w)*.9+(S.bel[b[0]]===k?.5:0)+rnd(-.3,.3);S.bel[b[0]]=oth.reduce((a,k)=>sc(k)>sc(a)?k:a,oth[0]);});
   S.kay={};S.bix={};}
 const BLA=[['İller Bankası yatırımı','Altyapı, toplu taşıma ve kentsel dönüşüm için kaynak aktarılır.',{acik:.03,des:.05},3],['Ortak hizmet protokolü','Muhalefet belediyesiyle ortak proje: hizmet ve huzur artar.',{huz:.05,des:.04,par:-.03},1.5],['Borç yapılandırması','SGK ve vergi borçları taksitlendirilir.',{acik:.02},2],['Mülkiye müfettişi denetimi','Belediye denetlenir; usulsüzlük çıkarsa başkan zor durumda kalır.',{des:-.03},-2],['Kayyum ata','Terör soruşturması gerekçesiyle seçilmiş başkan görevden alınır.',{huz:-.3,bat:-.15,des:-.2},-6]];
 function belAct(c,i){const b=BLD.find(x=>x[0]===c),x=BLA[i];if(!b||!x)return;const own=S.bel[c]===S.me;if(i===4&&(own||S.kay[c]))return;const m=su('bl'+c+i);suU('bl'+c+i);applyFx(sfx2(x[2],m));
   if(i===4){S.kay[c]=S.bel[c];S.gr.dogu=clamp(S.gr.dogu-8*(b[3]+.3),5,95);S.gr.milli=clamp(S.gr.milli+3,5,95);if(S.lb)S.lb.stk.t=clamp(S.lb.stk.t-10,-100,100);}
-  else if(i===3){if(!own&&Math.random()<.4){S.bix[c]=(S.bix[c]||0)+2;logA('Belediye',c,'Denetimde usulsüzlük bulundu; muhalefet belediyesi yıprandı.');}else S.bix[c]=(S.bix[c]||0)+x[3]*m;}
+  else if(i===3){if(!own&&Math.random()<.4){S.bix[c]=(S.bix[c]||0)+2;logA('Belediye',c,'Denetimde usulsüzlük bulundu; muhalefet belediyesi yıprandı.');}else S.bix[c]=(S.bix[c]||0)+(own?0:.8)*m;}
   else{S.bix[c]=(S.bix[c]||0)+x[3]*m*(own?1:.5);if(!own&&i===0)applyFx({des:.03*m});}
   logA('Belediye',c+' · '+PART[S.bel[c]].n,x[0]+'.'+sat(m));hap(20,520);save();render();}
 function belP(){s2Ensure();const sel=S.bsel,cnt=PK.map(k=>[k,belN(k)]).filter(x=>x[1]),nx=S.month<29?29:29+Math.ceil((S.month-28)/TERM)*TERM;

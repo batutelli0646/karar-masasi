@@ -22,7 +22,7 @@ for(const k in XN)if(typeof XD!=='undefined'&&XD[k]&&XD[k].d.indexOf('Not:')<0)X
 /* ---------- Danışman ve haber akışı (Masa) ---------- */
 function advP(){const it=[],ev=S.cur.events.filter(e=>e.ch===null).length,te=typeof toEl==='function'?toEl():99;
   if(ev)it.push([100,ev+' karar bekliyor','Karar vermeden ay bitmez.','karar']);
-  if(S.rez<25)it.push([S.rez<8?96:S.rez<15?80:55,'Net rezerv '+nf(S.rez,0)+' mlr $',S.imfK?'IMF kredisi kullanıldı, 0 altı çöküş getirir. Swap ve döviz araçlarına bak.':'0 altına inerse IMF acil kredisi devreye girer. Piyasa araçlarına bak.','piyasa']);
+  if(S.rez<25)it.push([S.rez<8?96:S.rez<15?80:55,'Net rezerv '+nf(S.rez,0)+' mlr $',S.imfK?'IMF kredisi kullanıldı, −5 mlr $ altı çöküş getirir. Swap ve döviz araçlarına bak.':'0 altına inerse IMF acil kredisi devreye girer. Piyasa araçlarına bak.','piyasa']);
   if(S.enf>25)it.push([S.enf>45?90:S.enf>35?70:50,'Enflasyon %'+nf(S.enf,1),'Faiz, kredi ve politika kollarıyla fiyat baskısını azalt.','kurum']);
   if(S.acik>4.5)it.push([S.acik>8?85:S.acik>6?65:45,'Bütçe açığı %'+nf(S.acik,1),'Vergi ve harcama kalemlerini gözden geçir.','butce']);
   if(S.des<40)it.push([S.des<30?88:S.des<35?66:48,'Halk desteği %'+nf(S.des,0),'Hizmet, politika ve toplum gruplarına bak.','toplum']);

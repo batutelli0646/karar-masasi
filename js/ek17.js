@@ -6,9 +6,9 @@ const DPO=[['Tarihî ihtilafı gündeme getir','Halk hoşuna gider, karşı tara
 Object.defineProperty(LOAN,'ikili',{value:['İkili devlet kredisi',9,5,{},'',0],enumerable:false});
 const pk=id=>{S.pk=S.pk||{};return S.pk[id]||(S.pk[id]={});};
 const pkN=id=>Object.keys((S.pk||{})[id]||{}).filter(k=>PKT.some(p=>p[0]===k)).length;
-function pkSign(id,k){const p=PKT.find(x=>x[0]===k),c=CT.find(x=>x[0]===id);if(!p||!c||pk(id)[k])return;if(!pkOk(id,k)||S.ul[id]<p[3]||avail()<1)return;S.cur.spent+=1;pk(id)[k]=S.month+1;S.dl[id]=1;S.ul[id]=clamp(S.ul[id]+3,0,100);logA('Dış ilişkiler',c[1],p[1]+' imzalandı.');hap(20,520);}
+function pkSign(id,k){const p=PKT.find(x=>x[0]===k),c=CT.find(x=>x[0]===id);if(!p||!c||pk(id)[k])return;if(!pkOk(id,k)||S.ul[id]<p[3]||avail()<1)return;S.cur.spent+=1;pk(id)[k]=S.month+1;if(k==='tic')S.dl[id]=1;S.ul[id]=clamp(S.ul[id]+3,0,100);logA('Dış ilişkiler',c[1],p[1]+' imzalandı.');hap(20,520);}
 function pkBreak(id,k){const p=PKT.find(x=>x[0]===k);if(!pk(id)[k])return;delete pk(id)[k];S.ul[id]=clamp(S.ul[id]-6,0,100);logA('Dış ilişkiler',dxN(id),p[1]+' feshedildi.');}
-function dxMonth(){try{S.pr=S.pr||[];Object.keys(S.pk||{}).forEach(id=>{Object.keys(S.pk[id]).forEach(k=>{const p=PKT.find(x=>x[0]===k);S.ul[id]=clamp(S.ul[id]+p[5],0,100);applyFx(p[6]);if(S.ul[id]<p[4]){delete S.pk[id][k];logA('Dış ilişkiler',dxN(id),p[1]+' ilişkiler bozulduğu için sona erdi.');}});});
+function dxMonth(){try{S.pr=S.pr||[];Object.keys(S.pk||{}).forEach(id=>{Object.keys(S.pk[id]).forEach(k=>{const p=PKT.find(x=>x[0]===k);const kk=clamp((CG[id]??45)/60,.35,1.4);S.ul[id]=clamp(S.ul[id]+p[5],0,100);applyFx(Object.fromEntries(Object.entries(p[6]).map(([a,b])=>[a,b*kk])));if(S.ul[id]<p[4]){delete S.pk[id][k];logA('Dış ilişkiler',dxN(id),p[1]+' ilişkiler bozulduğu için sona erdi.');}});});
   S.pr.forEach(x=>x.left--);S.pr=S.pr.filter(x=>x.left>0);
   if(S.month%2===0&&S.pr.length<4){const c=CT.filter(c=>PKT.some(p=>pkOk(c[0],p[0])&&S.ul[c[0]]>=p[3]-5&&!pk(c[0])[p[0]])&&!S.pr.some(x=>x.c===c[0]));if(c.length){const k=c[Math.floor(Math.random()*c.length)],ps=PKT.filter(p=>pkOk(k[0],p[0])&&S.ul[k[0]]>=p[3]-5&&!pk(k[0])[p[0]]),p=ps[Math.floor(Math.random()*ps.length)];S.pr.push({c:k[0],k:p[0],left:5});}}}catch(e){}}
 {const _y=yeniUp;yeniUp=function(){dxMonth();return _y.apply(this,arguments);};}
@@ -39,5 +39,5 @@ if(document.addEventListener)document.addEventListener('click',ev=>{const t=ev.t
   else if(d.dxp){const [id,k,on]=d.dxp.split(':');on==='1'?pkSign(id,k):pkBreak(id,k);}
   else if(d.dxk)dxKredi(d.dxk);
   else if(d.dxg){const [kd,i,id]=d.dxg.split(':');dxAct(kd,+i,id);}
-  else if(d.dxr){const [i,ok]=d.dxr.split(':'),x=S.pr[+i];if(x){S.pr.splice(+i,1);if(ok==='1'){const p=PKT.find(q=>q[0]===x.k);pk(x.c)[x.k]=S.month+1;S.dl[x.c]=1;S.ul[x.c]=clamp(S.ul[x.c]+3,0,100);logA('Gelen öneri',dxN(x.c),p[1]+' kabul edildi.');}else S.ul[x.c]=clamp(S.ul[x.c]-1,0,100);}}
+  else if(d.dxr){const [i,ok]=d.dxr.split(':'),x=S.pr[+i];if(x){S.pr.splice(+i,1);if(ok==='1'){const p=PKT.find(q=>q[0]===x.k);pk(x.c)[x.k]=S.month+1;if(x.k==='tic')S.dl[x.c]=1;S.ul[x.c]=clamp(S.ul[x.c]+3,0,100);logA('Gelen öneri',dxN(x.c),p[1]+' kabul edildi.');}else S.ul[x.c]=clamp(S.ul[x.c]-1,0,100);}}
   save();render();},true);

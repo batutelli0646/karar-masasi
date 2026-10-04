@@ -99,7 +99,7 @@ function render(){
 document.addEventListener('click',ev=>{
   const rp=ev.target.closest&&ev.target.closest('[data-il]');if(rp){S.rgs=+rp.dataset.il;save();return render();}
   if(ev.target.classList&&ev.target.classList.contains('sheet')){S.evo=null;S.ara=null;return render();}
-  const t=ev.target.closest('button');if(!t)return;
+  const t=ev.target.closest('button,[data-wsel]');if(!t)return;
   if(t.dataset.st){S.evo='s:'+t.dataset.st;return render();}
   if(t.dataset.hr!==undefined){S.hr=+t.dataset.hr;save();return render();}
   if(t.dataset.evo!==undefined){S.evo=t.dataset.evo==='r'?'r':+t.dataset.evo;return render();}
@@ -120,7 +120,7 @@ document.addEventListener('click',ev=>{
   if(t.dataset.deal)return dealAct(t.dataset.deal);
   if(t.dataset.tut){S.tut=1;return render();}
   if(t.dataset.tutn!==undefined){S.tut=+t.dataset.tutn&&S.tut<TUT.length?S.tut+1:0;if(!S.tut)ls('km-tut','1');save();return render();}
-  if(t.dataset.slot){const c=t.dataset.slot[0],i=t.dataset.slot.slice(1);if(c==='s'){ls('km-s'+i,makeCode());ls('km-sm'+i,dateLabel(S.month)+' · '+PART[S.me].n);render();}else loadCode(ls('km-s'+i));return;}
+  if(t.dataset.slot){const c=t.dataset.slot[0],i=t.dataset.slot.slice(1);if(c==='s'){ls('km-s'+i,makeCode());ls('km-sm'+i,dateLabel(S.month)+' · '+PART[S.me].n);render();}else if(!loadCode(ls('km-s'+i))){S.kmsg='Slot boş veya kayıt okunamadı.';render();}return;}
   if(t.dataset.neg){S.neg={p:t.dataset.neg,off:[],msg:''};return render();}
   if(t.dataset.nego){const o=S.neg.off,k=t.dataset.nego,i=o.indexOf(k);if(i<0)o.push(k);else o.splice(i,1);S.neg.msg='';return render();}
   if(t.dataset.offer)return offer();

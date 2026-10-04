@@ -1,7 +1,7 @@
 /* ek15: Anlaşma sekmesi = ülke anlaşmaları + diplomasi; Ülkeler sekmesi yalnız harita, talepler ve temaslar */
 const AGN=/anlaşma|ortaklığ|ortak üretim|işbirliği|vize|ticaret heyeti|yatırım forumu|enerji|savunma sanayii|havayolu|thy|sınır kapısı|su ve enerji|gümrük/i;
 const KZT=['dışişleri bakanı ziyareti','cumhurbaşkanı resmî ziyareti'];
-const uRows=(c,want)=>{const L=UHO.map((x,i)=>[x,i]).filter(([x])=>x[4](c)&&(want?AGN.test(x[0]):KZT.includes(x[0].toLocaleLowerCase('tr')))),m=su('u'+c[0]);
+const uRows=(c,want)=>{const L=UHO.map((x,i)=>[x,i]).filter(([x])=>x[4](c)&&(want?AGN.test(x[0]):!AGN.test(x[0]))),m=su('u'+c[0]);
   return L.map(([x,i])=>{const f=Object.fromEntries(Object.entries(x[3]).filter(([k])=>k!=='reg')),ft=fxText(f);return opRow(x[0],`${x[1]} İlişki ${x[2]>0?'+':''}${x[2]}${ft?' · '+ft:''}${x[3].reg?' · '+RN[c[2]]+' itibarı +'+nf(x[3].reg,2):''}.`,sbtn(`data-uh="${c[0]}:${i}"`,want?'Yürüt':'Uygula'));}).join('')+`<div class="note">${sat(m)||'Aynı ülkeyle arka arkaya temasın etkisi azalır.'}</div>`;};
 function ulList(c){return `<div style="grid-column:1/-1;margin-top:4px">${uRows(c,false)}</div>`;}
 const dRow=e=>{const dn=isDone(e),q=DQ[e[0]],l=(S.xr||{})['dl_'+e[0]],ft=fxText(e[3]);

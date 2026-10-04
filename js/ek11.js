@@ -2,7 +2,7 @@
 PL.push(
 ['gstok','Tarım','Gıda tampon stoku','Hububat ve sebze-meyve stoku; gıda fiyat dalgalanmasını yumuşatır.',{acik:.12,des:.03},{ciftci:3,ucret:2,kentli:1}],
 ['tarsig','Tarım','Tarım sigortası ve girdi desteği','Kuraklık ve don zararına karşı sigorta; rekolte kaybı yarıya iner.',{acik:.1,des:.03},{ciftci:6,dogu:2}],
-['kiratavan','Sosyal','Kira artış sınırı','Yıllık kira artışına tavan; kaldırılınca bastırılmış baskı geri döner.',{des:.08,acik:.02,buy:-.02},{genc:5,ucret:3,esnaf:-3}],
+['kiratavan','Sosyal','Kira artış sınırı','Yıllık kira artışına tavan; kaldırılınca bastırılmış baskı geri döner.',{des:.08,acik:.05,buy:-.05,enf:.02},{genc:5,ucret:3,esnaf:-3}],
 ['enstok','Enerji','Stratejik enerji stoku','Petrol ve gaz alım stoku; fiyat şoklarının etkisi azalır.',{acik:.12,rez:-.05},{sanayi:3,kentli:1}],
 ['asayis','Güvenlik','Mahalle asayiş timleri','Kentlerde suç önleme ve görünür polislik.',{acik:.1,huz:.05},{kentli:3,genc:-2}],
 ['mulgeri','Sosyal','Gönüllü geri dönüş programı','Güvenli bölgelere gönüllü geri dönüş ve uyum desteği.',{acik:.1,bat:-.03,huz:.02},{dogu:-2,kentli:2}]);

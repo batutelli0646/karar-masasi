@@ -95,7 +95,7 @@ const best=()=>PK.filter(k=>k!==S.me).sort((a,b)=>cmp(S.me,b)-cmp(S.me,a))[0];
 const MVAL=(p,k)=>MV[k]*(PART[p].want.includes(k)?1.5:1),ask=p=>3+S.seats[p]/22+(10-cmp(S.me,p))*.35+(typeof prlAsk==='function'?prlAsk(p):1);
 const loanC=()=>S.loans.reduce((a,l)=>a+l.amt*l.rate/100,0)/S.gdp*100;
 const logA=(t,c,msg)=>S.log.push({m:S.month,t,c,msg});
-function clearCoal(){Object.keys(S.own).forEach(k=>{S.M[k]=newM();});S.own={};S.coal=[];}
+function clearCoal(){Object.keys(S.own).forEach(k=>{S.M[k]=newM();});S.own={};S.coal=[];S.ally=false;}
 const taxL=k=>{const t=TAX.find(x=>x[0]===k),r=S.tax[k],ref=t[5];return clamp(t[2]===1?r/ref:(r-ref)/(ref*.1),-8,8);}; /* vergi değişikliği fiyat düzeyini bir kez yükseltir: enflasyon etkisi gecikmeli düzeyle farka bağlı */
 function eco(){const E={},K=1.5;let dev=0,rev=0;
   MIN.forEach(([k,,b,e])=>{const d=(S.bud[k]-b)/Math.max(b,1.5);dev+=S.bud[k]-b;for(const x in e)E[x]=(E[x]||0)+e[x]*d*K;});
@@ -114,7 +114,7 @@ function initGov(){
   clearCoal();const pt=ALLY[S.me]||best();S.seats={AKP:268,CHP:169,MHP:50,IYI:43,DEM:65,YRP:5};S.coal=[pt];S.ally=true;S.kol=clamp(cmp(S.me,pt),5,8); /* 2023 genel seçim sonuçları (TİP DEM bloğuna eklendi); Cumhurbaşkanlığı sisteminde ittifak ortağı bakanlık almaz */
 }
 function bud(k,d){const b=MB[k],st=Math.max(.05,Math.round(b*10)/100),v=Math.round((S.bud[k]+d*st)*100)/100;if(v<b*.4-1e-9||v>b*2+1e-9)return;S.bud[k]=v;save();render();}
-function dropP(k){Object.keys(S.own).filter(m=>S.own[m]===k).forEach(m=>{S.M[m]=newM();delete S.own[m];});S.coal=S.coal.filter(x=>x!==k);S.kol=clamp(S.kol-1,0,10);logA('İttifak',PART[k].n+' hükümetten ayrıldı','Bakanlıkları geri aldın.');save();render();}
+function dropP(k){Object.keys(S.own).filter(m=>S.own[m]===k).forEach(m=>{S.M[m]=newM();delete S.own[m];});S.coal=S.coal.filter(x=>x!==k);if(!S.coal.length)S.ally=false;S.kol=clamp(S.kol-1,0,10);logA('İttifak',PART[k].n+' hükümetten ayrıldı','Bakanlıkları geri aldın.');save();render();}
 function offer(){
   const n=S.neg,p=n.p,y=n.off.reduce((a,k)=>a+MVAL(p,k),0),x=ask(p);
   if(cmp(S.me,p)<3.5){n.msg=`${PART[p].n} seninle ideolojik olarak ortaklık kurmayı reddediyor.`;return render();}
@@ -138,7 +138,7 @@ function runElection(){
 function finishEl(){
   const e=S.el;karneKaydet();if(S.cbH){S.cbT=1;logA('Cumhurbaşkanlığı','Halef aday kazandı','Partinin yeni adayı Cumhurbaşkanı seçildi; hükümet politikaların sürüyor.');}else S.cbT++;S.cbH=0;
   logA(`${S.term}. dönem seçimi`,`%${nf(e.p,1)} oy`,`${e.se[S.me]} sandalye. Hükümet: ${govSeats()} sandalye (${govSeats()>=301?'çoğunluk':'azınlık'}).`);
-  S.ally=S.coal.length>0;S.prom=[];S.kamp=0;S.term++;S.des=clamp(S.des+2,0,100);const D=DON[Math.min(S.term,3)];if(D){applyFx(D.fx);S.sched.push({due:S.month,id:D.ev});}
+  S.ally=S.coal.length>0;S.prom=[];S.kamp=0;S.term++;S.des=clamp(S.des+2,0,100);const D=DON[S.term<=3?S.term:2+S.term%2];if(D){applyFx(D.fx);S.sched.push({due:S.month,id:D.ev});}
   applyFx({des:karneBonus()*1.5});S.prev=snap();S.lv0={...S.lv};S.el=null;genEvents();
   S.report={m:S.month,h:[(D?D.t+'. '+D.x+' ':'')+`${S.term}. dönem başladı. Hükümetin Meclis'te ${govSeats()>=301?'çoğunluğu var':'çoğunluğu yok, yasalar için muhalefetle pazarlık gerekecek'}.`],carry:0};
   save();render();window.scrollTo({top:0});
