@@ -235,3 +235,5 @@ body{line-height:1.35}main{padding-block:6px}h2{margin:0 0 4px}
 input[type=range]{margin:2px 0}.chips{gap:3px;margin-top:3px}.choice{padding:5px 9px}.ag{padding:6px 0}.subtabs{margin:6px 0 2px}.bn2{height:30px}
 .panel p,.panel .note,.note{margin:3px 0 0}.grid2{gap:5px}.stats{gap:5px;margin-bottom:6px}.tile{padding:5px 8px}.panel>b:first-child{margin-bottom:2px}
 .rng{height:22px;margin:0}.lever .step:has(output){grid-row:1!important}.lever:has(output) .h{grid-column:1/-1;grid-row:2}.lever:has(output) .n{grid-row:1}.step button:not(.btn){width:32px;height:26px}.step output{min-width:40px}
+.dxs{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:60;display:flex;align-items:flex-end}.dxb{background:var(--surface);color:var(--ink);width:100%;max-height:84vh;overflow:auto;border-radius:16px 16px 0 0;padding:14px 14px 28px;border-top:2px solid var(--accent)}
+.dxa{display:flex;align-items:center;gap:10px;width:100%;margin:5px 0;padding:11px 12px;background:var(--surface2);border:1px solid var(--line);border-radius:9px;color:var(--ink);font-size:14px;text-align:left}.dxa b{flex:1}.dxa i{color:var(--muted);font-style:normal;font-size:18px}
