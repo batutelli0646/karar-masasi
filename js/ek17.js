@@ -5,7 +5,7 @@ const DAS=[['Silah yardımı','Ücretsiz teçhizat; ilişki güçlenir, bütçey
 const DPO=[['Tarihî ihtilafı gündeme getir','Halk hoşuna gider, karşı taraf küser.',-5,{des:.25}],['Sınır ve harita çıkışı','Haritalara tepki; milliyetçi kesim memnun.',-4,{des:.2,ord:.03}],['Zirveyi terk et','Ortak bildiriyi imzalamadan zirveden ayrıl.',-6,{des:.3,bat:-.03}],['Ticaret şovu','Kürsüde ticaret açığı grafikleri göster.',-4,{des:.15}],['Vize krizi','Karşılıklı vize sertleşmesi.',-3,{des:.12,cari:.01}]];
 Object.defineProperty(LOAN,'ikili',{value:['İkili devlet kredisi',9,5,{},'',0],enumerable:false});
 const pk=id=>{S.pk=S.pk||{};return S.pk[id]||(S.pk[id]={});};
-const pkN=id=>Object.keys((S.pk||{})[id]||{}).length;
+const pkN=id=>Object.keys((S.pk||{})[id]||{}).filter(k=>PKT.some(p=>p[0]===k)).length;
 function pkSign(id,k){const p=PKT.find(x=>x[0]===k),c=CT.find(x=>x[0]===id);if(!p||!c||pk(id)[k])return;if(S.ul[id]<p[3]||avail()<1)return;S.cur.spent+=1;pk(id)[k]=S.month+1;S.dl[id]=1;S.ul[id]=clamp(S.ul[id]+3,0,100);logA('Dış ilişkiler',c[1],p[1]+' imzalandı.');hap(20,520);}
 function pkBreak(id,k){const p=PKT.find(x=>x[0]===k);if(!pk(id)[k])return;delete pk(id)[k];S.ul[id]=clamp(S.ul[id]-6,0,100);logA('Dış ilişkiler',dxN(id),p[1]+' feshedildi.');}
 function dxMonth(){try{S.pr=S.pr||[];Object.keys(S.pk||{}).forEach(id=>{Object.keys(S.pk[id]).forEach(k=>{const p=PKT.find(x=>x[0]===k);S.ul[id]=clamp(S.ul[id]+p[5],0,100);applyFx(p[6]);if(S.ul[id]<p[4]){delete S.pk[id][k];logA('Dış ilişkiler',dxN(id),p[1]+' ilişkiler bozulduğu için sona erdi.');}});});
