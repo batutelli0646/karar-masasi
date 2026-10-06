@@ -45,7 +45,7 @@ css.textContent='.ny{max-width:520px;margin:0 auto;padding-bottom:84px}.ny .mp{d
 +'.ny .chips{margin:0}.ny .note{margin:6px 0 0}'
 +'.ny .go{position:fixed;left:0;right:0;bottom:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg,#111) 35%);z-index:5}.ny .go .btn{display:block;width:100%;max-width:520px;margin:0 auto;min-height:56px;font-size:19px;letter-spacing:.16em}';
 try{document.head.appendChild(css);}catch(e){}
-const DN=['Kolay: her ay hafif destek ve büyüme bonusu, daha az kriz, IMF acil kredisi 25 mlr $.','Normal: ek bonus ya da ceza yok, IMF acil kredisi 15 mlr $.','Zor: her ay hafif destek ve büyüme cezası, daha çok kriz, IMF acil kredisi yalnızca 8 mlr $.'];
+const DN=['Kolay: her ay hafif destek ve büyüme bonusu, daha az kriz, IMF acil kredisi 25 mlr $.','Normal: aşırı yüksek reel faiz ve açık yarım bedel öder, enflasyon biraz inatçıdır, ara sıra dış şok gelir. IMF acil kredisi 15 mlr $.','Zor: yüksek reel faiz büyümeyi, işsizliği ve bütçeyi yorar, enflasyon inatçıdır, destek zirvede doygunlaşır, açık kuru ve rezervi sıkıştırır, dış şoklar sık gelir. IMF acil kredisi yalnızca 8 mlr $.'];
 const SN=['Dengeli başlangıç: enflasyon %31, destek %41.','Kriz ortasında: enflasyon %68, rezerv düşük, destek zayıf.','Seçim öncesi: genel seçime 6 ay var, destek %44.','Yüksek enflasyon: enflasyon %85, kur baskılı.','Toparlanma: kriz geride, enflasyon %36, büyüme %3,8.','Güçlü ekonomi: enflasyon %18, büyüme %5, ama destek zayıf (%34).'];
 /* kendi partini kur */
 const CC=[['#d6202c','#7a0f16'],['#f08a00','#8a4b00'],['#e6b800','#7a6000'],['#2e9e5b','#14502d'],['#1e9fd4','#0c5878'],['#2a54c4','#112a66'],['#7b3fa0','#43205c'],['#3a3f4a','#14171c']];
