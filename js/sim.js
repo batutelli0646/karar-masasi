@@ -51,6 +51,8 @@ const pvt=el=>{const pt=aPt();return clamp(pt?vote(el)*aW(pt):vote(el)*(.45+.55*
 function vote(el){return clamp(S.des*0.92+(S.huz-5)*0.6+(S.par-5)*0.5+clamp(S.kamp||0,-6,3)+priV()+gDev()*.05+(el?promRes().reduce((a,r)=>a+(r[1]?1.5:-3),0):0),8,52);}
 function checkEnd(){
   if(S.des<12)return {t:'Erken Seçim ve İktidar Kaybı',x:'Halk desteği çöktü. Meclis 360 oyla seçimlerin yenilenmesine karar verdi ve erken seçimi kaybettin.'};
+  if(S.par<2.5&&S.par>1&&!S.parW){S.parW=1;logA('Parti içi uyarı','Hizipler kurultay istiyor','Parti içi huzur tehlikeli düzeyde; bakan değişikliği, hizip ve kurultay kararlarıyla durumu düzeltmezsen liderlik düşebilir.');}else if(S.par>=4)S.parW=0;
+  if(S.par<=1&&!S.parK){S.parK=1;S.par=2.5;applyFx({des:-2});logA('Parti içi isyan','Olağanüstü kurultay','Son anda uzlaşı sağlandı ve liderliğin korundu; halk desteği zarar gördü. Bu fırsat yalnızca bir kez kullanılır.');}
   if(S.par<=1)return {t:'Parti Seni Devirdi',x:'Parti içi isyan sonuç verdi. Olağanüstü kurultayda liderlikten alındın.'};
   if(S.ord<=1)return {t:'Askeri Müdahale',x:'Ordu içinde biriken huzursuzluk patladı. Hükümet görevden uzaklaştırıldı.'};
   if(S.rez<=0&&!S.imfK){const ia=[25,15,8][S.dif===undefined?1:S.dif];S.imfA=ia;S.imfK=1;S.rez+=ia;S.debt+=ia;S.borc=S.debt/S.gdp*100;applyFx({des:-3,bat:.2,par:-.3});logA('Rezerv krizi','IMF acil kredisi','Rezervler tükenmek üzereyken IMF '+ia+' milyar $ acil kredi verdi; halk desteği ve parti içi huzur zarar gördü. Bu can simidi yalnızca bir kez kullanılır.');}
