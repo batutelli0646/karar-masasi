@@ -28,22 +28,22 @@ function ileriUp(){const h=[];ileriEnsure();const b=S.bu;
   b.yz=clamp(b.yz+(av+(b.yb||0)-b.yz)*.1,0,100);b.kap=clamp(b.kap+(40+sk*3+rb('egit')*10+b.ly*4+(b.kb||0)-b.kap)*.04,0,100);b.kb=(b.kb||0)*.985;b.yb=(b.yb||0)*.985;
   S.kr.s+=krSc();S.kr.n++;return h.concat(lobiUp());}
 function ileriClick(t){const d=t.dataset,b=S.bu;if(!d.lb&&!d.bz&&!d.bi&&!d.lbs)return false;ileriEnsure();if(d.lb)return lobiX(d.lb);if(d.lbs){S.lbs=d.lbs;render();return true;}
-  const use=()=>true;
+  const use=(b,k,c,w)=>{S.bcd=S.bcd||{};if(avail()<c||(S.bcd[k]||0)>S.month)return false;S.cur.spent+=c;S.bcd[k]=S.month+w;return true;};
   if(false){}
   else if(d.bz==='ly'&&b.ly<3&&use(b,'ly',2,6)){b.ly++;S.gr.kamu=clamp(S.gr.kamu-4,0,100);logA('Bürokrasi','Liyakat düzenlemesi','Atamalar sınav ve kurallara bağlandı.');}
   else if(d.bz==='kd'&&b.ly>-2&&use(b,'kd',1,3)){b.ly--;b.yz=clamp(b.yz+3,0,100);S.gr.kamu=clamp(S.gr.kamu+3,0,100);applyFx({par:.4});logA('Bürokrasi','Kadrolaşma','Yakın isimler üst kademelere atandı.');}
-  else if(d.bi){const k=d.bi,m=S.M[k];if(!m||S.own[k])return true;m.rv=S.month;const sm=su('bi'+k);suU('bi'+k);
+  else if(d.bi){const k=d.bi,m=S.M[k];if(!m||S.own[k]||avail()<1||(m.rv!==undefined&&S.month-m.rv<6))return true;S.cur.spent+=1;m.rv=S.month;const sm=su('bi'+k);suU('bi'+k);
     if(m.yz>60){b.yz=clamp(b.yz-5,0,100);applyFx({des:-.5,par:-.1});logA('Soruşturma',m.name,'Usulsüzlük bulundu, bakan görevden alındı.');S.M[k]={...cd(),gv:50,yz:30,rv:S.month};}
     else{m.yz=clamp(m.yz-6*sm,0,100);applyFx({par:-.15});logA('Soruşturma',m.name,'Bir usulsüzlük bulunmadı, denetim caydırıcı oldu.');}}
   else return true;
   hap(20,520);save();render();return true;}
-const cdl=()=>null;
+const cdl=(b,k)=>((S.bcd||{})[k]||0)>S.month?(S.bcd[k]-S.month):null;
 function buro(){const b=S.bu,a=avail(),ks=Object.keys(S.M).filter(k=>!S.own[k]).map(k=>[k,S.M[k]]).sort((x,y)=>y[1].yz-x[1].yz).slice(0,5);
   return `<h2>Bürokrasi</h2><div class="panel">${kv('Devlet kapasitesi',nf(b.kap,0)+'/100')}${gbar(b.kap,b.kap>=55?'good':b.kap>=40?'warn':'bad')}${kv('Yolsuzluk algısı',nf(b.yz,0)+'/100')}${gbar(b.yz,b.yz<40?'good':b.yz<60?'warn':'bad')}${kv('Liyakat düzeyi',(b.ly>0?'+':'')+b.ly)}
   <div class="note">Kapasite; bakan yetkinliği, eğitim bütçesi ve liyakatle artar, büyümeyi ve desteği yukarı çeker. Yolsuzluk algısı desteği, itibarı, riski ve kredi notunu bozar. Gizli yolsuzluk puanı yüksek bakanlar skandala yol açabilir.</div>
-  <div class="lever"><span class="n">Liyakat düzenlemesi</span><span class="h">Kapasite hedefi +4, yolsuzluk baskısı azalır; kamu çalışanları tepkili. En fazla +3.</span><div class="step">${sbtn('data-bz="ly"','Uygula',a<2||cdl(b,'ly')||b.ly>=3)}</div></div>
-  <div class="lever"><span class="n">Kadrolaşma</span><span class="h">Parti içi birlik +0,4; yolsuzluk algısı +3, kapasite düşer.</span><div class="step">${sbtn('data-bz="kd"','Ata',a<1||cdl(b,'kd')||b.ly<=-2)}</div></div></div>
-  <div class="panel"><b>Bakan denetimi</b>${ks.map(([k,m])=>{const r=m.rv!==undefined&&S.month-m.rv<12;return `<div class="lever"><span class="n">${m.name}</span><span class="h">${ROLES[k]?ROLES[k][0]:(MIN.find(x=>x[0]===k)||[0,k])[1]+' Bakanı'} · ${r?'son denetimde risk '+nf(m.yz,0):'denetlenmedi'}</span><div class="step">${sbtn(`data-bi="${k}"`,'Soruştur',false)}</div></div>`;}).join('')}<div class="note">Liste gizli riskin en yüksek olduğu beş ismi gösterir. Soruşturma riski bulur (60 üstü: görevden alma), temizse riski 6 azaltır ve parti içinde hafif huzursuzluk yaratır.</div></div>`;}
+  <div class="lever"><span class="n">Liyakat düzenlemesi</span><span class="h">Kapasite hedefi +4, yolsuzluk baskısı azalır; kamu çalışanları tepkili. En fazla +3; 2 puan, 6 ay bekleme.</span><div class="step">${sbtn('data-bz="ly"','Uygula',a<2||cdl(b,'ly')||b.ly>=3)}</div></div>
+  <div class="lever"><span class="n">Kadrolaşma</span><span class="h">Parti içi birlik +0,4; yolsuzluk algısı +3, kapasite düşer; 3 ay bekleme.</span><div class="step">${sbtn('data-bz="kd"','Ata',a<1||cdl(b,'kd')||b.ly<=-2)}</div></div></div>
+  <div class="panel"><b>Bakan denetimi</b>${ks.map(([k,m])=>{const r=m.rv!==undefined&&S.month-m.rv<12;return `<div class="lever"><span class="n">${m.name}</span><span class="h">${ROLES[k]?ROLES[k][0]:(MIN.find(x=>x[0]===k)||[0,k])[1]+' Bakanı'} · ${r?'son denetimde risk '+nf(m.yz,0):'denetlenmedi'}</span><div class="step">${sbtn(`data-bi="${k}"`,'Soruştur',a<1||(m.rv!==undefined&&S.month-m.rv<6))}</div></div>`;}).join('')}<div class="note">Liste gizli riskin en yüksek olduğu beş ismi gösterir. Soruşturma 1 puan harcar, aynı isim 6 ay içinde tekrar soruşturulamaz. Risk bulur (60 üstü: görevden alma), temizse riski 6 azaltır ve parti içinde hafif huzursuzluk yaratır.</div></div>`;}
 function donem(){const it=krn(),sc=krSc(),k=S.kr,av=k.n?k.s/k.n:sc,best=k.ark.reduce((m,x)=>Math.max(m,x.avg),0);
   return `<h2>Dönem karnesi</h2><div class="panel"><div class="big" style="font-size:40px">${gr(sc)} <small class="dl">${nf(sc,0)}/100</small></div>${it.map(x=>kv(x[0],`<span class="st ${grc(x[1])}">${gr(x[1])}</span> ${nf(x[1],0)}`)+gbar(x[1],grc(x[1]))).join('')}${kv(S.term+'. dönem ortalaması',nf(av,0)+' ('+gr(av)+')')}${k.bn?kv('Sonraki dönem ödülü','Destek +'+k.bn*1.5):''}
   <div class="note">Karne; ekonomi, toplum, dış ilişkiler, güvenlik, yönetim ve verdiğin sözlerden hesaplanır. Dönem ortalaması 70'i geçerse sonraki dönemin başında halk desteği +1,5, 85'i geçerse +3 puan artar.</div></div>

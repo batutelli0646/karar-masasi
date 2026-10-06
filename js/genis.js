@@ -38,7 +38,7 @@ function genisUp(){const h=[];genisEnsure();
   return h;}
 /* eylemler */
 function genisClick(t){const d=t.dataset;
-  if(d.kk){const [b,i]=d.kk.split(':');if(!KO[b])return true;S.kk[b]=+i;logA('Komuta kademesi',KK.find(x=>x[0]===b)[1],+i<0?'Komutan görevden alındı.':KO[b][+i][0]+' atandı.');hap(20,520);save();render();return true;}
+  if(d.kk){const [b,i]=d.kk.split(':');if(!KO[b])return true;if(S.kk[b]===+i)return true;S.kkc=S.kkc||{};if(S.kk[b]>=0){if((S.kkc[b]||0)>S.month||avail()<1){logA('Komuta kademesi',KK.find(x=>x[0]===b)[1],(S.kkc[b]||0)>S.month?'Yakın zamanda atama yapıldı; '+(S.kkc[b]-S.month)+' ay beklemelisin.':'Atama için yeterli puanın yok.');save();render();return true;}S.cur.spent+=1;}S.kkc[b]=S.month+6;S.kk[b]=+i;logA('Komuta kademesi',KK.find(x=>x[0]===b)[1],+i<0?'Komutan görevden alındı.':KO[b][+i][0]+' atandı.');hap(20,520);save();render();return true;}
   if(d.kka){KK.forEach(([b])=>{if(S.kk[b]<0)S.kk[b]=Math.floor(Math.random()*3);});logA('Komuta kademesi','Boşlar dolduruldu','Boş komutanlıklara atama yapıldı.');save();render();return true;}
   if(d.dpc){S.dpc=d.dpc;render();return true;}
   if(d.dpm){const [c,v]=d.dpm.split(':');if(+v>0&&!S.dp.m[c]&&dpN()>=dpMax())return true;S.dp.m[c]=+v;save();render();return true;}

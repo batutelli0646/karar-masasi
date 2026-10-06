@@ -22,7 +22,7 @@ function belSecim(){s2Ensure();const me=S.me,n=S.mun,aff=b=>-Math.abs(PART[me].x
     const sc=k=>-Math.abs(PART[k].x-b[2])*2+(k==='DEM'?b[3]*3.2:0)+Math.log(PART[k].w)*.9+(S.bel[b[0]]===k?.5:0)+rnd(-.3,.3);S.bel[b[0]]=oth.reduce((a,k)=>sc(k)>sc(a)?k:a,oth[0]);});
   S.kay={};S.bix={};}
 const BLA=[['İller Bankası yatırımı','Altyapı, toplu taşıma ve kentsel dönüşüm için kaynak aktarılır.',{acik:.03,des:.05},3],['Ortak hizmet protokolü','Muhalefet belediyesiyle ortak proje: hizmet ve huzur artar.',{huz:.05,des:.04,par:-.03},1.5],['Borç yapılandırması','SGK ve vergi borçları taksitlendirilir.',{acik:.02},2],['Mülkiye müfettişi denetimi','Belediye denetlenir; usulsüzlük çıkarsa başkan zor durumda kalır.',{des:-.03},-2],['Kayyum ata','Terör soruşturması gerekçesiyle seçilmiş başkan görevden alınır.',{huz:-.3,bat:-.15,des:-.2},-6]];
-function belAct(c,i){const b=BLD.find(x=>x[0]===c),x=BLA[i];if(!b||!x)return;const own=S.bel[c]===S.me;if(i===4&&(own||S.kay[c]))return;const m=su('bl'+c+i);suU('bl'+c+i);applyFx(sfx2(x[2],m));
+function belAct(c,i){const b=BLD.find(x=>x[0]===c),x=BLA[i];if(!b||!x)return;const own=S.bel[c]===S.me;if(i===4&&(own||S.kay[c]))return;if(avail()<1)return;S.cur.spent+=1;const m=su('bl'+i+(i===4?c:''));suU('bl'+i+(i===4?c:''));applyFx(sfx2(x[2],m));
   if(i===4){S.kay[c]=S.bel[c];S.gr.dogu=clamp(S.gr.dogu-8*(b[3]+.3),5,95);S.gr.milli=clamp(S.gr.milli+3,5,95);if(S.lb)S.lb.stk.t=clamp(S.lb.stk.t-10,-100,100);}
   else if(i===3){if(!own&&Math.random()<.4){S.bix[c]=(S.bix[c]||0)+2;logA('Belediye',c,'Denetimde usulsüzlük bulundu; muhalefet belediyesi yıprandı.');}else S.bix[c]=(S.bix[c]||0)+(own?0:.8)*m;}
   else{S.bix[c]=(S.bix[c]||0)+x[3]*m*(own?1:.5);if(!own&&i===0)applyFx({des:.03*m});}

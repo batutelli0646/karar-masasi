@@ -1,6 +1,7 @@
 /* ---------- Kabine ---------- */
 function fire(k){
   if(S.confirm!==k){S.confirm=k;render();return;}
+  if(typeof aptCd==='function'&&aptCd(k)){S.confirm=null;logA('Kabine','Görevden alma yapılamadı','Bu bakanlıkta yakın zamanda değişiklik yapıldı; '+aptCd(k)+' ay beklemelisin.');save();render();return;}
   S.cand={k,l:cds(k)};S.confirm=null;save();render();return;
 }
 function lever(k,dir){
