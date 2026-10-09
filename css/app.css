@@ -344,3 +344,10 @@ html[data-ol] #hmx .hmw .chips{margin-left:204px!important;flex-wrap:nowrap;over
 html[data-hm] .hpc{width:34px;height:34px;padding:0!important;border-radius:50%!important;font-size:13px!important}
 html[data-hm] .wrap .subtabs{padding-right:40px}
 #hmx{user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+#hmx .hmw{background:#0c1a22}
+#hmx[data-z="1"] .wl.s{display:none}
+#hmx .hmw path[data-wsel],#hmx .hmw path[data-hmtr]{cursor:pointer}
+#hmx .hly span{white-space:nowrap;flex:none;font-size:10px;display:flex;align-items:center;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:5px 8px}
+#hmx .hly span i{width:9px;height:9px;border-radius:2px;display:inline-block}
+#hmx .hly .hh{color:var(--gold)}
+#hmx .sheet{z-index:60}
