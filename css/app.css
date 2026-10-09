@@ -280,3 +280,67 @@ html[data-ol] .sheet{align-items:center;padding-left:calc(68px + env(safe-area-i
 html[data-ol] .subtabs{margin:6px 0 2px}html[data-ol] .bn2{height:34px}
 html[data-ol]:is([data-tab=butce],[data-tab=vergi],[data-tab=toplum],[data-tab=hizmet],[data-tab=nufus],[data-tab=kabine],[data-tab=lobi],[data-tab=buro],[data-tab=donem],[data-tab=kurum],[data-tab=sektor],[data-tab=ticaret],[data-tab=beled],[data-tab=istat],[data-tab=piyasa],[data-tab=orgut],[data-tab=askeri],[data-tab=dis],[data-tab=yargi]) main{column-count:2;column-gap:16px}
 html[data-ol] main>.subtabs,html[data-ol] main>.msq{column-span:all}html[data-ol] main .panel,html[data-ol] main .card{break-inside:avoid}html[data-ol] main h2{break-after:avoid}
+/* ek28: harita modu */
+#hmx{display:none}
+html[data-hm] #hmx{display:block;position:fixed;inset:0;z-index:12;overflow:hidden;background:var(--bg)}
+html[data-hm] header.top,html[data-hm] .endbar,html[data-hm] nav.bnav{display:none!important}
+html[data-hm] body{overflow:hidden}
+#hmx button{font:inherit;color:var(--ink);cursor:pointer}
+#hmx .hmst{position:absolute;left:0;right:0;top:164px;bottom:64px;overflow:hidden;touch-action:none;background:radial-gradient(ellipse at 50% 45%,var(--surface2),var(--bg) 75%)}
+#hmx .hmz{position:absolute;inset:0;transform-origin:0 0}
+#hmx .hmsv{width:100%;height:100%;display:block}
+#hmx .hmsv path{cursor:pointer}
+#hmx .hid{position:absolute;left:6px;right:150px;top:6px;display:flex;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:5px 10px;z-index:3;box-sizing:border-box;min-height:46px}
+#hmx .hfl{width:30px;height:30px;border-radius:50%;background:#E30A17;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;flex:none}
+#hmx .hid small{display:block;font-size:10px;color:var(--muted)}
+#hmx .hss{position:absolute;left:6px;right:6px;top:58px;display:grid;grid-template-columns:repeat(4,1fr);gap:5px;z-index:3}
+#hmx .hs{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:3px 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:48px;min-width:0}
+#hmx .hs i{font-style:normal;font-size:9px;color:var(--muted);white-space:nowrap}
+#hmx .hs b{font-size:13px;white-space:nowrap}
+#hmx .hs em{font-style:normal;font-size:9px;color:var(--muted)}
+#hmx .hnw{position:absolute;left:6px;right:6px;top:112px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:5px 9px;font-size:10px;line-height:1.35;z-index:4;max-height:44px;overflow:hidden;box-sizing:border-box}
+#hmx .hnw.on{max-height:220px;border-color:var(--accent)}
+#hmx .hnh{display:flex;justify-content:space-between;color:#EA6660;font-weight:700;font-size:9px}
+#hmx .hni{margin-top:2px}
+#hmx .htr{position:absolute;right:6px;top:6px;display:flex;gap:5px;z-index:3}
+#hmx .htr button{min-width:42px;height:46px;background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:13px;padding:0 8px}
+#hmx .htr span{display:none}
+#hmx .hly{position:absolute;left:6px;right:48px;bottom:68px;display:flex;gap:5px;overflow-x:auto;z-index:3;scrollbar-width:none}
+#hmx .hly button{white-space:nowrap;border-radius:14px;padding:6px 11px;font-size:11px;background:var(--surface);border:1px solid var(--line);flex:none}
+#hmx .hly button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+#hmx .hrc{position:absolute;right:6px;bottom:68px;width:36px;height:32px;background:var(--surface);border:1px solid var(--line);border-radius:10px;z-index:3}
+#hmx .hrp{position:absolute;left:6px;right:6px;bottom:106px;max-height:42%;overflow:auto;z-index:6;background:var(--bg);border:1px solid var(--accent);border-radius:14px;padding:4px 8px}
+#hmx .hrp .panel{margin-top:4px}
+#hmx .hpx{position:sticky;top:0;float:right;z-index:2;width:34px;height:34px;border-radius:50%;background:var(--surface2);border:1px solid var(--line)}
+#hmx .hdot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-left:4px}
+#hmx .hbn{position:absolute;left:6px;right:6px;bottom:6px;height:54px;display:flex;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px;z-index:40;align-items:center;box-sizing:border-box}
+#hmx .hbn button{flex:1;min-width:0;height:44px;font-size:9px;background:none;border:0;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;color:var(--muted)}
+#hmx .hbn button span{font-size:16px;line-height:1}
+#hmx .hbn button.on{background:var(--surface2);color:var(--ink);font-weight:700;box-shadow:inset 0 -2px 0 var(--gold)}
+#hmx .hbn em{position:absolute;top:0;right:4px;background:var(--bad);color:#0D1419;font-style:normal;font-weight:700;font-size:10px;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+#hmx .hbn .hed{flex:none;width:92px;background:var(--gold);color:#0D1419;font-weight:700;font-size:12px;border-radius:10px;margin-left:4px}
+#hmx .hbn .hed.rdy{box-shadow:0 0 0 2px var(--good)}
+#hmx .hmw .panel{background:none;border:0;padding:4px;height:100%;overflow:auto}
+html[data-hm][data-hp] .wrap{position:fixed;left:6px;right:6px;top:116px;bottom:64px;max-width:none;margin:0;background:var(--bg);border:1px solid var(--accent);border-radius:16px;overflow-y:auto;overflow-x:hidden;padding:4px 10px;z-index:30;-webkit-overflow-scrolling:touch}
+html[data-hm]:not([data-hp]) .wrap{position:static;height:0;padding:0;margin:0;overflow:visible;border:0}
+html[data-hm]:not([data-hp]) .wrap>main>*:not(.sheet){display:none}
+html[data-hm] main{padding-block:4px}
+html[data-hm] .hpc{position:sticky;top:0;float:right;z-index:5;margin:2px 0 0 6px;background:var(--surface2);border:1px solid var(--line);color:var(--ink);border-radius:12px;padding:6px 10px;font-size:11px}
+html[data-ol] #hmx .hid{right:auto;left:8px;top:8px;width:190px}
+html[data-ol] #hmx .hnw{left:8px;right:auto;width:190px;top:62px}
+html[data-ol] #hmx .hss{left:206px;right:156px;top:8px;display:flex;justify-content:center}
+html[data-ol] #hmx .hs{min-width:92px;padding:3px 8px}
+html[data-ol] #hmx .htr{right:8px}
+html[data-ol] #hmx .htr span{display:inline}
+html[data-ol] #hmx .hmst{top:54px;bottom:64px}
+html[data-ol] #hmx .hly{left:8px;bottom:70px}
+html[data-ol] #hmx .hrp{left:auto;right:8px;top:62px;bottom:70px;max-height:none;width:230px}
+html[data-ol] #hmx .hbn{left:8px;right:8px}
+html[data-ol] #hmx .hbn button{min-width:60px}
+html[data-ol] #hmx .hbn .hed{width:124px}
+html[data-ol][data-hm][data-hp] .wrap{left:8px;right:8px;top:auto;bottom:68px;height:calc(var(--eh,100vh)*.62)}
+#hmx .hmw .panel svg{height:calc(100% - 44px);width:100%}
+html[data-ol] #hmx .hmw .chips{margin-left:204px!important;flex-wrap:nowrap;overflow-x:auto}
+html[data-hm] .hpc{width:34px;height:34px;padding:0!important;border-radius:50%!important;font-size:13px!important}
+html[data-hm] .wrap .subtabs{padding-right:40px}
+#hmx{user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}

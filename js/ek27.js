@@ -5,7 +5,7 @@ const rm27=(r,...t)=>t.forEach(x=>pn27(r,x).forEach(p=>p.remove()));
 const row27=(r,...L)=>r.querySelectorAll('.dl').forEach(d=>{const s=d.querySelector('span');if(s&&L.some(l=>s.textContent.trim().startsWith(l)))d.remove();});
 const wr27=(k,f)=>{const o=V[k];if(o)V[k]=function(){return P27(o.apply(this,arguments),f);};};
 /* Karar: tahmin ve politika kolları yalnız burada */
-{const o=V.karar;V.karar=function(){return tahminP()+o.apply(this,arguments);};}
+{const o=V.karar;V.karar=function(){return o.apply(this,arguments)+tahminP();};}
 wr27('kurum',r=>rm27(r,'Gelecek ay tahmini','Politika Kolları'));
 wr27('butce',r=>rm27(r,'Gelecek ay tahmini','Refah göstergeleri'));
 wr27('vergi',r=>rm27(r,'Gelecek ay tahmini'));
