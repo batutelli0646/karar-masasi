@@ -1,5 +1,6 @@
 /* ek29: Stratejik masa dünya haritası — 237 ülke/bölge, bayrak dolgulu sınırlar, ülke verileri (uv1), genel diplomasi eylemleri */
 const C29={usa:'USA',ger:'DEU',uk:'GBR',gre:'GRC',rus:'RUS',chn:'CHN',aze:'AZE',irn:'IRN',irq:'IRQ',sau:'SAU',egy:'EGY',qat:'QAT',fra:'FRA',ita:'ITA',uae:'ARE',isr:'ISR',syr:'SYR',jpn:'JPN',kor:'KOR',ind:'IND',pak:'PAK',ukr:'UKR',geo:'GEO',arm:'ARM',kaz:'KAZ',uzb:'UZB',tkm:'TKM',lby:'LBY',som:'SOM',can:'CAN',bra:'BRA',esp:'ESP',nld:'NLD',pol:'POL',swe:'SWE',bgr:'BGR',hun:'HUN',jor:'JOR',kwt:'KWT',idn:'IDN',mys:'MYS',nga:'NGA',kktc:'KKTC'};
+const bs29=k=>k.length>4?k.slice(0,3):k;
 const R29={};for(const k in C29)R29[C29[k]]=k;
 let wc29='',wk29='';
 const FM29=[['f','Bayrak','Her ülke kendi bayrağıyla'],['r','İlişki','yeşil: yakın · kırmızı: gergin'],['g','Gelir','kahve: düşük · mavi: yüksek kişi başı gelir'],['e','Enflasyon','yeşil: düşük · kırmızı: yüksek']];
@@ -7,22 +8,22 @@ const UVA29=[['zi','🤝','Resmî ziyaret',3],['tc','📦','Ticaret heyeti',4],[
 const rel29=k=>{const i=R29[k];if(i)return S.ul[i];if(k==='TUR')return 100;const u=UV[k];return (S.ux||{})[k]??(u?u[16]:50);};
 const mix29=(a,b,t)=>{const h=x=>[1,3,5].map(i=>parseInt(x.substr(i,2),16)),A=h(a),B=h(b);return '#'+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,'0')).join('');};
 const ramp29=(t,cs)=>{t=Math.max(0,Math.min(1,t))*(cs.length-1);const i=Math.min(cs.length-2,Math.floor(t));return mix29(cs[i],cs[i+1],t-i);};
-const col29=(k,m)=>{const u=UV[k];if(m==='r')return rlC(rel29(k));if(!u)return '#6b6254';
+const col29=(k,m)=>{k=bs29(k);const u=UV[k];if(m==='r')return rlC(rel29(k));if(!u)return '#6b6254';
   if(m==='g')return u[4]==null?'#6b6254':ramp29((Math.log10(u[4])-2.7)/2.3,['#a8672f','#d9b86a','#7fb08a','#3f7fa3']);
   return u[6]==null?'#6b6254':ramp29(Math.log(Math.max(1,u[6]+1))/Math.log(60),['#3FA35B','#d9c25a','#c96a36','#9a2a24']);};
 function defs29(){if(document.getElementById('wdf29'))return;const d=document.createElement('div');d.id='wdf29';d.setAttribute('aria-hidden','true');d.style.cssText='position:absolute;width:0;height:0;overflow:hidden';
   let s='<svg width="0" height="0">';for(const cc in WFL)s+=`<symbol id="fl-${cc}" viewBox="${WFL[cc][0]}" preserveAspectRatio="none">${WFL[cc][1]}</symbol>`;
-  for(const k in WG.c){const g=WG.c[k];if(!WFL[g[4]])continue;const v=WFL[g[4]][0].split(' '),ar=v[2]/v[3],f=x=>x.toFixed(2),st=g[5]/Math.max(g[6],.1)>2.8;
+  for(const k in WG.c){const g=WG.c[k];if(!WFL[g[4]])continue;const v=WFL[g[4]][0].split(' '),ar=v[2]/v[3],f=x=>x.toFixed(2),st=g[4]==='ru'&&g[5]>100;
     let fw=st?g[5]*1.02:Math.max(g[5],g[6]*ar,g[3]<1.6?2.4:0)*1.02;fw+=.2;const fh=st?g[6]*1.02+.1:fw/ar;
-    s+=`<pattern id="pf-${k}" patternUnits="userSpaceOnUse" x="${f(g[1]-fw/2)}" y="${f(g[2]-fh/2)}" width="${f(fw)}" height="${f(fh)}"><use href="#fl-${g[4]}" width="${f(fw)}" height="${f(fh)}"/></pattern>`;}
+    s+=`<pattern id="pf-${k}" patternUnits="userSpaceOnUse" x="${f(g[1]-fw/2)}" y="${f(g[2]-fh/2)}" width="${f(fw)}" height="${f(fh)}"><use href="#fl-${g[4]}" width="${f(fw)}" height="${f(fh)}"/><rect width="${f(fw)}" height="${f(fh)}" fill="#2b2316" fill-opacity=".3"/></pattern>`;}
   d.innerHTML=s+'</svg>';document.body.appendChild(d);}
 const flg29=k=>{const g=WG.c[k];return g&&WFL[g[4]]?`<svg class="flg" width="22" height="15" viewBox="0 0 22 15"><use href="#fl-${g[4]}" width="22" height="15"/></svg>`:'';};
 function wsv29(){defs29();const m=S.wfm||'f',key=m+(m==='r'?JSON.stringify(S.ul)+JSON.stringify(S.ux||{}):'');
-  if(key!==wk29){wk29=key;let p='',q='';for(const k in WG.c){if(k==='TUR')continue;const g=WG.c[k],id=R29[k]||k,f=m==='f'&&WFL[g[4]]?`url(#pf-${k})`:col29(k,m);
+  if(key!==wk29){wk29=key;let p='',q='';for(const k in WG.c){if(k==='TUR')continue;const g=WG.c[k],b=bs29(k),id=R29[b]||b,f=m==='f'&&WFL[g[4]]?`url(#pf-${k})`:col29(k,m);
       p+=`<path data-wsel="${id}" d="${g[0]}" fill="${f}"/>`;if(g[3]<1.6)q+=`<circle data-wsel="${id}" cx="${g[1]}" cy="${g[2]}" r=".9" fill="${f}"/>`;}
     p+=`<path data-hmtr="1" class="tr" d="${WG.c.TUR[0]}" fill="${m==='f'?'url(#pf-TUR)':col29('TUR',m)}"/>`;wc29=`<g class="lnd">${p}</g><g class="dts">${q}</g>`;}
-  const s=S.wsel,k=C29[s]||s,g=k&&WG.c[k];
-  return `<svg viewBox="0 0 ${WG.w} ${WG.h}" class="hmsv">${wc29}${g?`<path class="selo" d="${g[0]}"/>${g[3]<1.6?`<circle class="selo" cx="${g[1]}" cy="${g[2]}" r="1.1"/>`:''}`:''}</svg>`;}
+  const s=S.wsel,k=C29[s]||s,so=k?Object.keys(WG.c).filter(x=>bs29(x)===k&&WG.c[x]):[];
+  return `<svg viewBox="0 0 ${WG.w} ${WG.h}" class="hmsv">${wc29}${so.map(x=>{const g=WG.c[x];return `<path class="selo" d="${g[0]}"/>${g[3]<1.6?`<circle class="selo" cx="${g[1]}" cy="${g[2]}" r="1.1"/>`:''}`;}).join('')}</svg>`;}
 const leg29=()=>{const m=S.wfm||'f';return FM29.map(x=>`<button class="${m===x[0]?'on':''}" data-wfm="${x[0]}">${x[1]}</button>`).join('')+`<span class="hh">${FM29.find(x=>x[0]===m)[2]} · Türkiye'ye dokun: iller</span>`;};
 const fv29=(v,u,d)=>v==null?'—':nf(v,d)+u;
 function uvData29(k){const u=UV[k];if(!u)return '';const R=(l,v)=>`<div><i>${l}</i><b>${v}</b></div>`,o=u[15],
