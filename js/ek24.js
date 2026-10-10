@@ -20,7 +20,7 @@ const deskP24=()=>{const E=S.cur.events||[],kr=E.map((e,i)=>[e,i]).filter(([e])=
 {const _m=V.masa;V.masa=function(){return deskP24()+_m.apply(this,arguments);};}
 /* Gündem akışı */
 const gc24={eko:['EKONOMİ','#3B7DDD'],dis:['DIŞ','#2FA46E'],ic:['İÇ','#D9534F'],kriz:['KRİZ','#E89A2C'],kamp:['KAMPANYA','#8A63D2'],later:['SONUÇ','#8C9EA6']};let gm24=null;
-const gcat24=t=>{if(!gm24){gm24={};for(const id in EVB)gm24[EVB[id].t]=EVB[id].g;}return gc24[gm24[t]]||['GÜNDEM','#8C9EA6'];};
+function gcat24(t){try{if(!gm24){gm24={};for(const id in EVB)gm24[EVB[id].t]=EVB[id].g;}return gc24[gm24[t]]||['GÜNDEM','#8C9EA6'];}catch(e){return ['GÜNDEM','#8C9EA6'];}}
 function newsP(){const L=(S.log||[]).slice(-8).reverse();if(!L.length)return '';return `<div class="panel"><b>Gündem akışı</b><div class="feed">${L.map(x=>{const g=gcat24(x.t),m=String(x.msg||'');return `<div class="fd" style="--c:${g[1]}"><div class="fh"><b>${g[0]}</b><span>${dateLabel(x.m)}</span></div><div class="ft"><b>${x.c}</b>${m?' — '+m.slice(0,110)+(m.length>110?'…':''):''}</div></div>`;}).join('')}</div></div>`;}
 /* Seçim gecesi */
 let gd24='';const gk24=()=>S.term+':'+S.month;
