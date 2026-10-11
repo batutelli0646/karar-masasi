@@ -2,8 +2,7 @@
 const C29={usa:'USA',ger:'DEU',uk:'GBR',gre:'GRC',rus:'RUS',chn:'CHN',aze:'AZE',irn:'IRN',irq:'IRQ',sau:'SAU',egy:'EGY',qat:'QAT',fra:'FRA',ita:'ITA',uae:'ARE',isr:'ISR',syr:'SYR',jpn:'JPN',kor:'KOR',ind:'IND',pak:'PAK',ukr:'UKR',geo:'GEO',arm:'ARM',kaz:'KAZ',uzb:'UZB',tkm:'TKM',lby:'LBY',som:'SOM',can:'CAN',bra:'BRA',esp:'ESP',nld:'NLD',pol:'POL',swe:'SWE',bgr:'BGR',hun:'HUN',jor:'JOR',kwt:'KWT',idn:'IDN',mys:'MYS',nga:'NGA',kktc:'KKTC'};
 const bs29=k=>k.length>4?k.slice(0,3):k;
 const R29={};for(const k in C29)R29[C29[k]]=k;
-let wc29='',wk29='';
-const FM29=[['f','Bayrak','Her ülke kendi bayrağıyla'],['r','İlişki','yeşil: yakın · kırmızı: gergin'],['g','Gelir','kahve: düşük · mavi: yüksek kişi başı gelir'],['e','Enflasyon','yeşil: düşük · kırmızı: yüksek']];
+const FM29=[['r','İlişki','yeşil: yakın · kırmızı: gergin'],['g','Gelir','kahve: düşük · mavi: yüksek kişi başı gelir'],['e','Enflasyon','yeşil: düşük · kırmızı: yüksek']];
 const UVA29=[['zi','🤝','Resmî ziyaret',3],['tc','📦','Ticaret heyeti',4],['yd','🎁','Kalkınma yardımı',6],['sa','📢','Sert açıklama',3],['bc','✉️','Büyükelçiyi çağır',6]];
 const rel29=k=>{const i=R29[k];if(i)return S.ul[i];if(k==='TUR')return 100;const u=UV[k];return (S.ux||{})[k]??(u?u[16]:50);};
 const mix29=(a,b,t)=>{const h=x=>[1,3,5].map(i=>parseInt(x.substr(i,2),16)),A=h(a),B=h(b);return '#'+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,'0')).join('');};
@@ -11,20 +10,28 @@ const ramp29=(t,cs)=>{t=Math.max(0,Math.min(1,t))*(cs.length-1);const i=Math.min
 const col29=(k,m)=>{k=bs29(k);const u=UV[k];if(m==='r')return rlC(rel29(k));if(!u)return '#6b6254';
   if(m==='g')return u[4]==null?'#6b6254':ramp29((Math.log10(u[4])-2.7)/2.3,['#a8672f','#d9b86a','#7fb08a','#3f7fa3']);
   return u[6]==null?'#6b6254':ramp29(Math.log(Math.max(1,u[6]+1))/Math.log(60),['#3FA35B','#d9c25a','#c96a36','#9a2a24']);};
-function defs29(){if(document.getElementById('wdf29'))return;const d=document.createElement('div');d.id='wdf29';d.setAttribute('aria-hidden','true');d.style.cssText='position:absolute;width:0;height:0;overflow:hidden';
-  let s='<svg width="0" height="0">';for(const cc in WFL)s+=`<symbol id="fl-${cc}" viewBox="${WFL[cc][0]}" preserveAspectRatio="none">${WFL[cc][1]}</symbol>`;
-  for(const k in WG.c){const g=WG.c[k];if(!WFL[g[4]])continue;const v=WFL[g[4]][0].split(' '),ar=v[2]/v[3],f=x=>x.toFixed(2),st=g[4]==='ru'&&g[5]>100;
-    let fw=st?g[5]*1.02:Math.max(g[5],g[6]*ar,g[3]<1.6?2.4:0)*1.02;fw+=.2;const fh=st?g[6]*1.02+.1:fw/ar;
-    s+=`<pattern id="pf-${k}" patternUnits="userSpaceOnUse" x="${f(g[1]-fw/2)}" y="${f(g[2]-fh/2)}" width="${f(fw)}" height="${f(fh)}"><use href="#fl-${g[4]}" width="${f(fw)}" height="${f(fh)}"/><rect width="${f(fw)}" height="${f(fh)}" fill="#2b2316" fill-opacity=".3"/></pattern>`;}
-  d.innerHTML=s+'</svg>';document.body.appendChild(d);}
-const flg29=k=>{const g=WG.c[k];return g&&WFL[g[4]]?`<svg class="flg" width="22" height="15" viewBox="0 0 22 15"><use href="#fl-${g[4]}" width="22" height="15"/></svg>`:'';};
-function wsv29(){defs29();const m=S.wfm||'f',key=m+(m==='r'?JSON.stringify(S.ul)+JSON.stringify(S.ux||{}):'');
-  if(key!==wk29){wk29=key;let p='',q='';for(const k in WG.c){if(k==='TUR')continue;const g=WG.c[k],b=bs29(k),id=R29[b]||b,f=m==='f'&&WFL[g[4]]?`url(#pf-${k})`:col29(k,m);
-      p+=`<path data-wsel="${id}" d="${g[0]}" fill="${f}"/>`;if(g[3]<1.6)q+=`<circle data-wsel="${id}" cx="${g[1]}" cy="${g[2]}" r=".9" fill="${f}"/>`;}
-    p+=`<path data-hmtr="1" class="tr" d="${WG.c.TUR[0]}" fill="${m==='f'?'url(#pf-TUR)':col29('TUR',m)}"/>`;wc29=`<g class="lnd">${p}</g><g class="dts">${q}</g>`;}
-  const s=S.wsel,k=C29[s]||s,so=k?Object.keys(WG.c).filter(x=>bs29(x)===k&&WG.c[x]):[];
-  return `<svg viewBox="0 0 ${WG.w} ${WG.h}" class="hmsv">${wc29}${so.map(x=>{const g=WG.c[x];return `<path class="selo" d="${g[0]}"/>${g[3]<1.6?`<circle class="selo" cx="${g[1]}" cy="${g[2]}" r="1.1"/>`:''}`;}).join('')}</svg>`;}
-const leg29=()=>{const m=S.wfm||'f';return FM29.map(x=>`<button class="${m===x[0]?'on':''}" data-wfm="${x[0]}">${x[1]}</button>`).join('')+`<span class="hh">${FM29.find(x=>x[0]===m)[2]} · Türkiye'ye dokun: iller</span>`;};
+const flg29=()=>'';
+let raf29=0,st29=null,P29={},cc29={},ck29='',dp29=1;
+const md29=()=>S.wfm&&S.wfm!=='f'?S.wfm:'r';
+function wsv29(){return '<canvas class="hmcv"></canvas>';}
+function tf29(cv){const st=st29,W=st.offsetWidth,H=st.offsetHeight,k=hv28.k,sc=Math.min(W/WG.w,H/WG.h);return [dp29*k*sc,dp29*(hv28.x+k*(W-WG.w*sc)/2),dp29*(hv28.y+k*(H-WG.h*sc)/2),k*sc];}
+function paint29(){raf29=0;const st=st29;if(!st||!st.isConnected||!hw28)return;const cv=st.querySelector('canvas');if(!cv)return;const W=st.offsetWidth,H=st.offsetHeight;dp29=Math.min(2,window.devicePixelRatio||1);
+  if(cv.width!==Math.round(W*dp29)||cv.height!==Math.round(H*dp29)){cv.width=Math.round(W*dp29);cv.height=Math.round(H*dp29);}
+  const m=md29(),key=m+(m==='r'?JSON.stringify(S.ul)+JSON.stringify(S.ux||{}):'');if(key!==ck29){ck29=key;cc29={};for(const k in WG.c)cc29[k]=col29(k,m);}
+  const x=cv.getContext('2d'),T=tf29(cv),sc=Math.min(W/WG.w,H/WG.h),k=hv28.k,s=T[3],sel=C29[S.wsel]||S.wsel;x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,cv.width,cv.height);
+  x.setTransform(T[0],0,0,T[0],T[1],T[2]);x.lineJoin='round';x.lineWidth=Math.max(.1,.7/s);x.strokeStyle='#3b2a14';
+  const vis=g=>{const h=g[3]/2*s+8,px=T[1]/dp29+g[1]*s,py=T[2]/dp29+g[2]*s;return px>-h&&px<W+h&&py>-h&&py<H+h;};
+  const ks=Object.keys(WG.c);let so=[];
+  for(const q of ks){const g=WG.c[q];if(g[3]<WG.w&&!vis(g))continue;const P=P29[q]||(P29[q]=new Path2D(g[0]));x.fillStyle=cc29[q];x.fill(P);x.stroke(P);if(g[3]<1.6){x.beginPath();x.arc(g[1],g[2],.9,0,6.3);x.fill();x.stroke();}if(bs29(q)===sel)so.push(q);}
+  x.lineWidth=Math.max(.2,1.6/s);x.strokeStyle='#F2C14E';x.stroke(P29.TUR);x.strokeStyle='#fff';for(const q of so){x.stroke(P29[q]);if(WG.c[q][3]<1.6){x.beginPath();x.arc(WG.c[q][1],WG.c[q][2],1.1,0,6.3);x.stroke();}}}
+function draw29(st){st29=st;if(!raf29)raf29=requestAnimationFrame(paint29);}
+function hit29(ev){const cv=ev.target,x=cv.getContext('2d'),W=st29.offsetWidth,H=st29.offsetHeight,T=tf29(cv);x.setTransform(T[0],0,0,T[0],T[1],T[2]);const px=ev.offsetX*dp29,py=ev.offsetY*dp29,ks=Object.keys(WG.c);
+  for(const q of ks){const g=WG.c[q];if(g[3]<1.6){x.beginPath();x.arc(g[1],g[2],1.2,0,6.3);if(x.isPointInPath(px,py))return q;}}
+  for(let i=ks.length-1;i>=0;i--){const q=ks[i],P=P29[q]||(P29[q]=new Path2D(WG.c[q][0]));if(x.isPointInPath(P,px,py))return q;}return null;}
+document.addEventListener('click',ev=>{if(!ev.target.classList||!ev.target.classList.contains('hmcv'))return;ev.stopImmediatePropagation();ev.preventDefault();const q=hit29(ev);if(!q)return;const b=bs29(q);
+  if(b==='TUR'){hw28=false;hp28=false;hv28={x:0,y:0,k:1,i:1};return render();}const id=R29[b]||b;S.wsel=S.wsel===id?null:id;render();},true);
+window.addEventListener('resize',()=>{if(st29&&hw28)draw29(st29);});
+const leg29=()=>{const m=md29();return FM29.map(x=>`<button class="${m===x[0]?'on':''}" data-wfm="${x[0]}">${x[1]}</button>`).join('')+`<span class="hh">${FM29.find(x=>x[0]===m)[2]} · Türkiye'ye dokun: iller</span>`;};
 const fv29=(v,u,d)=>v==null?'—':nf(v,d)+u;
 function uvData29(k){const u=UV[k];if(!u)return '';const R=(l,v)=>`<div><i>${l}</i><b>${v}</b></div>`,o=u[15],
   O=[['N','NATO'],['E','AB'],['G','G20'],['7','G7'],['B','BRICS'],['S','ŞİÖ'],['T','Türk Devletleri Teşkilatı'],['t','TDT gözlemcisi'],['U','BM Güvenlik Konseyi daimi üyesi'],['P','OPEC'],['I','İslam İşbirliği Teşkilatı']].filter(x=>o.includes(x[0])).map(x=>x[1]);
@@ -41,7 +48,7 @@ function act29(k,id){const a=UVA29.find(x=>x[0]===id),u=UV[k];if(!a||!u||uvOk29(
   const m=su('uv'+k+id),g=Math.max(.35,Math.min(1.3,Math.log10((u[3]||1)+1)/2.2)),v=rel29(k);
   const E={zi:[5,{des:.04}],tc:[3,{cari:-.12*g,buy:.02*g}],yd:[8,{rez:-.5,des:-.03}],sa:[-8,{des:.12}],bc:[-15,{des:.2}]}[id],d=E[0]*m,f={};for(const q in E[1])f[q]=E[1][q]*(id==='yd'&&q==='rez'?1:m);
   S.ux[k]=clamp(v+d,0,100);S.uxc[k+id]=S.month;suU('uv'+k+id);applyFx(f);
-  logA('Dış ilişkiler',u[0],`${a[2]}: ilişki ${d>0?'+':'−'}${nf(Math.abs(d),1)}.${fxText(f)?' '+fxText(f):''}`);hap(20,520);wk29='';save();render();}
+  logA('Dış ilişkiler',u[0],`${a[2]}: ilişki ${d>0?'+':'−'}${nf(Math.abs(d),1)}.${fxText(f)?' '+fxText(f):''}`);hap(20,520);save();render();}
 document.addEventListener('click',ev=>{const t=ev.target.closest&&ev.target.closest('[data-uxa],[data-wfm]');if(!t||t.disabled)return;ev.stopImmediatePropagation();ev.preventDefault();const d=t.dataset;
-  if(d.wfm){S.wfm=d.wfm;wk29='';return render();}const p=d.uxa.split(':');act29(p[0],p[1]);},true);
+  if(d.wfm){S.wfm=d.wfm;return render();}const p=d.uxa.split(':');act29(p[0],p[1]);},true);
 {const _y=yeniUp;yeniUp=function(){try{const x=S.ux;if(x)for(const k in x){const b=UV[k]?UV[k][16]:50;x[k]=clamp(x[k]+(b-x[k])*.05,0,100);}}catch(e){}return _y.apply(this,arguments);};}
