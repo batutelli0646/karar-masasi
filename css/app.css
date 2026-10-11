@@ -459,3 +459,10 @@ html[data-ol] .ny .opt{grid-template-columns:1fr 1fr}
 html[data-ol] .ny .cols{grid-template-columns:minmax(0,1fr) minmax(0,1.5fr)}
 html[data-ol] .ny .ls{gap:10px}html[data-ol] .ny .lc{min-width:150px}
 .hm .nw{font-size:15px!important;letter-spacing:.1em!important}html[data-ol] .hm .nw{font-size:15px!important}
+/* ek33: küçük Yeni oyun kutusu, geniş parti kurma */
+.hm .nw,html[data-ol] .hm .nw{height:auto!important;min-height:0!important;padding:7px 18px!important;align-self:center;justify-self:center;width:auto;border-radius:8px}
+html[data-ol] .hm:not(:has(.co)) .nw{grid-column:1/-1}
+html[data-ol] .ny .cols:has(.cc .lgs){grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+html[data-ol] .ny .cc .lgs{grid-template-columns:repeat(auto-fill,minmax(44px,1fr))}
+html[data-ol] .ny .cc .cl{flex-wrap:wrap}
+.hm .nw{max-width:240px!important;width:240px!important;margin-left:auto!important;margin-right:auto!important}

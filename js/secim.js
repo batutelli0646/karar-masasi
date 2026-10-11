@@ -61,11 +61,10 @@ const ap=()=>{try{if(S&&S.cp)['n','ab','x','lead'].forEach(q=>{if(S.cp[q]!==unde
 function cbuild(){const b=base(),ok=cu.t.length===2;
 return `<div class="hd">${lg2(cu.lg,cu.col,46)}<b>${cu.n||'Yeni Parti'}</b><small>Kendi partin<br>Taban: ${PART[b].n}</small></div>
 <div class="cf"><label>Parti adı</label><input data-cu="n" maxlength="26" value="${cu.n}"><label>Kısaltma</label><input data-cu="ab" maxlength="4" value="${cu.ab}"><label>Genel başkan adı</label><input data-cu="lead" maxlength="26" value="${cu.lead}"></div>
-<div class="sh">Logo</div><div class="lgs">${LOGO.map((l,n)=>`<button class="${n===cu.lg?'on':''}" data-cl="${n}" title="${l[1]}">${lg2(n,cu.col,'100%')}</button>`).join('')}</div>
+<div class="note">Seçtiğin yönlere en yakın partinin seçmen tabanını (%${PART[b].w}) devralırsın. O parti oyundan çıkar, yerine senin partin gelir.</div></div><div class="cc"><div class="sh">Logo</div><div class="lgs">${LOGO.map((l,n)=>`<button class="${n===cu.lg?'on':''}" data-cl="${n}" title="${l[1]}">${lg2(n,cu.col,'100%')}</button>`).join('')}</div>
 <div class="sh">Renk</div><div class="cl">${CC.map((c,i)=>`<button class="${i===cu.col?'on':''}" data-cc="${i}"><i style="background:${c[0]}"></i></button>`).join('')}</div>
 <div class="sh">İdeolojik yön · 2 tane seç</div><div class="chips">${Object.keys(TG).map(t=>`<button class="btn sm ${cu.t.includes(t)?'':'sec'}" data-ct="${t}">${t}</button>`).join('')}</div>
-${ok?trH(cu.t):'<div class="note">İki yön seç.</div>'}
-<div class="note">Seçtiğin yönlere en yakın partinin seçmen tabanını (%${PART[b].w}) devralırsın. O parti oyundan çıkar, yerine senin partin gelir.</div>`;}
+${ok?trH(cu.t):'<div class="note">İki yön seç.</div>'}`;}
 function scr(){const o=sel==='OZEL',p=PART[sel]||{},dif=S.dif===undefined?1:S.dif,sc=S.sc||0,ls=LD[sel]||[],ld=ls[li]||[];
 return `<div class="wrap"><div class="ny"><div class="tp" style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><button class="bk" data-hm="home" aria-label="Geri" style="width:40px;height:40px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--accent);font-size:22px;cursor:pointer">‹</button><b style="font-family:var(--display);font-size:22px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)">Yeni oyun</b></div>
 <div class="ps">${PK.map(k=>`<button class="pc ${k===sel?'on':''}" data-ps="${k}">${logo(k,32)}${PART[k].n}</button>`).join('')}<button class="pc ${o?'on':''}" data-ps="OZEL">${lg2(cu.lg,cu.col,32)}Kendi partini kur</button></div>
