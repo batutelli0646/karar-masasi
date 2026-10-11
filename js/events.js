@@ -163,7 +163,7 @@ function applyFx(fx){
     else if(k==='rel'){if(S.ul)for(const c in v)if(S.ul[c]!==undefined){S.ul[c]=clamp(S.ul[c]+v[c],0,100);if(S.ub)S.ub[c]=clamp((S.ub[c]||0)+v[c]*.5,-25,25);}}
     else if(k==='kur'){S.kur*=1+v/100;const g=S.gdp;S.gdp/=Math.pow(Math.max(.2,1+v/100),.5);if(S.debt!==undefined)S.borc=clamp(S.debt/S.gdp*100,RANGE.borc[0],RANGE.borc[1]);}
     else if(k==='borc'&&S.debt!==undefined){S.debt=Math.max(0,S.debt+v*S.gdp/100);S.borc=clamp(S.debt/S.gdp*100,RANGE.borc[0],RANGE.borc[1]);}
-    else if(k==='acik'){S.acik=clamp(S.acik+v,RANGE.acik[0],RANGE.acik[1]);S.acikP=(S.acikP||0)+v*.25;}
+    else if(k==='acik'){S.acik=clamp(S.acik+v,RANGE.acik[0],RANGE.acik[1]);S.acikP=(S.acikP||0)+v*(v>0?.5:.25);}
     else if(k==='fR'||k==='fG'||k==='fS'){const f=k[1];S.fac[f]=Math.max(3,S.fac[f]+v);const t=S.fac.R+S.fac.G+S.fac.S;for(const q in S.fac)S.fac[q]=S.fac[q]/t*100;}
     else if(RANGE[k]){S[k]=clamp(S[k]+v,RANGE[k][0],RANGE[k][1]);}
   }

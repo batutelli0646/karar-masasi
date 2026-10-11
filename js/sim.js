@@ -3,7 +3,7 @@
 const sfz=x=>x>20?20+(x-20)*.1:x<-20?-20+(x+20)*.1:x,taF=(X,F)=>3.6+X.dev-X.rev+(X.E.acik||0)+(F.acik||0)+(S.acikP||0)+(S.idb||0)*S.lv.faiz/100*.5+(S.borc-38)*.03+0.06*sfz(S.lv.faiz-F0)-0.15*(S.buy-2.8)+loanC();
 function simulate(){
   const L=S.lv,s=S,mk=M,X=eco(),F=sfx(),e=k=>(X.E[k]||0)+(F[k]||0);
-  const p0={des:s.des,par:s.par,ord:s.ord,huz:s.huz},g0=s.gdp,real=L.faiz-s.enf,sf=x=>x>20?20+(x-20)*.1:x<-20?-20+(x+20)*.1:x,rl=sf(real);
+  const p0={des:s.des,par:s.par,ord:s.ord,huz:s.huz},g0=s.gdp,real=(s.rr=(s.rr==null?L.faiz-s.enf:s.rr+((L.faiz-s.enf)-s.rr)*.5)),sf=x=>x>20?20+(x-20)*.1:x<-20?-20+(x+20)*.1:x,rl=sf(real);
   let depr=1.6+0.05*(s.enf-E0)-0.03*clamp(s.rez-22,-30,40)-0.10*(rl-3)+rnd(-0.8,0.8)-(mk.maliye.sk-5)*0.1+(s.des<30?0.5:0)+(s.huz<4?0.4:0);
   depr+=0.3*Math.max(0,s.acik-7);depr+=(50-s.gv)*.012;if(typeof levD==='function')depr+=levD();depr=clamp(depr,-0.2,9);
   s.kur*=1+depr/100;s.gdp*=1+clamp(.25*(Math.min(s.enf,60)*.9/1200-depr/100)-Math.max(0,depr-3)*.004,-.03,.008); /* reel kur: GSYH'nın dolar değeri, kur artışı fiyat artışından hızlıysa küçülür, yavaşsa büyür */
@@ -13,7 +13,7 @@ function simulate(){
   s.buy+=(tg-s.buy)*0.25+rnd(-0.1,0.1);
   s.isz+=0.04*(3.0-s.buy)+0.02*(9.2-s.isz)+rnd(-0.05,0.05)+e('isz');
   const ta=taF(X,F);
-  s.acik+=(ta-s.acik)*0.3;S.acikP=(S.acikP||0)*.96;S.tl=S.tl||{};TAX.forEach(t=>{const l=taxL(t[0]);S.tl[t[0]]=(S.tl[t[0]]??0)+(l-(S.tl[t[0]]??0))/6;});S.idb=(S.idb||0)*.995;
+  s.acik+=(ta-s.acik)*0.3;S.acikP=(S.acikP||0)*.975;S.tl=S.tl||{};TAX.forEach(t=>{const l=taxL(t[0]);S.tl[t[0]]=(S.tl[t[0]]??0)+(l-(S.tl[t[0]]??0))/6;});S.idb=(S.idb||0)*.995;
   S.debt=Math.max(0,(S.debt??s.borc*g0/100)+(0.10*(s.acik-2.5)+e('borc'))*g0/100);
   s.cari+=0.25*(s.buy-2.8)-0.1*(depr-1.6)+(34-s.cari)*0.012+rnd(-0.4,0.4)+e('cari');
   s.des+=-0.06*Math.max(s.enf-E0,-25)+0.35*(s.buy-2.5)-0.25*(s.isz-9.2)+0.1*(s.huz-5)-0.15+(41-s.des)*0.02+e('des');
