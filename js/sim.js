@@ -48,7 +48,7 @@ function headlines(a,b,depr){
 }
 const aPt=()=>{const c=S.coal||[];return (S.ally||c.length)&&c[0]&&PART[c[0]]?c[0]:null;},aW=pt=>{const wm=PART[S.me].w*1.6,wp=PART[pt].w*(1+(S.kol-6)*.04);return wm/(wm+wp);};
 const pvt=el=>{const pt=aPt();return clamp(pt?vote(el)*aW(pt):vote(el)*(.45+.55*PART[S.me].w/35),1,55);}; /* ittifak varsa iktidar oyu (destek) ortaklar arasında taban gücüne göre bölünür */
-function vote(el){return clamp(S.des*0.92+(S.huz-5)*0.6+(S.par-5)*0.5+clamp(S.kamp||0,-6,3)+priV()+gDev()*.05+(el?promRes().reduce((a,r)=>a+(r[1]?1.5:-3),0):0),8,52);}
+function vote(el){const x=(S.des*0.92+(S.huz-5)*0.6+(S.par-5)*0.5+clamp(S.kamp||0,-6,3)+priV()+gDev()*.05+(el?promRes().reduce((a,r)=>a+(r[1]?1.5:-3),0):0));return clamp(30+30*Math.tanh((x-30)/30),6,60);}
 function checkEnd(){
   if(S.des<12)return {t:'Erken Seçim ve İktidar Kaybı',x:'Halk desteği çöktü. Meclis 360 oyla seçimlerin yenilenmesine karar verdi ve erken seçimi kaybettin.'};
   if(S.par<2.5&&S.par>1&&!S.parW){S.parW=1;logA('Parti içi uyarı','Hizipler kurultay istiyor','Parti içi huzur tehlikeli düzeyde; bakan değişikliği, hizip ve kurultay kararlarıyla durumu düzeltmezsen liderlik düşebilir.');}else if(S.par>=4)S.parW=0;

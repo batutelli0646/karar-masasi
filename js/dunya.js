@@ -37,7 +37,7 @@ function dunyaUp(){const h=[];dunyaEnsure();
 const uc=()=>0;
 function uact(a,id,k){const c=CT.find(x=>x[0]===id);if(!c)return;
   if(a==='h'){const x=UHO[k];if(!x||!x[4](c))return;const m=su('u'+id);S.ub[id]=clamp((S.ub[id]||0)+x[2]*1.2*m,-25,25);S.ul[id]=clamp(S.ul[id]+x[2]*m,0,100);const f={...x[3]};if(f.reg){f[c[2]]=f.reg;delete f.reg;}applyFx(sfx2(f,m));suU('u'+id);logA('Dış ilişkiler',c[1],x[0]+': ilişki +'+nf(x[2]*m,1)+'.');}
-  else if(a==='s'){const m=su('s'+id);S.ub[id]=clamp((S.ub[id]||0)-5*m,-25,25);S.ul[id]=clamp(S.ul[id]-4*m,0,100);applyFx({des:.15*m,ord:.05*m});suU('s'+id);logA('Dış ilişkiler',c[1],'Sert açıklama yapıldı.');}
+  else if(a==='s'){const m=su('sert');S.ub[id]=clamp((S.ub[id]||0)-5,-25,25);S.ul[id]=clamp(S.ul[id]-4,0,100);applyFx({des:.15*m,ord:.05*m,bat:-.12,buy:-.01});suU('sert');logA('Dış ilişkiler',c[1],'Sert açıklama yapıldı.');}
   else if(a==='d'){if(S.dl[id]||S.ul[id]<60)return;S.dl[id]=1;logA('Dış ilişkiler',c[1],'İkili ticaret ve yatırım anlaşması imzalandı.');}
   hap(20,520);save();render();}
 function tal(id,ok){const i=S.ta.findIndex(x=>x.id===id);if(i<0)return;const x=S.ta[i],t=TT[x.t],fx={...t[2]};S.ta.splice(i,1);

@@ -52,7 +52,7 @@ const ROLES={maliye:['Maliye Bakanı','Kur baskısı'],ic:['İçişleri Bakanı'
 let S=null;
 function newGame(){
   S={month:0,pool:12,tab:'masa',me:'AKP',pick:true,
-   enf:31.5,buy:2.7,isz:8.6,acik:3.6,borc:38,cari:34,rez:22,kur:46,des:41,par:6,kol:6,ord:6,huz:5,bat:5,dog:5,bol:6,
+   enf:29.7,buy:2.7,isz:8.6,acik:3.6,borc:38,cari:34,rez:22,kur:46,des:41,par:6,kol:6,ord:6,huz:5,bat:5,dog:5,bol:6,
    lv:{faiz:37},lv0:{faiz:37},
    fac:{R:35,G:40,S:25},
    M:{maliye:{name:'Selim Arda',sk:7,note:'Teknokrat, disiplinli, popülist harcamaya karşı'},ic:{name:'Kemal Yüce',sk:7,note:'Sert, güvenlik odaklı, emniyette güçlü'},dis:{name:'Leyla Aksoy',sk:7,note:'Deneyimli diplomat, dengeci'},sav:{name:'Cevdet Tamer',sk:8,note:'Orgeneral (E), yerli üretim savunucusu'},mb:{name:'Prof. Nihat Erdem',sk:7,note:'Bağımsızlıktan yana, faiz indirimine temkinli'}},

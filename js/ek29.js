@@ -52,9 +52,9 @@ function uvCard29(k){const u=UV[k],v=rel29(k),[lb,cl]=rl(v);
 function side29(){const s0=S.wsel,s=R29[s0]||s0,k=C29[s]||s;if(!k||!WG.c[k]||k==='TUR')return '';const c=CT.find(x=>x[0]===s);
   return `<aside class="hrp"><button class="hpx" data-hmr="w">✕</button><div class="panel">${c?dxCard(c,1):uvCard29(k)}${uvData29(k)}</div></aside>`;}
 function act29(k,id){const a=UVA29.find(x=>x[0]===id),u=UV[k];if(!a||!u||uvOk29(k,a))return;S.ux=S.ux||{};S.uxc=S.uxc||{};
-  const m=su('uv'+k+id),g=Math.max(.35,Math.min(1.3,Math.log10((u[3]||1)+1)/2.2)),v=rel29(k);
-  const E={zi:[5,{des:.04}],tc:[3,{cari:-.12*g,buy:.02*g}],yd:[8,{rez:-.5,des:-.03}],sa:[-8,{des:.12}],bc:[-15,{des:.2}]}[id],d=E[0]*m,f={};for(const q in E[1])f[q]=E[1][q]*(id==='yd'&&q==='rez'?1:m);
-  S.ux[k]=clamp(v+d,0,100);S.uxc[k+id]=S.month;suU('uv'+k+id);applyFx(f);
+  const m=(id==='sa'||id==='bc')?su('uv'+id):su('uv'+k+id),g=Math.max(.35,Math.min(1.3,Math.log10((u[3]||1)+1)/2.2)),v=rel29(k);
+  const E={zi:[5,{des:.04}],tc:[3,{cari:-.12*g,buy:.02*g}],yd:[8,{rez:-.5,des:-.03}],sa:[-8,{des:.1,bat:-.12,buy:-.01}],bc:[-15,{des:.16,bat:-.25,buy:-.03,cari:.05}]}[id],d=E[0]*m,f={};for(const q in E[1])f[q]=E[1][q]*(id==='yd'&&q==='rez'?1:m);
+  S.ux[k]=clamp(v+d,0,100);S.uxc[k+id]=S.month;suU((id==='sa'||id==='bc')?'uv'+id:'uv'+k+id);applyFx(f);
   logA('Dış ilişkiler',u[0],`${a[2]}: ilişki ${d>0?'+':'−'}${nf(Math.abs(d),1)}.${fxText(f)?' '+fxText(f):''}`);hap(20,520);save();render();}
 document.addEventListener('click',ev=>{const t=ev.target.closest&&ev.target.closest('[data-uxa],[data-wfm]');if(!t||t.disabled)return;ev.stopImmediatePropagation();ev.preventDefault();const d=t.dataset;
   if(d.wfm){S.wfm=d.wfm;return render();}const p=d.uxa.split(':');act29(p[0],p[1]);},true);
