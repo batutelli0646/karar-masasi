@@ -37,7 +37,7 @@ main{padding-block:18px}
 .sqt.st4{aspect-ratio:1/.88}.sqt.good{border-top-color:var(--good)}.sqt.warn{border-top-color:var(--warn)}.sqt.bad{border-top-color:var(--bad)}.sqt.ev{border-top-color:var(--accent);cursor:pointer}.sqt.ev.done{opacity:.6}
 .sqt .l{font-size:10px;color:var(--muted);line-height:1.15}.sqt .v{font-size:17px;font-weight:600;line-height:1}.sqt .v small{font-size:9px;color:var(--muted);margin-left:1px}.sqt .t{font-size:10.5px;font-weight:600;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;word-break:break-word}.sqt .d{font-size:9px;line-height:1.1}
 .ch text{fill:var(--muted);font-size:9px}.ch line{stroke:var(--line)}.ch polyline{fill:none;stroke:var(--accent);stroke-width:2}.ch circle{fill:var(--accent)}
-.sheet{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center}.sheet-in{background:var(--bg);width:100%;max-width:560px;max-height:88vh;overflow:auto;padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));border-radius:8px 8px 0 0}
+.sheet{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center}.sheet-in{background:var(--bg);width:100%;max-width:560px;max-height:calc(var(--eh,100vh)*.88);overflow:auto;padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px));border-radius:8px 8px 0 0}
 .sq.big{grid-template-rows:repeat(4,1fr);height:calc(100dvh - 312px);min-height:380px}.sq.big .sqt,.sq.big .sqt.st4{aspect-ratio:auto;padding:9px}.big .l{font-size:12px}.big .v{font-size:20px;white-space:nowrap}.big .v small{font-size:11px}.big .d{font-size:11px}
 .sq.two{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.sq.two .sqt{aspect-ratio:1.45;padding:10px}.two .l{font-size:11px}.two .t{font-size:15px;-webkit-line-clamp:3}.two .d{font-size:11px}
 .stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:8px;margin-bottom:18px}
@@ -235,7 +235,7 @@ body{line-height:1.35}main{padding-block:6px}h2{margin:0 0 4px}
 input[type=range]{margin:2px 0}.chips{gap:3px;margin-top:3px}.choice{padding:5px 9px}.ag{padding:6px 0}.subtabs{margin:6px 0 2px}.bn2{height:30px}
 .panel p,.panel .note,.note{margin:3px 0 0}.grid2{gap:5px}.stats{gap:5px;margin-bottom:6px}.tile{padding:5px 8px}.panel>b:first-child{margin-bottom:2px}
 .rng{height:22px;margin:0}.lever .step:has(output){grid-row:1!important}.lever:has(output) .h{grid-column:1/-1;grid-row:2}.lever:has(output) .n{grid-row:1}.step button:not(.btn){width:32px;height:26px}.step output{min-width:40px}
-.dxs{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:60;display:flex;align-items:flex-end}.dxb{background:var(--surface);color:var(--ink);width:100%;max-height:84vh;overflow:auto;border-radius:16px 16px 0 0;padding:14px 14px 28px;border-top:2px solid var(--accent)}
+.dxs{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:60;display:flex;align-items:flex-end}.dxb{background:var(--surface);color:var(--ink);width:100%;max-height:calc(var(--eh,100vh)*.84);overflow:auto;border-radius:16px 16px 0 0;padding:14px 14px 28px;border-top:2px solid var(--accent)}
 .dxa{display:flex;align-items:center;gap:10px;width:100%;margin:5px 0;padding:11px 12px;background:var(--surface2);border:1px solid var(--line);border-radius:9px;color:var(--ink);font-size:14px;text-align:left}.dxa b{flex:1}.dxa i{color:var(--muted);font-style:normal;font-size:18px}
 /* Ek temalar: Meclis Gecesi, Gazete Baskısı (yazı tipi Tomorrow kalır) */
 :root:root:root[data-theme="meclis"]{--bg:#0E1A2F;--surface:#16253F;--surface2:#1D2F4F;--ink:#E8E4D6;--muted:#9FA9BC;--line:#2A3C5E;--accent:#C9A24B;--accent-ink:#0E1A2F;--good:#4CC38A;--warn:#E2B04B;--bad:#EA6660;--bg0:#0B1526;--hd:linear-gradient(#0E1A2F,#0B1526);--pn:linear-gradient(180deg,#16253F,#122039);--glow:rgba(201,162,75,.06);--glow2:rgba(201,162,75,.2);--btn:linear-gradient(180deg,#D8B25A,#B88B2E);--btnl:#8A6A22;--f1:#16253F;--f2:#122039;--f3:#0E1A2F;--f3h:#1D2F4F;--barbg:#1D2F4F;--navsel:#1D2F4F;--endb:#0A1323;--sep:#2A3C5E;color-scheme:dark}
@@ -406,7 +406,7 @@ html[data-hm] .lever .n{font-size:14px}html[data-hm] .lever{padding-block:5px}
 html[data-hm] .btn.sm{padding:6px 10px;font-size:11px;min-height:30px}
 html[data-hm] .dxa{padding:7px 10px;font-size:12.5px;margin:3px 0}
 html[data-hm] .sheet{align-items:center}
-html[data-hm] .sheet-in{max-width:340px;max-height:72vh;border-radius:12px;padding:10px 12px;font-size:12.5px}
+html[data-hm] .sheet-in{max-width:340px;max-height:calc(var(--eh,100vh)*.72);border-radius:12px;padding:10px 12px;font-size:12.5px}
 html[data-hm][data-hp] .wrap{top:118px;bottom:54px;font-size:13px}
 html[data-ol] #hmx .hid{top:4px;width:170px;left:6px}
 html[data-ol] #hmx .hnw{top:42px;width:170px;left:6px}
@@ -421,7 +421,7 @@ html[data-hm] .sheet-in{width:min(92%,340px)!important;border-radius:12px!import
 html[data-hm][data-hp] .wrap{zoom:.86}
 html[data-hm][data-hp] .wrap .step button:not(.btn){width:34px;height:34px}
 html[data-hm] .dxs{align-items:center;justify-content:center}
-html[data-hm] .dxb{width:min(92%,340px);max-height:70vh;border-radius:12px;border:1px solid var(--accent);padding:10px 12px 12px;zoom:.88;font-size:13px}
+html[data-hm] .dxb{width:min(92%,340px);max-height:calc(var(--eh,100vh)*.7);border-radius:12px;border:1px solid var(--accent);padding:10px 12px 12px;zoom:.88;font-size:13px}
 html[data-hm][data-hp] .wrap{top:137px;bottom:62px}
 html[data-ol][data-hm][data-hp] .wrap{top:auto;bottom:62px}
 /* ek31: menü paneli tam ekran, ölçekli (zoom yerine transform) */
@@ -477,3 +477,17 @@ html[data-ol] .ny .cols>.opt .chips{gap:4px}
 .btn.idc{display:flex;flex-direction:column;align-items:flex-start;text-align:left;height:auto;min-height:0;padding:6px 9px;gap:2px;white-space:normal;line-height:1.2}
 .btn.idc b{font-size:13px}.btn.idc small{font-size:10.5px;font-weight:400;opacity:.8;text-transform:none;letter-spacing:0}
 .tg .td{display:block;text-transform:none;letter-spacing:0;font-size:10.5px;opacity:.75;margin:1px 0 2px}
+
+/* ek42: yeni kartların düğmeleri, olay penceresi yatayda iki sütun, kriz kartında bakan görüşleri okunur */
+.step.fw,.lever .step.fw{grid-column:1/-1!important;grid-row:auto!important;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px!important;justify-content:stretch!important;margin-top:4px!important}
+.step.fw button.dxa{width:auto!important;height:auto!important;min-height:34px;margin:0!important;padding:6px 10px!important}
+.step.fw .dxa span{flex:1;min-width:0;white-space:normal;line-height:1.2}.step.fw .dxa b{flex:none;max-width:50%;text-align:right;font-size:.82em;line-height:1.15;white-space:normal}
+.card.cat-kriz:not(.done) .bl .bt,.sheet-in .card.cat-kriz:not(.done) .bl .bt{background:rgba(255,255,255,.1);border-color:#6B2A30;color:#F7EDE6}
+.card.cat-kriz:not(.done) .bal .dl{color:#D8BFB4}.card.cat-kriz:not(.done) .bl .av{background:#2A0E12;color:#F7EDE6}
+html[data-ol] .sheet-in,html[data-ol][data-hm] .sheet-in{width:min(94%,900px)!important;max-width:none!important;max-height:calc(var(--eh,100vh)*.92)!important;zoom:1!important}
+html[data-ol] .sheet-in article.card:not(.done){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);grid-template-rows:repeat(5,auto) 1fr;gap:0 18px;align-items:start;padding:12px 14px}
+html[data-ol] .sheet-in article.card:not(.done)>*{grid-column:1}
+html[data-ol] .sheet-in article.card:not(.done)>.choices{grid-column:2;grid-row:1/span 6;margin:0}
+html[data-ol] .sheet-in article.card:not(.done)>.bal{margin:4px 0 0}
+html[data-ol] .sheet-in .bal .bl{margin-top:5px;gap:7px}html[data-ol] .sheet-in .bal .bl .av{width:30px;height:30px;font-size:11px;border-width:2px}html[data-ol] .sheet-in .bal .bl .bt{font-size:11.5px;padding:5px 8px;line-height:1.3}
+html[data-ol] .sheet-in article.card h3{font-size:22px!important;line-height:1.1;margin:2px 0 6px}html[data-ol] .sheet-in article.card p{margin:0 0 6px}
