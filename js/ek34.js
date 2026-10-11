@@ -11,7 +11,7 @@ function dpBlock(pol){const d=dpE();if(pol){if(d.pl>=1)return 'Bu ay polemik hak
 function dpHire(x){const d=dpE();if(x>0){if(d.n>=12)return;d.n++;S.acik+=.03;logA('Dışişleri','Diplomat kolordusu','Yeni diplomat atandı: toplam '+d.n+'.');}else{if(d.n<=3)return;d.n--;logA('Dışişleri','Diplomat kolordusu','Bir diplomat görevden alındı: toplam '+d.n+'.');}hap(20,520);save();render();}
 function dpCard(){const d=dpE();return `<div class="panel"><b>Diplomat kolordusu</b> <span class="muted dl">bu ay ${d.u}/${d.n} diplomasi hakkı · polemik ${d.pl}/1</span>
 <div class="note" style="margin:4px 0">Ülkelerle ilişki geliştirme, ikili anlaşma ve temas eylemleri diplomat başına ayda bir hak kullanır. Sert açıklama ve boykot ayda tek polemik hakkıdır. Her fazladan diplomat Dışişleri bütçesine küçük bir yük bindirir.${d.msg?' <b>'+d.msg+'</b>':''}</div>
-<div class="step"><button class="dxa" data-dpn="1" ${d.n>=12?'disabled':''}><span>Diplomat ata</span><b>bütçe yükü: ayda 0,004 puan açık</b><i>›</i></button><button class="dxa" data-dpn="-1" ${d.n<=3?'disabled':''}><span>Diplomat azalt</span><b>en az 3</b><i>›</i></button></div></div>`;}
+<div class="step"><button class="dxa" data-dpn="1" ${d.n>=12?'disabled':''}><span>Diplomat ata</span><b>+0,004 açık/ay</b><i>›</i></button><button class="dxa" data-dpn="-1" ${d.n<=3?'disabled':''}><span>Diplomat azalt</span><b>en az 3</b><i>›</i></button></div></div>`;}
 {const _k=V.ulke;V.ulke=()=>dpCard()+_k();}
 document.addEventListener('click',ev=>{const t=ev.target.closest&&ev.target.closest('[data-dpn]');if(!t||t.disabled)return;ev.stopImmediatePropagation();ev.preventDefault();dpHire(+t.dataset.dpn);},true);
 /* huzur krizi: huzur iki ay üst üste 2,2 altında kalırsa genel grev veya OHAL; ordunun yıllık bütçe talebi */

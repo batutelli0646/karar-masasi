@@ -14,7 +14,7 @@ function neden36(){const p=S.prev;if(!p||p.des==null)return '';const L=(t,rows,d
 {const _m=V.masa;V.masa=()=>hedefP36()+neden36()+_m();}
 /* küresel güç sıralaması */
 const RK36=[['Ekonomik','GSYH (mlr $)',u=>u[3]],['Askerî','Askerî harcama (mlr $)',u=>u[3]!=null&&u[12]!=null?u[3]*u[12]/100:null],['Refah','Kişi başı gelir ($)',u=>u[4]]];
-function rank36(){const t=S.rk36||0,R=RK36[t],me=UV.TUR,f=R[2],live=t===0?S.gdp:t===1?f(me)*((S.bud&&MB&&MB.sav)?S.bud.sav/MB.sav:1):S.gdp*1000/me[2];
+function rank36(){const t=S.rk36||0,R=RK36[t],me=UV.TUR,f=R[2],live=t===0?S.gdp:t===1?f(me)*((S.bud&&MB&&MB.sav)?S.bud.sav/MB.sav:1)*(typeof gucu==='function'&&typeof G0!=='undefined'?gucu()/G0:1)*(1+(typeof ivMp==='function'?ivMp():0)/400):S.gdp*1000/me[2];
   const rows=Object.keys(UV).filter(k=>k!=='TUR').map(k=>[UV[k][0],f(UV[k])]).filter(x=>x[1]!=null&&x[1]>0);rows.push(['SEN · Türkiye',live]);rows.sort((a,b)=>b[1]-a[1]);
   const i=rows.findIndex(x=>x[0].startsWith('SEN')),top=rows.slice(0,12);if(i>=12)top.push(rows[i]);const mx=rows[0][1];
   return `<div class="panel"><b>Küresel güç sıralaması</b> <span class="muted dl">${rows.length} ülke · sen ${i+1}. sıradasın</span><div class="chips" style="margin:6px 0">${RK36.map((r,n)=>`<button class="btn sm ${n===t?'':'sec'}" data-rk="${n}">${r[0]}</button>`).join('')}</div><div class="dl muted">${R[1]}</div>${top.map(x=>`<div class="dl" style="margin-top:4px;${x[0].startsWith('SEN')?'font-weight:700':''}">${rows.indexOf(x)+1}. ${x[0]} · ${nf(x[1],x[1]<100?1:0)}</div>${gbar(x[1]/mx*100,x[0].startsWith('SEN')?'ok':'')}`).join('')}</div>`;}
