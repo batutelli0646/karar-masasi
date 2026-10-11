@@ -59,8 +59,11 @@ function act29(k,id){const a=UVA29.find(x=>x[0]===id),u=UV[k];if(!a||!u||uvOk29(
 document.addEventListener('click',ev=>{const t=ev.target.closest&&ev.target.closest('[data-uxa],[data-wfm]');if(!t||t.disabled)return;ev.stopImmediatePropagation();ev.preventDefault();const d=t.dataset;
   if(d.wfm){S.wfm=d.wfm;return render();}const p=d.uxa.split(':');act29(p[0],p[1]);},true);
 {const _y=yeniUp;yeniUp=function(){try{const x=S.ux;if(x)for(const k in x){const b=UV[k]?UV[k][16]:50;x[k]=clamp(x[k]+(b-x[k])*.05,0,100);}}catch(e){}return _y.apply(this,arguments);};}
-/* yatay (döndürülmüş) modda dokunmatik kaydırma: ekran ekseni yerel eksene çevrilir */
-{let sc=null,t=null,v=0,lt=0;const R=document.documentElement,sca=e=>{for(let n=e;n;n=n.parentElement){const o=getComputedStyle(n).overflowY;if((o==='auto'||o==='scroll')&&n.scrollHeight>n.clientHeight+2)return n;}return null;};
-  document.addEventListener('touchstart',e=>{sc=null;if(!R.hasAttribute('data-rot')||e.touches.length!==1||e.target.closest('.hmst'))return;sc=sca(e.target);if(!sc)return;t=[e.touches[0].clientX,e.touches[0].clientY];v=0;lt=Date.now();},{passive:true});
-  document.addEventListener('touchmove',e=>{if(!sc||!t)return;const p=e.touches[0],d=R.hasAttribute('data-flip')?p.clientX-t[0]:t[0]-p.clientX;t=[p.clientX,p.clientY];sc.scrollTop-=d;const n=Date.now();v=d/Math.max(1,n-lt)*.6+v*.4;lt=n;e.preventDefault();},{passive:false});
-  document.addEventListener('touchend',()=>{const s=sc;sc=null;if(!s||Math.abs(v)<.15||Date.now()-lt>80)return;let w=v*16;const f=()=>{s.scrollTop-=w;w*=.94;if(Math.abs(w)>.5)requestAnimationFrame(f);};f();},{passive:true});}
+/* yatay (döndürülmüş) modda dokunmatik kaydırma: ekran ekseni yerel eksene çevrilir (dikey ve yatay kaydırıcılar) */
+{let sv=null,sh=null,t=null,ax=0,v=0,lt=0,ac=0;const R=document.documentElement,fl=()=>R.hasAttribute('data-flip'),
+  fnd=(e,y)=>{for(let n=e;n;n=n.parentElement){const c=getComputedStyle(n),o=y?c.overflowY:c.overflowX;if((o==='auto'||o==='scroll')&&(y?n.scrollHeight>n.clientHeight+2:n.scrollWidth>n.clientWidth+2))return n;}return null;};
+  document.addEventListener('touchstart',e=>{sv=sh=null;if(!R.hasAttribute('data-rot')||e.touches.length!==1||e.target.closest('.hmst'))return;sv=fnd(e.target,1);sh=fnd(e.target,0);if(!sv&&!sh)return;t=[e.touches[0].clientX,e.touches[0].clientY];ax=0;v=0;ac=0;lt=Date.now();},{passive:true});
+  document.addEventListener('touchmove',e=>{if(!(sv||sh)||!t)return;const p=e.touches[0],dx=p.clientX-t[0],dy=p.clientY-t[1];t=[p.clientX,p.clientY];const ly=fl()?dx:-dx,lx=fl()?-dy:dy;
+    if(!ax){ac+=Math.abs(lx)+Math.abs(ly);if(ac<5)return;ax=Math.abs(lx)>Math.abs(ly)?2:1;}
+    const s=ax===2?sh:sv;if(!s)return;const d=ax===2?lx:ly;if(ax===2)s.scrollLeft-=d;else s.scrollTop-=d;const n=Date.now();v=d/Math.max(1,n-lt)*.6+v*.4;lt=n;e.preventDefault();},{passive:false});
+  document.addEventListener('touchend',()=>{const s=ax===2?sh:sv,x=ax;sv=sh=null;if(!s||!x||Math.abs(v)<.15||Date.now()-lt>80)return;let w=v*16;const f=()=>{if(x===2)s.scrollLeft-=w;else s.scrollTop-=w;w*=.94;if(Math.abs(w)>.5)requestAnimationFrame(f);};f();},{passive:true});}

@@ -453,3 +453,9 @@ html[data-ol] .ny .go{padding:6px 14px calc(6px + env(safe-area-inset-bottom,0px
 html[data-ol] .ny .tp{margin-bottom:2px!important}html[data-ol] .ny .tp b{font-size:16px!important}html[data-ol] .ny .bk{width:32px!important;height:32px!important}
 html[data-ol] .ny .sh{margin:8px 0 4px}
 html[data-rot] .ny{padding-top:60px!important}
+html[data-rot] .ls,html[data-rot] .ps,html[data-rot] .ny .ls{touch-action:none!important}
+.ny .opt{display:grid;grid-template-columns:1fr;gap:0 14px;zoom:.86}
+html[data-ol] .ny .opt{grid-template-columns:1fr 1fr}
+html[data-ol] .ny .cols{grid-template-columns:minmax(0,1fr) minmax(0,1.5fr)}
+html[data-ol] .ny .ls{gap:10px}html[data-ol] .ny .lc{min-width:150px}
+.hm .nw{font-size:15px!important;letter-spacing:.1em!important}html[data-ol] .hm .nw{font-size:15px!important}
