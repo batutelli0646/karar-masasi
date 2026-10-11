@@ -22,7 +22,7 @@ function hud28(){const left=(S.cur.events||[]).filter(e=>e.ch===null).length,w=h
 function wire28(o){const st=o.querySelector('.hmst'),z=o.querySelector('.hmz');if(!st||!z)return;const ps=new Map(),rot=document.documentElement.hasAttribute('data-rot'),fl=document.documentElement.hasAttribute('data-flip');let d0=0;
   const ap=()=>{const W=st.offsetWidth,H=st.offsetHeight,k=hv28.k;hv28.x=Math.max(W*(1-k)-W*.25,Math.min(W*.25,hv28.x));hv28.y=Math.max(H*(1-k)-H*.25,Math.min(H*.25,hv28.y));if(hw28){z.style.transform='none';draw29(st);}else z.style.transform=`translate(${hv28.x}px,${hv28.y}px) scale(${k})`;st.parentNode.dataset.z=k>=4?'2':'1';};ap();
   if(!hv28.i){hv28.i=1;if(hw28){const W=st.offsetWidth,H=st.offsetHeight,sc=Math.min(W/WG.w,H/WG.h),k=W<H?3.2:2,px=(W-WG.w*sc)/2+WG.tx*sc,py=(H-WG.h*sc)/2+WG.ty*sc;hv28.k=k;hv28.x=W/2-px*k;hv28.y=H/2-py*k;ap();}}
-  const zm=(f,cx,cy)=>{const k=Math.max(1,Math.min(6,hv28.k*f)),r=k/hv28.k;hv28.x=cx-(cx-hv28.x)*r;hv28.y=cy-(cy-hv28.y)*r;hv28.k=k;if(k===1){hv28.x=0;hv28.y=0;}ap();};
+  const zm=(f,cx,cy)=>{const k=Math.max(1,Math.min(16,hv28.k*f)),r=k/hv28.k;hv28.x=cx-(cx-hv28.x)*r;hv28.y=cy-(cy-hv28.y)*r;hv28.k=k;if(k===1){hv28.x=0;hv28.y=0;}ap();};
   const ct=e=>rot?[st.offsetWidth/2,st.offsetHeight/2]:(r=>[e.clientX-r.left,e.clientY-r.top])(st.getBoundingClientRect());
   const cv=(dx,dy)=>rot?(fl?[-dy,dx]:[dy,-dx]):[dx,dy];
   st.addEventListener('pointerdown',e=>{ps.set(e.pointerId,[e.clientX,e.clientY]);hg28=0;if(ps.size===2){const [a,b]=[...ps.values()];d0=Math.hypot(a[0]-b[0],a[1]-b[1]);}});
