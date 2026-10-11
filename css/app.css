@@ -466,3 +466,8 @@ html[data-ol] .ny .cols:has(.cc .lgs){grid-template-columns:minmax(0,1fr) minmax
 html[data-ol] .ny .cc .lgs{grid-template-columns:repeat(auto-fill,minmax(44px,1fr))}
 html[data-ol] .ny .cc .cl{flex-wrap:wrap}
 .hm .nw{max-width:240px!important;width:240px!important;margin-left:auto!important;margin-right:auto!important}
+html[data-ol] .ny .cols{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;grid-auto-flow:row}
+html[data-ol] .ny .cols>.cc:nth-child(1){grid-column:1;grid-row:1}
+html[data-ol] .ny .cols>.cc:nth-child(2){grid-column:2;grid-row:1/span 2}
+html[data-ol] .ny .cols>.opt{grid-column:1;grid-row:2;grid-template-columns:1fr 1fr;zoom:1;margin-top:6px}
+html[data-ol] .ny .cols>.opt .chips{gap:4px}
