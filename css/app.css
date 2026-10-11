@@ -268,7 +268,18 @@ html[data-rot] #orh{display:flex}html[data-rot]{position:fixed;top:0;left:100vw;
 html[data-ol] body{padding-inline:14px;padding-block:0 20px}html[data-ol] body:has(.bnav){padding-left:calc(72px + env(safe-area-inset-left,0px))}
 html[data-ol] .brand{font-size:18px}html[data-ol] .ico{min-width:40px;min-height:40px}
 html[data-ol] .dkg{grid-template-columns:repeat(6,minmax(0,1fr))}html[data-ol] .dk{min-height:58px;padding:6px 8px}html[data-ol] .dk b{font-size:12px}html[data-ol] .dk span{font-size:10px}html[data-ol] .desk{padding:6px 8px;margin-bottom:8px}html[data-ol] .dkh{display:none}
-html[data-ol] .hm{max-width:760px;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:10px 28px;padding-top:calc(8px + env(safe-area-inset-top,0px));padding-bottom:16px}html[data-ol] .hm .lg,html[data-ol] .hm .ti,html[data-ol] .hm .su{grid-column:1}html[data-ol] .hm>:not(.lg):not(.ti):not(.su){grid-column:2}html[data-ol] .hm .lg{width:56px;height:56px;justify-self:center}html[data-ol] .hm .ti{font-size:28px}html[data-ol] .hm .su{font-size:10px;margin:0}html[data-ol] .hm .nw{min-height:46px;font-size:16px}html[data-ol] .hm .ol{min-height:42px}
+html[data-ol] .hm:not(.sb){max-width:none;display:grid;grid-template-columns:repeat(10,1fr);grid-template-rows:auto 1.25fr 1fr;gap:10px;height:calc(var(--eh,100dvh) - 22px);padding:6px 14px;align-items:stretch}
+html[data-ol] .hm .hh{grid-column:1/-1;flex-direction:row;justify-content:center;gap:16px;align-items:center}
+html[data-ol] .hm .ht{align-items:flex-start}html[data-ol] .hm .lg{width:52px;height:52px}html[data-ol] .hm .ti{font-size:30px;margin:0;text-align:left}html[data-ol] .hm .su{font-size:10px;margin:4px 0 0;text-align:left}
+html[data-ol] .hm .co{grid-column:span 6;height:100%}html[data-ol] .hm .nw{grid-column:span 4;height:100%;min-height:0;font-size:22px}
+html[data-ol] .hm:not(:has(.co)) .nw{grid-column:1/-1}
+html[data-ol] .hm .r4{display:contents}
+html[data-ol] .hm .ol,html[data-ol] .hm .r4 button{grid-column:span 2;height:100%;min-height:0;flex-direction:column;gap:6px;font-size:12px}
+html[data-ol] .hm .ol span,html[data-ol] .hm .r4 button span{font-size:26px;color:var(--accent);line-height:1}
+html[data-ol] .hm .vr{display:none}
+html[data-ol] .hm.sb{max-width:none;padding:6px 16px 24px;display:block}
+html[data-ol] .hm.sb>.dg:not(.panel){columns:2;column-gap:16px}html[data-ol] .hm.sb>.dg>*{break-inside:avoid}
+html[data-ol] .hm.sb .tx2{columns:2;column-gap:22px}html[data-ol] .hm.sb .tx2 p{break-inside:avoid-column}
 html[data-ol] header.top{padding-block:5px}html[data-ol] header.top .brand small{display:none}
 html[data-ol] .bnav{left:0;right:auto;top:0;bottom:0;width:calc(68px + env(safe-area-inset-left,0px));flex-direction:column;border-top:0;border-right:1px solid var(--line);padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
 html[data-ol] .bn{height:auto;flex:1;border-top:0;border-left:3px solid transparent}html[data-ol] .bn[aria-selected="true"]{border-top-color:transparent;border-left-color:var(--accent)}
@@ -433,3 +444,4 @@ html[data-hm][data-hp] .wrap .subtabs{margin:4px 0 2px;padding-right:34px}
 html[data-hm][data-hp] .wrap>main,html[data-hm][data-hp] .wrap>.subtabs{zoom:.82}
 html[data-rot] .wrap,html[data-rot] #hmx .hrp,html[data-rot] .dxb,html[data-rot] .sheet-in{touch-action:none!important}
 html[data-rot] body{touch-action:none}
+html[data-rot] .hm,html[data-rot] .hm.sb,html[data-rot] .hm:not(.sb){padding-top:62px!important}
