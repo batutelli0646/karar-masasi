@@ -431,3 +431,4 @@ html[data-hm][data-hp] .wrap .panel{padding:8px 10px;margin-block:6px}
 html[data-hm][data-hp] .wrap .bn2,html[data-ol][data-hm][data-hp] .wrap .bn2{height:28px;font-size:11px;padding:0 9px}
 html[data-hm][data-hp] .wrap .subtabs{margin:4px 0 2px;padding-right:34px}
 html[data-hm][data-hp] .wrap>main,html[data-hm][data-hp] .wrap>.subtabs{zoom:.82}
+html[data-rot] .wrap,html[data-rot] #hmx .hrp,html[data-rot] .dxb,html[data-rot] .sheet-in{touch-action:none!important}
