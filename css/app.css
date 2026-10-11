@@ -366,3 +366,50 @@ html[data-hm] .wrap .subtabs{padding-right:40px}
 .uvg b{white-space:nowrap}
 html[data-ol] #hmx .uvg{grid-template-columns:1fr}
 #hmx .hmcv{width:100%;height:100%;display:block}
+/* ek30: harita modu kompakt yerleşim */
+#hmx .hid{top:4px;min-height:34px;padding:3px 8px;gap:6px;right:132px}
+#hmx .hid b{font-size:13px}#hmx .hid small{font-size:9px}
+#hmx .hfl{width:26px;height:26px;font-size:15px}
+#hmx .htr{top:4px;gap:4px}#hmx .htr button{min-width:36px;height:34px;padding:0 6px;font-size:12px;border-radius:10px}
+#hmx .hss{top:42px;gap:4px}
+#hmx .hs{min-height:35px;padding:2px 1px;gap:0;border-radius:8px}
+#hmx .hs i{font-size:8px}#hmx .hs b{font-size:11.5px}#hmx .hs em{font-size:8px}#hmx .hs svg{height:9px}
+#hmx .hnw{top:81px;max-height:31px;padding:3px 8px;font-size:9.5px;line-height:1.25;border-radius:8px}
+#hmx .hnw.on{max-height:190px}#hmx .hnh{font-size:8.5px}
+#hmx .hmst{top:116px;bottom:52px}
+#hmx .hbn{height:46px;bottom:4px;padding:3px;border-radius:12px}
+#hmx .hbn button{height:38px;font-size:8.5px}#hmx .hbn button span{font-size:14px}
+#hmx .hbn .hed{width:78px;font-size:11px;margin-left:3px}
+#hmx .hbn em{font-size:9px;min-width:14px;height:14px}
+#hmx .hly{bottom:56px}#hmx .hly button{padding:4px 9px;font-size:10px}#hmx .hly span{font-size:9px;padding:4px 7px}
+#hmx .hrc{bottom:56px;width:30px;height:28px}
+#hmx .hrp,html[data-ol] #hmx .hrp{left:50%;right:auto;top:50%;bottom:auto;transform:translate(-50%,-50%);width:min(88%,320px);max-height:62%;font-size:12px;padding:3px 8px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+#hmx .hrp .panel{margin-top:2px;padding:0;background:none;border:0}
+#hmx .hpx{width:26px;height:26px;font-size:12px}
+#hmx .hrp .lever{padding-block:3px}#hmx .hrp .lever .n{font-size:14px}#hmx .hrp .lever .h{font-size:11px}
+#hmx .hrp .dxa{padding:6px 9px;margin:3px 0;gap:8px;font-size:12px;border-radius:8px}#hmx .hrp .dxa i{font-size:14px}
+#hmx .hrp .dl{font-size:10.5px}#hmx .hrp .note{font-size:10.5px}
+.uvg div{font-size:11px;padding:2px 0}
+html[data-hm] h2{font-size:15px;margin-bottom:6px}
+html[data-hm] .lever .n{font-size:14px}html[data-hm] .lever{padding-block:5px}
+html[data-hm] .btn.sm{padding:6px 10px;font-size:11px;min-height:30px}
+html[data-hm] .dxa{padding:7px 10px;font-size:12.5px;margin:3px 0}
+html[data-hm] .sheet{align-items:center}
+html[data-hm] .sheet-in{max-width:340px;max-height:72vh;border-radius:12px;padding:10px 12px;font-size:12.5px}
+html[data-hm][data-hp] .wrap{top:118px;bottom:54px;font-size:13px}
+html[data-ol] #hmx .hid{top:4px;width:170px;left:6px}
+html[data-ol] #hmx .hnw{top:42px;width:170px;left:6px}
+html[data-ol] #hmx .hss{left:182px;right:150px;top:4px}
+html[data-ol] #hmx .hs{min-width:84px}
+html[data-ol] #hmx .hmst{top:42px;bottom:52px}
+html[data-ol] #hmx .hly{bottom:56px;left:8px}
+html[data-ol] #hmx .hbn .hed{width:104px}
+html[data-ol][data-hm][data-hp] .wrap{top:auto;bottom:56px;height:calc(var(--eh,100vh)*.64)}
+html[data-hm] .sheet{align-items:center!important}
+html[data-hm] .sheet-in{width:min(92%,340px)!important;border-radius:12px!important;zoom:.88}
+html[data-hm][data-hp] .wrap{zoom:.86}
+html[data-hm][data-hp] .wrap .step button:not(.btn){width:34px;height:34px}
+html[data-hm] .dxs{align-items:center;justify-content:center}
+html[data-hm] .dxb{width:min(92%,340px);max-height:70vh;border-radius:12px;border:1px solid var(--accent);padding:10px 12px 12px;zoom:.88;font-size:13px}
+html[data-hm][data-hp] .wrap{top:137px;bottom:62px}
+html[data-ol][data-hm][data-hp] .wrap{top:auto;bottom:62px}
