@@ -416,3 +416,18 @@ html[data-ol][data-hm][data-hp] .wrap{top:auto;bottom:62px}
 /* ek31: menü paneli tam ekran, ölçekli (zoom yerine transform) */
 html[data-hm][data-hp] .wrap,html[data-ol][data-hm][data-hp] .wrap{zoom:1!important;position:fixed!important;left:0!important;top:0!important;right:auto!important;bottom:auto!important;width:125%!important;height:calc((var(--eh,100dvh) - 56px)*1.25)!important;max-width:none!important;transform:scale(.8);transform-origin:0 0;border-radius:0!important;border-width:0 0 2px 0!important;padding:6px 12px 24px!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;touch-action:pan-y}
 html[data-hm] .sheet-in,html[data-hm] .dxb{zoom:1!important}
+/* ek32: tam ekran harita + ortada panel (üst/alt çubuk görünür), scale/zoom yok */
+#hmx .hmst,html[data-ol] #hmx .hmst{top:0;bottom:0}
+#hmx .hid,#hmx .hs,#hmx .hnw,#hmx .hbn,#hmx .htr button,#hmx .hly button,#hmx .hrc{background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(3px)}
+#hmx .hss{gap:4px}#hmx .hs{min-width:0!important;padding:2px 1px}
+html[data-ol] #hmx .hss{left:182px;right:150px;gap:4px;display:grid;grid-template-columns:repeat(4,1fr)}
+html[data-hm][data-hp] .wrap,html[data-ol][data-hm][data-hp] .wrap{zoom:1!important;transform:none!important;position:fixed!important;left:3%!important;right:3%!important;top:84px!important;bottom:56px!important;width:auto!important;height:auto!important;max-width:none!important;border:1px solid var(--accent)!important;border-radius:14px!important;padding:6px 10px 14px!important;overflow-y:auto!important;overflow-x:hidden!important;font-size:12.5px;box-shadow:0 10px 36px rgba(0,0,0,.55);overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+html[data-ol][data-hm][data-hp] .wrap{left:9%!important;right:9%!important;top:48px!important;bottom:54px!important}
+html[data-hm][data-hp] .wrap .lever .n{font-size:13px}html[data-hm][data-hp] .wrap .lever .h{font-size:11px}
+html[data-hm][data-hp] .wrap h2{font-size:14px}
+html[data-hm][data-hp] .wrap .btn{font-size:11px;padding:7px 12px}
+html[data-hm][data-hp] .wrap .step button:not(.btn){width:32px;height:32px;font-size:14px}
+html[data-hm][data-hp] .wrap .panel{padding:8px 10px;margin-block:6px}
+html[data-hm][data-hp] .wrap .bn2,html[data-ol][data-hm][data-hp] .wrap .bn2{height:28px;font-size:11px;padding:0 9px}
+html[data-hm][data-hp] .wrap .subtabs{margin:4px 0 2px;padding-right:34px}
+html[data-hm][data-hp] .wrap>main,html[data-hm][data-hp] .wrap>.subtabs{zoom:.82}
