@@ -432,3 +432,4 @@ html[data-hm][data-hp] .wrap .bn2,html[data-ol][data-hm][data-hp] .wrap .bn2{hei
 html[data-hm][data-hp] .wrap .subtabs{margin:4px 0 2px;padding-right:34px}
 html[data-hm][data-hp] .wrap>main,html[data-hm][data-hp] .wrap>.subtabs{zoom:.82}
 html[data-rot] .wrap,html[data-rot] #hmx .hrp,html[data-rot] .dxb,html[data-rot] .sheet-in{touch-action:none!important}
+html[data-rot] body{touch-action:none}

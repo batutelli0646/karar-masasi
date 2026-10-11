@@ -60,7 +60,7 @@ document.addEventListener('click',ev=>{const t=ev.target.closest&&ev.target.clos
   if(d.wfm){S.wfm=d.wfm;return render();}const p=d.uxa.split(':');act29(p[0],p[1]);},true);
 {const _y=yeniUp;yeniUp=function(){try{const x=S.ux;if(x)for(const k in x){const b=UV[k]?UV[k][16]:50;x[k]=clamp(x[k]+(b-x[k])*.05,0,100);}}catch(e){}return _y.apply(this,arguments);};}
 /* yatay (döndürülmüş) modda dokunmatik kaydırma: ekran ekseni yerel eksene çevrilir */
-{let sc=null,t=null,v=0,lt=0;const R=document.documentElement,sca=e=>{for(let n=e;n&&n!==document.body;n=n.parentElement){const o=getComputedStyle(n).overflowY;if((o==='auto'||o==='scroll')&&n.scrollHeight>n.clientHeight+2)return n;}return null;};
+{let sc=null,t=null,v=0,lt=0;const R=document.documentElement,sca=e=>{for(let n=e;n;n=n.parentElement){const o=getComputedStyle(n).overflowY;if((o==='auto'||o==='scroll')&&n.scrollHeight>n.clientHeight+2)return n;}return null;};
   document.addEventListener('touchstart',e=>{sc=null;if(!R.hasAttribute('data-rot')||e.touches.length!==1||e.target.closest('.hmst'))return;sc=sca(e.target);if(!sc)return;t=[e.touches[0].clientX,e.touches[0].clientY];v=0;lt=Date.now();},{passive:true});
   document.addEventListener('touchmove',e=>{if(!sc||!t)return;const p=e.touches[0],d=R.hasAttribute('data-flip')?p.clientX-t[0]:t[0]-p.clientX;t=[p.clientX,p.clientY];sc.scrollTop-=d;const n=Date.now();v=d/Math.max(1,n-lt)*.6+v*.4;lt=n;e.preventDefault();},{passive:false});
   document.addEventListener('touchend',()=>{const s=sc;sc=null;if(!s||Math.abs(v)<.15||Date.now()-lt>80)return;let w=v*16;const f=()=>{s.scrollTop-=w;w*=.94;if(Math.abs(w)>.5)requestAnimationFrame(f);};f();},{passive:true});}
