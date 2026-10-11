@@ -445,3 +445,11 @@ html[data-hm][data-hp] .wrap>main,html[data-hm][data-hp] .wrap>.subtabs{zoom:.82
 html[data-rot] .wrap,html[data-rot] #hmx .hrp,html[data-rot] .dxb,html[data-rot] .sheet-in{touch-action:none!important}
 html[data-rot] body{touch-action:none}
 html[data-rot] .hm,html[data-rot] .hm.sb,html[data-rot] .hm:not(.sb){padding-top:62px!important}
+/* yeni oyun ekranı: kompakt, tam genişlik */
+.ny .ps,.ny .cols{zoom:.86}
+html[data-ol] .ny{max-width:none;padding:0 10px 54px}
+html[data-ol] .ny .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:4px 14px;align-items:start}
+html[data-ol] .ny .go{padding:6px 14px calc(6px + env(safe-area-inset-bottom,0px))}html[data-ol] .ny .go .btn{min-height:36px;font-size:14px;padding:6px}
+html[data-ol] .ny .tp{margin-bottom:2px!important}html[data-ol] .ny .tp b{font-size:16px!important}html[data-ol] .ny .bk{width:32px!important;height:32px!important}
+html[data-ol] .ny .sh{margin:8px 0 4px}
+html[data-rot] .ny{padding-top:60px!important}
